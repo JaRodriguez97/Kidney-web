@@ -1,0 +1,34 @@
+   .glass-panel {
+        @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+      }
+      .glass-card {
+        @apply bg-white/60 backdrop-blur-md border border-white/40 shadow-sm rounded-xl transition-all duration-200;
+      }
+      .sidebar-item {
+        @apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary/10 hover:text-primary transition-all font-medium cursor-pointer;
+      }
+      .sidebar-item.active {
+        @apply bg-primary text-white shadow-lg shadow-primary/30;
+      }
+      .glass-input {
+        @apply bg-white/50 border border-white/60 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-xl px-4 py-2.5 text-sm outline-none transition-all placeholder:text-slate-400 backdrop-blur-sm w-full;
+      }
+      .glass-textarea {
+        @apply bg-white/50 border border-white/60 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-xl px-4 py-2.5 text-sm outline-none transition-all placeholder:text-slate-400 backdrop-blur-sm w-full resize-none;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.5);
+        border-radius: 20px;
+      }
+      .table-header {
+        @apply text-left text-xs font-bold text-slate-500 uppercase tracking-wider py-4 px-4;
+      }
+      .table-cell {
+        @apply py-4 px-4 text-sm text-slate-700 border-t border-slate-100;
+      }

@@ -1,0 +1,6 @@
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+}
+.glass-card {
+  @apply bg-white/60 backdrop-blur-md border border-white/40 shadow-sm rounded-xl hover:bg-white/80 transition-all duration-200;
+}

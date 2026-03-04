@@ -1,0 +1,274 @@
+<div class="bg-medical-blur">
+  <img
+    alt="Fondo técnico de laboratorio médico"
+    src="../../../../../assets/img/bg-login.png"
+  />
+  <div class="bg-medical-overlay"></div>
+</div>
+<main
+  class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 pt-12 pb-12 overflow-y-auto custom-scrollbar"
+>
+  <div class="w-full max-w-3xl">
+    <div
+      class="glass-panel rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row relative"
+    >
+      <div class="w-full p-8 lg:p-12">
+        <div class="max-w-4xl mx-auto">
+          <div class="flex flex-col items-center mb-6">
+            <div class="flex items-center gap-2">
+              <img
+                src="assets/img/logo.png"
+                srcset="assets/img/logo.png 1x, assets/img/logo.png 2x"
+                width="150"
+                loading="lazy"
+                alt="Kidney Medicine logo"
+                class="rounded-lg object-contain"
+              />
+            </div>
+          </div>
+          <div class="text-center mb-10">
+            <h1
+              class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3"
+            >
+              Empieza tu camino hacia un mejor bienestar
+            </h1>
+            <p class="text-slate-600 dark:text-slate-300 text-lg">
+              Ingrese sus datos para gestionar sus citas y resultados en nuestro
+              laboratorio en Cali.
+            </p>
+          </div>
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+            <div class="space-y-6">
+              <h3
+                class="text-lg font-semibold text-primary border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2"
+              >
+                <span class="material-icons-round text-xl">lock</span>
+                Credenciales de Acceso
+              </h3>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="col-span-1 md:col-span-2">
+                  <app-input-email formControlName="email" icon="email" />
+                  @if (f["email"].touched && f["email"].invalid) {
+                    <div class="text-red-500 text-xs">
+                      @if (f["email"].errors && f["email"].errors["required"]) {
+                        <span>El correo es obligatorio.</span>
+                      }
+                      @if (f["email"].errors && f["email"].errors["email"]) {
+                        <span>Correo inválido.</span>
+                      }
+                    </div>
+                  }
+                </div>
+                <div>
+                  <app-input-password formControlName="password" icon="lock" />
+                  @if (f["password"].touched && f["password"].invalid) {
+                    <div class="text-red-500 text-xs">
+                      @if (
+                        f["password"].errors && f["password"].errors["required"]
+                      ) {
+                        <span>La contraseña es obligatoria.</span>
+                      }
+                      @if (
+                        f["password"].errors &&
+                        f["password"].errors["minlength"]
+                      ) {
+                        <span>Mínimo 8 caracteres.</span>
+                      }
+                    </div>
+                  }
+                  <p class="mt-1 text-xs text-slate-500">
+                    Mínimo 8 caracteres.
+                  </p>
+                </div>
+                <div>
+                  <app-input-password
+                    formControlName="confirmPassword"
+                    icon="check_circle"
+                    label="Confirmar Contraseña*"
+                  />
+                  @if (
+                    form.errors &&
+                    form.errors["passwordsMismatch"] &&
+                    (f["confirmPassword"].touched || f["password"].touched)
+                  ) {
+                    <div class="text-red-500 text-xs">
+                      Las contraseñas no coinciden.
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="space-y-6">
+              <h3
+                class="text-lg font-semibold text-primary border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2"
+              >
+                <span class="material-icons-round text-xl">badge</span>
+                Información Personal
+              </h3>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <app-input-text
+                    formControlName="firstName"
+                    label="Primer Nombre*"
+                    placeholder="Ej. Juan"
+                  />
+                  @if (f["firstName"].touched && f["firstName"].invalid) {
+                    <div class="text-red-500 text-xs">
+                      El primer nombre es obligatorio.
+                    </div>
+                  }
+                </div>
+
+                <app-input-text
+                  formControlName="secondName"
+                  label="Segundo Nombre (Opcional)"
+                  placeholder="Ej. David"
+                />
+
+                <div>
+                  <app-input-text
+                    formControlName="lastName"
+                    label="Primer Apellido*"
+                    placeholder="Ej. Pérez"
+                  />
+                  @if (f["lastName"].touched && f["lastName"].invalid) {
+                    <div class="text-red-500 text-xs">
+                      El primer apellido es obligatorio.
+                    </div>
+                  }
+                </div>
+
+                <app-input-text
+                  formControlName="secondLastName"
+                  label="Segundo Apellido (Opcional)"
+                  placeholder="Ej. Rodríguez"
+                />
+
+                <app-input-number
+                  formControlName="number_document"
+                  label="Número de Cédula (Opcional)"
+                  icon="fingerprint"
+                  placeholder="Ej. 1234567890"
+                />
+
+                <app-input-number
+                  formControlName="phone"
+                  label="Teléfono Celular (Opcional)"
+                  icon="phone_iphone"
+                  placeholder="Ej. 300 123 4567"
+                />
+              </div>
+            </div>
+            <div class="space-y-6">
+              <h3
+                class="text-lg font-semibold text-primary border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2"
+              >
+                <span class="material-icons-round text-xl">location_on</span>
+                Ubicación de Residencia
+                <span class="text-slate-400 text-sm font-normal ml-2"
+                  >(Opcional)</span
+                >
+              </h3>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="col-span-1 md:col-span-3">
+                  <app-input-text
+                    formControlName="address"
+                    label="Dirección Completa"
+                    placeholder="Ej. Cra 100 # 5-16"
+                  />
+                </div>
+                <div>
+                  <app-input-text
+                    formControlName="barrio"
+                    label="Barrio"
+                    placeholder="Ej. El Ingenio"
+                  />
+                </div>
+                <div>
+                  <app-select
+                    formControlName="comuna"
+                    label="Comuna"
+                    [options]="options"
+                  ></app-select>
+                </div>
+                <div>
+                  <app-input-text
+                    formControlName="city"
+                    label="Ciudad"
+                    value="Cali, Valle"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="pt-4">
+              <label
+                class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/30 dark:bg-slate-800/30 cursor-pointer hover:bg-white/50 transition-colors"
+              >
+                <input
+                  class="mt-1 w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                  formControlName="terms"
+                  type="checkbox"
+                />
+                @if (f["terms"].touched && f["terms"].invalid) {
+                  <div class="text-red-500 text-xs">
+                    Debes aceptar los términos y condiciones.
+                  </div>
+                }
+                <span
+                  class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed"
+                >
+                  He leído y acepto los
+                  <a class="text-primary hover:underline font-semibold" href="#"
+                    >Términos y Condiciones</a
+                  >, declaro que la información suministrada es veraz y autorizo
+                  el manejo de mis datos sensibles conforme a la
+                  <a class="text-primary hover:underline font-semibold" href="#"
+                    >Política de Tratamiento de Datos</a
+                  >
+                  de Kidney Medicine SAS.
+                </span>
+              </label>
+            </div>
+            <div class="flex flex-col items-center gap-6 mt-8">
+              <button
+                class="w-full md:w-auto min-w-[300px] bg-primary hover:bg-sky-600 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-1"
+                type="submit"
+                [disabled]="isSubmitting"
+              >
+                {{ isSubmitting ? "Enviando..." : "Registrarme" }}
+              </button>
+              <div class="text-center">
+                <p class="text-slate-600 dark:text-slate-300 mb-2">
+                  ¿Ya tienes una cuenta?
+                </p>
+                <a
+                  class="inline-flex items-center gap-2 text-primary font-semibold hover:text-sky-700 transition-colors text-lg"
+                  [routerLink]="['/login/patient']"
+                >
+                  <span class="material-icons-round">login</span>
+                  Iniciar sesión
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-8 pb-4">
+      <!-- <p class="text-slate-600 dark:text-slate-400 text-sm drop-shadow-md">
+        © 2024 Kidney Medicine SAS. Todos los derechos reservados.
+      </p> -->
+      <div
+        class="flex justify-center gap-4 mt-2 text-xs text-slate-500 dark:text-slate-400"
+      >
+        <a class="hover:text-primary hover:underline text-white" href="#"
+          >Privacidad</a
+        >
+        <span>•</span>
+        <a class="hover:text-primary hover:underline text-white" href="#"
+          >Ayuda</a
+        >
+      </div>
+    </div>
+  </div>
+</main>

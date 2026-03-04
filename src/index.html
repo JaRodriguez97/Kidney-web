@@ -1,13 +1,51 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>KinexaWeb</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+<html class="scroll-smooth" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+
+    <!-- Título base (Angular lo sobreescribe) -->
+    <title>Kynexa | Plataforma de Gestión Médica</title>
+
+    <!-- SEO base -->
+    <meta
+      name="description"
+      content="Kynexa es una plataforma médica integral para gestión clínica, pacientes y contenido educativo en salud."
+    />
+
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Indexación -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Autor y marca -->
+    <meta name="author" content="Kynexa" />
+    <meta name="application-name" content="Kynexa" />
+
+    <!-- Canonical base (Angular puede cambiarlo) -->
+    <link rel="canonical" href="https://kynexa.com/" />
+
+    <!-- Idioma -->
+    <meta http-equiv="Content-Language" content="es" />
+
+    <!-- Open Graph base -->
+    <meta property="og:site_name" content="Kynexa" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:image" content="./assets/img/logo_3.jpg" />
+
+    <!-- Twitter base -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@kynexa" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="./assets/img/logo_3.jpg" />
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 transition-colors duration-300 antialiased font-sans"
+  >
+    <app-root></app-root>
+  </body>
 </html>

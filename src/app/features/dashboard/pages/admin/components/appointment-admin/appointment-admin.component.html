@@ -1,0 +1,560 @@
+<section class="flex">
+  <div class="flex-1 h-full overflow-y-auto p-4 lg:p-8 flex flex-col">
+    <div class="flex flex-col gap-6">
+      <div
+        class="glass-panel p-4 flex flex-col xl:flex-row gap-4 justify-between items-center"
+      >
+        <div class="relative w-full xl:w-80">
+          <span
+            class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
+            >search</span
+          >
+          <input
+            class="glass-input w-full pl-10"
+            placeholder="Buscar por paciente o médico..."
+            type="text"
+          />
+        </div>
+        <div class="flex flex-wrap gap-3 w-full xl:w-auto items-center">
+          <select
+            class="glass-input cursor-pointer bg-white/40 flex-1 sm:flex-none min-w-[150px]"
+          >
+            <option>Especialización: Todas</option>
+            <option>Medicina General</option>
+            <option>Laboratorio</option>
+            <option>Nutrición</option>
+            <option>Cardiología</option>
+          </select>
+          <select
+            class="glass-input cursor-pointer bg-white/40 flex-1 sm:flex-none min-w-[140px]"
+          >
+            <option>Estado: Todos</option>
+            <option>Pendiente</option>
+            <option>Confirmada</option>
+            <option>En Curso</option>
+            <option>Finalizada</option>
+            <option>Cancelada</option>
+            <option>Ausente</option>
+          </select>
+          <div
+            class="flex items-center gap-2 bg-white/40 rounded-xl px-2 border border-white/60"
+          >
+            <span class="material-symbols-outlined text-slate-400 pl-2 text-xl"
+              >event</span
+            >
+            <input
+              class="bg-transparent border-none text-sm outline-none py-2 px-1 focus:ring-0 text-slate-600 w-28"
+              placeholder="Desde"
+              type="date"
+            />
+            <span class="text-slate-400 text-xs">a</span>
+            <input
+              class="bg-transparent border-none text-sm outline-none py-2 px-1 focus:ring-0 text-slate-600 w-28"
+              placeholder="Hasta"
+              type="date"
+            />
+          </div>
+          <button
+            class="flex items-center gap-2 bg-medical text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/30 font-semibold text-sm whitespace-nowrap"
+          >
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Nueva Cita
+          </button>
+        </div>
+      </div>
+      <div class="glass-panel p-0 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr
+                class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+              >
+                <th class="py-4 pl-6 pr-4 font-semibold">Paciente</th>
+                <th class="py-4 px-4 font-semibold">Especialidad</th>
+                <th class="py-4 px-4 font-semibold">Médico Asignado</th>
+                <th class="py-4 px-4 font-semibold">Fecha y Hora</th>
+                <th class="py-4 px-4 font-semibold text-center">Estado</th>
+                <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-slate-100">
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2HfF7-EvVZNhCNTb-P_xu-Ox3e7OcCMbryZYp2O7NuEJtq2J2NcpmwZ1CoqcF0esVNwuzh7Z2Olfzu1Q297yKzgeRooE4VUkiYb8uZWHCNof6vJciv7jio71-uDNSnmdbt-_0UHuTvD8obyKR3IY7Csao6cTf7yV2xqlBnbA4FpVUM2K1ZPgoybo9JRJFZp8vHLOKrW2mI6eEBG89rWJQhTlqAzdao6-y4jtnKZQ8teYTnZ--iqWtZBFAQPgQa7t_7AtXUh2FRbI"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >Juan Carlos Montoya</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 1.144.123.456</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium"
+                    >Medicina General</span
+                  >
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Dr. Ricardo Velasco</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >15 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">09:30 AM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span
+                    class="badge bg-amber-50 text-amber-700 border-amber-200"
+                    >PENDIENTE</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="p-2 hover:bg-red-50 rounded-lg text-secondary transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >cancel</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBydfEB-zgdJ05vgcrP7clZtJQi_KSfl2CLfmQD4xa9RYQdOu-SADY7F6frUbsb1Vyjq6SSaTwdt96UljNRlr6K1NFVVxvvMkOb5se8hy8gY50JEn3kdHiMqtSZdISAL_Lk8oVkszbSDKnW4DEqp3-px3YqfqRhoZUCx6GodI2AoCt3hAem00U_bXg6q9EU8-M3bJMMYGV7glUhuQnmfhx-wFDhzrQ_hoLx5-NNL-aegABC-kzTOvDcAQXN0-kKxOJ_-rBU3xW1SKY"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >María Paula Restrepo</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 1.130.456.789</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium">Nutrición</span>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Dra. Claudia Salas</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >15 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">11:00 AM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span
+                    class="badge bg-green-50 text-green-700 border-green-200"
+                    >CONFIRMADA</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      class="p-2 hover:bg-red-50 rounded-lg text-secondary transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >cancel</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfCjeVIlGMiW0qVIlCUg5zVaF0wRC4ffGf8ph9aZ6rr3ccLipmS52c9lr6EXoTiw3CpO3iJyySOy_gN2ipWAOtHNtyG_VYfeDzQv0Tfsn0RDAhNjxiOwBV_TXbG1RvdRsYxj-0OL9pwblO3so-QKFL4c_18uRNDS1f9_DKXIPdzK1tJdc8vO84J5mIqURlbKdxjlL96D8EDGGTmSON6GHfoVFY8MxUOlE4gCZHSE4Q5X7rcD4HLNgBlRSDGpTwGHQsRXJyvfXyc2g"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >Andrés Felipe Castro</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 1.114.987.654</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium">Laboratorio</span>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Lic. Ana Jiménez</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >15 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">08:00 AM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span class="badge bg-blue-50 text-blue-700 border-blue-200"
+                    >EN CURSO</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-slate-100 rounded-lg text-blue-600 transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >visibility</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC32WbT3_Y_2v08r9TVFC3RuS6_NQT2EuuUBVaKhpPex5V9U4iEMK2y_JJOJgmYCX39rbRynIe3V_E3E4ljDTJHNTQ-6zOURMxWBiQlPwAFSwD7k7DL1jDIpGGlYdCjvfYvbw15IRU-OOX3iohA1HnQcCcHqWmbfCPtzq4XOR_dbF6LMS4Pu4QitlS4FnHxRpAnIatQWutx3SWrouFQTJeZdOgp69Juj7eq7j0SUqiQsMRXwjFbRg8jfSMPjpbk2zqdQGk9pn2wiJ0"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >Diana Marcela Ortiz</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 66.789.012</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium">Cardiología</span>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Dr. Pedro Infante</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >16 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">10:15 AM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span class="badge bg-red-50 text-red-700 border-red-200"
+                    >CANCELADA</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >schedule</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi2bavdH1R1RA62UNvU5eAf89Go3pszC9IaIQXx9Ax0CXMRhN9z09d3lXTI0hMwxTjr41_CnwjHL5rhAUpPNyqMwQk2ocRy0wxIrf8nqHb0NG7OOPiW7obsGIDDw3y5DyiOExBSDZ-UB7ZxFurYIwV9dHAcM5swNAlzofOXfG7YCVRldKGpG9wZmyt1BlUxc6zwWDllSCPxiK3WM8uzSpoGx8Kf6JHM_56iR2Aq23O57rqOqgU4XCZaiTeSsCqsKVQ0yfETaBc97Y"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >Carlos Eduardo Ruiz</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 94.332.112</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium"
+                    >Medicina General</span
+                  >
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Dr. Ricardo Velasco</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >14 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">14:00 PM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span
+                    class="badge bg-slate-100 text-slate-600 border-slate-200"
+                    >FINALIZADA</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-slate-100 rounded-lg text-blue-600 transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >history</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="group hover:bg-white/60 transition-colors">
+                <td class="py-4 pl-6 pr-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+                    >
+                      <img
+                        alt="User"
+                        class="w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800"
+                        >Lucía Fernández</span
+                      >
+                      <span class="text-[11px] text-slate-500"
+                        >ID: 32.556.778</span
+                      >
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700 font-medium">Cardiología</span>
+                </td>
+                <td class="py-4 px-4">
+                  <span class="text-slate-700">Dr. Pedro Infante</span>
+                </td>
+                <td class="py-4 px-4">
+                  <div class="flex flex-col">
+                    <span class="text-slate-700 font-semibold"
+                      >14 Nov, 2023</span
+                    >
+                    <span class="text-xs text-slate-500">16:30 PM</span>
+                  </div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                  <span
+                    class="badge bg-purple-50 text-purple-700 border-purple-200"
+                    >AUSENTE</span
+                  >
+                </td>
+                <td class="py-4 pr-6 text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      class="p-2 hover:bg-blue-50 rounded-lg text-blue-600 transition-colors"
+                    >
+                      <span class="material-symbols-outlined text-xl"
+                        >schedule</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+        >
+          <span>Mostrando 6 de 42 citas hoy</span>
+          <div class="flex gap-2">
+            <button
+              class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+            >
+              Anterior
+            </button>
+            <button
+              class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside
+    class="w-80 h-full border-l border-white/40 bg-white/40 backdrop-blur-md p-6 hidden xl:flex flex-col gap-6 overflow-y-auto"
+  >
+    <div class="glass-panel p-4">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-slate-800">Calendario</h3>
+        <div class="flex gap-1">
+          <button class="p-1 hover:bg-slate-100 rounded text-slate-400">
+            <span class="material-symbols-outlined text-lg">chevron_left</span>
+          </button>
+          <button class="p-1 hover:bg-slate-100 rounded text-slate-400">
+            <span class="material-symbols-outlined text-lg">chevron_right</span>
+          </button>
+        </div>
+      </div>
+      <div class="text-center mb-2">
+        <p class="text-sm font-bold text-primary uppercase">Noviembre 2023</p>
+      </div>
+      <div
+        class="grid grid-cols-7 gap-1 text-[10px] text-center font-bold text-slate-400 mb-2"
+      >
+        <span>LU</span><span>MA</span><span>MI</span><span>JU</span
+        ><span>VI</span><span>SA</span><span>DO</span>
+      </div>
+      <div class="grid grid-cols-7 gap-1 text-xs text-center">
+        <span class="p-2 text-slate-300">30</span
+        ><span class="p-2 text-slate-300">31</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">1</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">2</span>
+        <span
+          class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer font-bold text-primary"
+          >3</span
+        >
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">4</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">5</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">6</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">7</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">8</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">9</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">10</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">11</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">12</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">13</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">14</span>
+        <span
+          class="p-2 bg-primary text-white rounded-lg cursor-pointer font-bold shadow-md shadow-primary/20"
+          >15</span
+        >
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">16</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">17</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">18</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">19</span>
+        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">20</span>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <h3 class="font-bold text-slate-800 flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">monitoring</span>
+        Métricas del Día
+      </h3>
+      <div
+        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-primary"
+      >
+        <div>
+          <p
+            class="text-xs font-semibold text-slate-500 uppercase tracking-tight"
+          >
+            Citas Hoy
+          </p>
+          <p class="text-2xl font-bold text-primary">12</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 text-3xl"
+          >event_available</span
+        >
+      </div>
+      <div
+        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-amber-500"
+      >
+        <div>
+          <p
+            class="text-xs font-semibold text-slate-500 uppercase tracking-tight"
+          >
+            Pendientes
+          </p>
+          <p class="text-2xl font-bold text-amber-600">3</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 text-3xl"
+          >hourglass_empty</span
+        >
+      </div>
+      <div
+        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-secondary"
+      >
+        <div>
+          <p
+            class="text-xs font-semibold text-slate-500 uppercase tracking-tight"
+          >
+            Canceladas
+          </p>
+          <p class="text-2xl font-bold text-secondary">1</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 text-3xl"
+          >event_busy</span
+        >
+      </div>
+    </div>
+    <div
+      class="mt-4 p-4 rounded-xl bg-primary text-white space-y-3 shadow-lg shadow-primary/20"
+    >
+      <p class="text-xs font-medium opacity-80 italic">Tip de Gestión:</p>
+      <p class="text-xs leading-relaxed">
+        Prioriza la validación de resultados de laboratorio y chequeos
+        preventivos para la jornada de mañana.
+      </p>
+    </div>
+  </aside>
+</section>

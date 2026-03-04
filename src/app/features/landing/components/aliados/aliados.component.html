@@ -1,0 +1,101 @@
+<!-- Compact Hero -->
+<section class="pt-8 pb-4 px-4 text-center">
+  <div class="max-w-4xl mx-auto">
+    <span
+      class="inline-block py-1 px-3 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold tracking-widest uppercase mb-2"
+      >Nuestra Red de Confianza</span
+    >
+    <h2 class="text-3xl font-extrabold text-primary mb-2 leading-tight">
+      Aliados Estratégicos
+    </h2>
+    <p class="text-sm text-slate-600 max-w-xl mx-auto">
+      Conectándote con las mejores instituciones para garantizar tu bienestar
+      integral.
+    </p>
+  </div>
+</section>
+<!-- Unified Grid -->
+<section class="max-w-7xl mx-auto px-4 py-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (org of organizations; track org.name) {
+      <a
+        [href]="org.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 p-3 rounded-xl shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.02]"
+        [ngClass]="{
+          'bg-white border border-slate-100 text-primary':
+            org.variant === 'light',
+          'bg-primary text-white': org.variant === 'primary',
+          'bg-secondary text-white': org.variant === 'secondary',
+        }"
+      >
+        <!-- Icon container -->
+        <div
+          class="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center"
+          [ngClass]="{
+            'bg-slate-50 border border-slate-100': org.variant === 'light',
+            'bg-white/10 border border-white/20': org.variant !== 'light',
+          }"
+        >
+          <span
+            class="material-symbols-outlined"
+            [ngClass]="{
+              'text-primary': org.variant === 'light',
+              'text-white': org.variant !== 'light',
+            }"
+          >
+            {{ org.icon }}
+          </span>
+        </div>
+
+        <!-- Text -->
+        <div class="min-w-0">
+          <p
+            class="text-[10px] font-bold uppercase tracking-tight mb-0.5"
+            [ngClass]="{
+              'text-secondary': org.variant === 'light',
+              'text-white/60': org.variant !== 'light',
+            }"
+          >
+            {{ org.category }}
+          </p>
+
+          <h3 class="text-sm  font-bold truncate"
+            [ngClass]="{
+              'text-white': org.variant !== 'light',
+            }">
+            {{ org.name }}
+          </h3>
+        </div>
+      </a>
+    }
+  </div>
+</section>
+<!-- Compact CTA Banner -->
+<section class="max-w-7xl mx-auto px-4 mt-8">
+  <div
+    class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6"
+  >
+    <div class="flex items-center gap-4">
+      <div
+        class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center shrink-0"
+      >
+        <span class="material-symbols-outlined text-2xl">handshake</span>
+      </div>
+      <div class="text-left">
+        <h3 class="text-lg font-bold text-primary">
+          ¿Quieres ser nuestro aliado?
+        </h3>
+        <p class="text-sm text-slate-500">
+          Únete a nuestra red de excelencia para mejorar la salud comunitaria.
+        </p>
+      </div>
+    </div>
+    <button
+      class="bg-primary text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md shrink-0"
+    >
+      Contáctanos Hoy
+    </button>
+  </div>
+</section>

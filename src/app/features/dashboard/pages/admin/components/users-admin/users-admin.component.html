@@ -1,0 +1,484 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+  <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+    <div
+      class="glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center"
+    >
+      <div class="relative w-full sm:w-72">
+        <span
+          class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
+          >search</span
+        >
+        <input
+          class="glass-input w-full pl-10"
+          placeholder="Buscar por nombre o correo..."
+          type="text"
+        />
+      </div>
+      <div class="flex gap-3 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        <select class="glass-input cursor-pointer bg-white/40">
+          <option>Rol: Todos</option>
+          <option>Paciente</option>
+          <option>Médico</option>
+          <option>Administrador</option>
+          <option>Aliado</option>
+        </select>
+        <select class="glass-input cursor-pointer bg-white/40">
+          <option>Estado: Todos</option>
+          <option>Activos</option>
+          <option>Inactivos</option>
+        </select>
+        <button
+          class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          Nuevo Usuario
+        </button>
+      </div>
+    </div>
+    <div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr
+              class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+            >
+              <th class="py-4 pl-6 font-semibold">Nombre</th>
+              <th class="py-4 px-4 font-semibold">Correo Electrónico</th>
+              <th class="py-4 px-4 font-semibold">Rol</th>
+              <th class="py-4 px-4 font-semibold text-center">Estado</th>
+              <th class="py-4 px-4 font-semibold text-right">
+                Última Actualización
+              </th>
+              <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm divide-y divide-slate-100">
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex-shrink-0"
+                  >
+                    <img
+                      alt="User Avatar"
+                      class="w-full h-full object-cover"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
+                    />
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Dra. Camila Torres</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 89001</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">c.torres{{ "@" }}km.com</td>
+              <td class="py-4 px-4">
+                <span
+                  class="badge bg-purple-50 text-purple-700 border-purple-100"
+                  >Administración</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
+                  >Activo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                Hace 2 horas
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    LC
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Lab. Clínico Continental</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 44090</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">
+                contacto{{ "@" }}continental.com
+              </td>
+              <td class="py-4 px-4">
+                <span class="badge bg-amber-50 text-amber-700 border-amber-100"
+                  >Aliado</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
+                  >Activo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                Hace 5 horas
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    AM
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Dr. Alejandro Murillo</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 55021</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">
+                al.murillo{{ "@" }}km.com
+              </td>
+              <td class="py-4 px-4">
+                <span class="badge bg-blue-50 text-blue-700 border-blue-100"
+                  >Médico</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
+                  >Activo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                10 Oct 2023
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    AG
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Ana María González</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 10023</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">
+                ana.gonz{{ "@" }}email.com
+              </td>
+              <td class="py-4 px-4">
+                <span
+                  class="badge bg-emerald-50 text-emerald-700 border-emerald-100"
+                  >Paciente</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
+                  >Activo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                09 Oct 2023
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    SV
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Lic. Sofia Vergara</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 66012</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">s.vergara{{ "@" }}km.com</td>
+              <td class="py-4 px-4">
+                <span class="badge bg-blue-50 text-blue-700 border-blue-100"
+                  >Médico</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-slate-100 text-slate-500 border-slate-200 flex justify-center w-20 mx-auto"
+                  >Inactivo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                28 Sep 2023
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr class="group hover:bg-white/60 transition-colors">
+              <td class="py-4 pl-6 font-medium text-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs"
+                  >
+                    CR
+                  </div>
+                  <div class="flex flex-col">
+                    <span>Carlos Ruiz</span>
+                    <span class="text-[10px] text-slate-400 font-normal"
+                      >ID: 10045</span
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 text-slate-500">c.ruiz{{ "@" }}email.com</td>
+              <td class="py-4 px-4">
+                <span
+                  class="badge bg-emerald-50 text-emerald-700 border-emerald-100"
+                  >Paciente</span
+                >
+              </td>
+              <td class="py-4 px-4 text-center">
+                <span
+                  class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
+                  >Activo</span
+                >
+              </td>
+              <td class="py-4 px-4 text-slate-500 text-right font-mono text-xs">
+                25 Sep 2023
+              </td>
+              <td class="py-4 pr-6 text-right">
+                <div
+                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+                >
+                  <button
+                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+                  >
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                  </button>
+                  <button
+                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >delete</span
+                    >
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+      >
+        <span>Mostrando 6 de 170 usuarios</span>
+        <div class="flex gap-2">
+          <button
+            class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+          >
+            Anterior
+          </button>
+          <button
+            class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+    <div class="glass-panel p-6 h-full">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-bold text-slate-800 text-lg">Roles del Sistema</h3>
+        <button
+          class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-primary hover:text-white transition-colors text-slate-600"
+        >
+          <span class="material-symbols-outlined text-lg">add</span>
+        </button>
+      </div>
+      <div class="space-y-3">
+        <div
+          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span
+              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+              >Pacientes</span
+            >
+          </div>
+          <span
+            class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full"
+            >124</span
+          >
+        </div>
+        <div
+          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+            <span
+              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+              >Médicos</span
+            >
+          </div>
+          <span
+            class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
+            >30</span
+          >
+        </div>
+        <div
+          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+            <span
+              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+              >Aliados</span
+            >
+          </div>
+          <span
+            class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full"
+            >12</span
+          >
+        </div>
+        <div
+          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+            <span
+              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+              >Administración</span
+            >
+          </div>
+          <span
+            class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full"
+            >4</span
+          >
+        </div>
+      </div>
+      <div class="mt-8 pt-6 border-t border-slate-200/50">
+        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+          <h4 class="text-primary font-bold text-sm mb-1">
+            Resumen de Usuarios
+          </h4>
+          <p class="text-slate-500 text-xs mb-3">
+            Estadísticas actuales de la plataforma
+          </p>
+          <div class="flex justify-between items-end">
+            <div>
+              <span class="text-2xl font-bold text-slate-800">170</span>
+              <span class="text-xs text-slate-500 ml-1">Total</span>
+            </div>
+            <div class="text-right">
+              <span class="text-green-600 font-bold text-sm">164 Activos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

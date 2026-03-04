@@ -1,0 +1,32 @@
+<label
+  class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2"
+>
+  {{ label }}
+
+  <div class="relative">
+    @if (icon) {
+      <div
+        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+      >
+        <span class="material-icons-round text-slate-400">
+          {{ icon }}
+        </span>
+      </div>
+    }
+
+    <input
+      type="number"
+      [value]="value ?? ''"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [min]="min"
+      [max]="max"
+      [step]="step"
+      (input)="handleInput($event)"
+      (blur)="onTouched()"
+      class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary p-4"
+      [class.pl-10]="icon"
+      [class.border-red-500]="showError"
+    />
+  </div>
+</label>
