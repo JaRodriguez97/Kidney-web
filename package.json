@@ -10,6 +10,7 @@
     "dev": "ng s -o",
     "start": "ng serve",
     "build": "ng build",
+    "prerender": "ng run kinexa-web:prerender",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Kinexa-Web": "node dist/kinexa-web/server/server.mjs"
