@@ -78,7 +78,7 @@ export class RegisterPatientComponent {
   get f() {
     return this.form.controls;
   }
-  
+
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

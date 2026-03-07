@@ -18,6 +18,11 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'login',
+    redirectTo: 'login/patient',
+    pathMatch: 'full',
+  },
+  {
     path: 'login/:context',
     loadComponent: () =>
       import('./features/auth/pages/login/login.component').then(

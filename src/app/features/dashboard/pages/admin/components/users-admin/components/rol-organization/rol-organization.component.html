@@ -1,0 +1,152 @@
+<form
+  [formGroup]="organizationForm"
+  class="grid grid-cols-1 md:grid-cols-2 gap-10"
+>
+  <section class="space-y-6">
+    <h4
+      class="text-primary font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
+    >
+      <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+      DATOS OBLIGATORIOS
+    </h4>
+    <div class="space-y-4">
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >RAZÓN SOCIAL / NOMBRE DE ENTIDAD*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="Ej. Laboratorio Clínico Central"
+          type="text"
+          formControlName="legal_name"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >NIT / IDENTIFICACIÓN TRIBUTARIA*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="900.000.000-0"
+          type="text"
+          formControlName="document_number"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >CORREO CORPORATIVO*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="contacto@entidad.com"
+          type="email"
+          formControlName="email"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >TIPO DE ENTIDAD*</label
+        >
+        <select
+          class="glass-input-mandatory w-full appearance-none"
+          formControlName="entity_type"
+        >
+          <option value="" disabled selected>Seleccione tipo</option>
+          <option value="IPS">IPS</option>
+          <option value="Laboratorio">Laboratorio</option>
+          <option value="Centro de Especialistas">
+            Centro de Especialistas
+          </option>
+          <option value="Farmacia">Farmacia</option>
+          <option value="Centro de Diagnóstico">Centro de Diagnóstico</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >CONTRASEÑA PROVISIONAL*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="••••••••"
+          type="password"
+          formControlName="password_hash"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="space-y-6">
+    <h4
+      class="text-slate-400 font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
+    >
+      <span class="w-1.5 h-6 bg-slate-200 rounded-full"></span>
+      DATOS OPCIONALES
+    </h4>
+    <div class="space-y-4">
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >TELÉFONO CORPORATIVO</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="+57 (301) 600 00 00"
+          type="number"
+          formControlName="phone"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >DIRECCIÓN DE SEDE PRINCIPAL</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="Calle 00 # 00 - 00"
+          type="text"
+          formControlName="address"
+        />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1"
+          >BARRIO</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="Barrio"
+          type="text"
+          formControlName="neighborhood"
+        />
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1"
+          >COMUNA</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="Zona"
+          type="number"
+          formControlName="commune"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >PÁGINA WEB</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="www.entidad.com"
+          type="url"
+          formControlName="website_url"
+        />
+      </div>
+    </div>
+  </section>
+</form>

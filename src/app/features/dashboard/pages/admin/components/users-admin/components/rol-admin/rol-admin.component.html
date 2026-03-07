@@ -1,0 +1,143 @@
+<form
+  [formGroup]="adminForm"
+  (ngSubmit)="onSubmit()"
+  class="grid grid-cols-1 md:grid-cols-2 gap-10"
+>
+  <section class="space-y-6">
+    <h4
+      class="text-primary font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
+    >
+      <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+      DATOS OBLIGATORIOS
+    </h4>
+    <div class="space-y-4">
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >PRIMER NOMBRE*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="Ej. Juan"
+          type="text"
+          formControlName="firstName"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >PRIMER APELLIDO*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="Ej. Pérez"
+          type="text"
+          formControlName="lastName"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >CORREO ELECTRÓNICO*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="usuario@kidneymed.com"
+          type="email"
+          formControlName="email"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+          >CONTRASEÑA TEMPORAL*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="••••••••"
+          type="password"
+          formControlName="password"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >CÉDULA DE CIUDADANÍA*</label
+        >
+        <input
+          class="glass-input-mandatory w-full"
+          placeholder="Número de identificación"
+          type="number"
+          formControlName="documentNumber"
+        />
+      </div>
+    </div>
+  </section>
+  <section class="space-y-6">
+    <h4
+      class="text-slate-400 font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
+    >
+      <span class="w-1.5 h-6 bg-slate-200 rounded-full"></span>
+      DATOS OPCIONALES
+    </h4>
+    <div class="space-y-4">
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >SEGUNDO NOMBRE</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="Ej. Antonio"
+          type="text"
+          formControlName="middleName"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >SEGUNDO APELLIDO</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="Ej. Casallas"
+          type="text"
+          formControlName="secondLastName"
+        />
+      </div>
+      <div>
+        <label
+          class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+          >TELÉFONO CELULAR</label
+        >
+        <input
+          class="glass-input-optional w-full"
+          placeholder="+57 300 123 45 67"
+          type="text"
+          formControlName="phone"
+        />
+      </div>
+      <!-- <div class="pt-2">
+        <label class="flex items-start gap-3 cursor-pointer group">
+          <div class="mt-0.5">
+            <input
+              class="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20 transition-all cursor-pointer"
+              type="checkbox"
+            />
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-slate-400 uppercase mb-0.5"
+              >NIVEL DE ACCESO</span
+            >
+            <span
+              class="text-sm font-semibold text-slate-600 group-hover:text-primary transition-colors leading-tight"
+            >
+              Permisos de Super Administrador (Gestionar y editar todo el
+              contenido)
+            </span>
+          </div>
+        </label>
+      </div> -->
+    </div>
+  </section>
+</form>

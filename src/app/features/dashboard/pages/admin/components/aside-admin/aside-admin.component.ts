@@ -1,6 +1,8 @@
-import { Router } from '@angular/router';
-import { Component, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { PlatformService } from '@app/shared/services/platform.service';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-aside-admin',
@@ -9,11 +11,12 @@ import { isPlatformBrowser } from '@angular/common';
   templateUrl: './aside-admin.component.html',
   styleUrl: './aside-admin.component.scss',
 })
-export class AsideAdminComponent implements OnInit {
+export class AsideAdminComponent implements OnInit, OnDestroy {
   activeIndex: number = 0;
   private router = inject(Router);
+  private platformService = inject(PlatformService);
   private readonly STORAGE_KEY = 'adminSidebarActive';
-  isBrowser = false;
+  private destroy$ = new Subject<void>();
 
   private routes = [
     'home',
@@ -25,28 +28,49 @@ export class AsideAdminComponent implements OnInit {
     'results',
     'settings',
     'support',
-    '',
   ];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    // Detecta si estamos corriendo en navegador
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+  constructor() {}
 
   ngOnInit(): void {
-    if (this.isBrowser) {
-      const savedIndex = localStorage.getItem(this.STORAGE_KEY);
-      if (savedIndex !== null) {
-        this.activeIndex = parseInt(savedIndex, 10);
-      }
+    this.setActiveByUrl();
+
+    // Escuchar cambios de ruta y actualizar el índice activo
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => {
+        this.setActiveByUrl();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setActiveByUrl(): void {
+    const urlSegments = this.router.url.split('/');
+    const lastSegment = urlSegments[urlSegments.length - 1];
+
+    const index = this.routes.indexOf(lastSegment);
+    if (index !== -1) {
+      this.activeIndex = index;
+      this.platformService.setLocalStorageItem(
+        this.STORAGE_KEY,
+        index.toString(),
+      );
     }
   }
 
   setActive(index: number): void {
     this.activeIndex = index;
-    if (this.isBrowser) {
-      localStorage.setItem(this.STORAGE_KEY, index.toString());
-    }
+    this.platformService.setLocalStorageItem(
+      this.STORAGE_KEY,
+      index.toString(),
+    );
     const route = this.routes[index];
     if (route !== '' || index === 0) {
       this.router.navigate(['dashboard/admin/' + route]);

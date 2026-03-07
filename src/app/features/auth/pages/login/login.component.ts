@@ -45,6 +45,8 @@ export class LoginComponent {
     password: ['', [Validators.required]],
   });
 
+  public loading = false;
+
   // convenience getter for patient context
   public get isPatient(): boolean {
     return this.ctx === AuthContext.patient;
@@ -78,60 +80,55 @@ export class LoginComponent {
       return;
     }
 
+    this.loading = true;
     const payload = this.form.value;
     this.authService.login(payload).subscribe({
       next: (res: any) => {
-        console.log("🚀 ~ LoginComponent ~ submit ~ res:", res)
-        // Expecting { accessToken: string, user: User } from API
+        // ...existing code...
         if (res && res.accessToken && res.user) {
           this.authService.setSession({
             accessToken: res.accessToken,
             user: res.user,
           });
-          // this.redirectByRole(res.user);
-          this.redirectByRole(res);
+          this.redirectByRole(res.user);
         } else if (res && res.user) {
-          // fallback
           this.authService.setSession({
             accessToken: res.token || '',
             user: res.user,
           });
-          // this.redirectByRole(res.user);
-          this.redirectByRole(res);
+          this.redirectByRole(res.user);
         } else {
-          // If API returns user directly
           const user: User = res as User;
           this.authService.setSession({ accessToken: res.token || '', user });
-          // this.redirectByRole(user);
-          this.redirectByRole(res);
+          this.redirectByRole(user);
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Login error', err);
         // TODO: show UI feedback
+        this.loading = false;
       },
     });
   }
 
   private redirectByRole(user: User) {
-    if (!user?.role) {
+    console.log('🚀 ~ LoginComponent ~ redirectByRole ~ user:', user);
+    if (!user || !user.roles || !user.roles.length) {
       this.router.navigate(['/']);
       return;
     }
 
-    switch (user.role) {
-      case 'ADMIN':
-        this.router.navigate(['/dashboard/admin']);
-        break;
-      case 'PROVIDER':
-        // this.router.navigate(['/dashboard/medical']);
-        this.router.navigate(['/dashboard/admin']);
-        break;
-      case 'PATIENT':
-      default:
-        // this.router.navigate(['/dashboard/patient']);
-        this.router.navigate(['/dashboard/admin']);
-        break;
+    const role = user.roles?.[0];
+
+    if (role === 'ADMIN') {
+      this.router.navigate(['/dashboard/admin']);
+    } else if (role === 'PROVIDER') {
+      this.router.navigate(['/dashboard/medical']);
+    } else if (role === 'PATIENT') {
+      this.router.navigate(['/dashboard/patient']);
+    } else {
+      this.router.navigate(['/']);
     }
   }
 }

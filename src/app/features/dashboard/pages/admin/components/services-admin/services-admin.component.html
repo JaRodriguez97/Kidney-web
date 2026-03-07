@@ -29,40 +29,32 @@
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
     <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
       <div
-        class="glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center"
+        class="relative glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
       >
-        <div class="relative w-full sm:w-72">
-          <span
-            class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
-            >search</span
-          >
-          <input
-            class="glass-input w-full pl-10"
-            placeholder="Buscar servicio por nombre..."
-            type="text"
-          />
-        </div>
-        <div class="flex gap-3 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-          <select class="glass-input cursor-pointer bg-white/40">
-            <option>Todas las Especializaciones</option>
-            <option>Medicina General</option>
-            <option>Laboratorio Clínico</option>
-            <option>Cardiología</option>
-            <option>Nutrición</option>
-            <option>Pediatría</option>
-          </select>
-          <select class="glass-input cursor-pointer bg-white/40">
-            <option>Estado: Todos</option>
-            <option>Activos</option>
-            <option>Inactivos</option>
-          </select>
-          <button
-            class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
-          >
-            <span class="material-symbols-outlined text-sm">add</span>
-            Nuevo Servicio
-          </button>
-        </div>
+        <app-input-text
+          icon="search"
+          placeholder="Buscar servicio por nombre..."
+          label=""
+        ></app-input-text>
+        <select class="glass-input cursor-pointer bg-white/40">
+          <option>Especializaciones</option>
+          <option>Medicina General</option>
+          <option>Laboratorio Clínico</option>
+          <option>Cardiología</option>
+          <option>Nutrición</option>
+          <option>Pediatría</option>
+        </select>
+        <select class="glass-input cursor-pointer bg-white/40">
+          <option>Estado: Todos</option>
+          <option>Activos</option>
+          <option>Inactivos</option>
+        </select>
+        <button
+          class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          Nuevo Servicio
+        </button>
       </div>
       <div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
         <div class="overflow-x-auto">
@@ -71,197 +63,118 @@
               <tr
                 class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
               >
-                <th class="py-4 pl-6 font-semibold">Nombre del Servicio</th>
-                <th class="py-4 px-4 font-semibold">Código</th>
-                <th class="py-4 px-4 font-semibold">Especialización</th>
-                <th class="py-4 px-4 font-semibold">Precio</th>
-                <th class="py-4 px-4 font-semibold text-center">Estado</th>
+                <th
+                  (click)="sort('name')"
+                  class="cursor-pointer py-4 pl-6 font-semibold"
+                >
+                  Nombre del Servicio
+                  <span
+                    *ngIf="sortColumn === 'name'"
+                    class="material-symbols-outlined text-[14px] align-middle"
+                  >
+                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+                  </span>
+                </th>
+                <th
+                  (click)="sort('code')"
+                  class="cursor-pointer py-4 px-4 font-semibold"
+                >
+                  Código
+                  <span
+                    *ngIf="sortColumn === 'code'"
+                    class="material-symbols-outlined text-[14px] align-middle"
+                  >
+                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+                  </span>
+                </th>
+                <th
+                  (click)="sort('specialization')"
+                  class="cursor-pointer py-4 px-4 font-semibold"
+                >
+                  Especialización
+                  <span
+                    *ngIf="sortColumn === 'specialization'"
+                    class="material-symbols-outlined text-[14px] align-middle"
+                  >
+                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+                  </span>
+                </th>
+                <th
+                  (click)="sort('price')"
+                  class="cursor-pointer py-4 px-4 font-semibold"
+                >
+                  Precio
+                  <span
+                    *ngIf="sortColumn === 'price'"
+                    class="material-symbols-outlined text-[14px] align-middle"
+                  >
+                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+                  </span>
+                </th>
+                <th
+                  (click)="sort('status')"
+                  class="cursor-pointer py-4 px-4 font-semibold text-center"
+                >
+                  Estado
+                  <span
+                    *ngIf="sortColumn === 'status'"
+                    class="material-symbols-outlined text-[14px] align-middle"
+                  >
+                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+                  </span>
+                </th>
                 <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
               </tr>
             </thead>
             <tbody class="text-sm divide-y divide-slate-100">
-              <tr class="group hover:bg-white/60 transition-colors">
+              <tr
+                *ngFor="let svc of services"
+                class="group hover:bg-white/60 transition-colors"
+              >
                 <td class="py-4 pl-6 font-medium text-slate-800">
                   <div class="flex flex-col">
-                    <span>Consulta Médica General</span>
-                    <span class="text-[10px] text-slate-400 font-normal"
-                      >Valoración integral</span
+                    <span>{{ svc.name }}</span>
+                    <span
+                      *ngIf="svc.subtitle"
+                      class="text-[10px] text-slate-400 font-normal"
                     >
+                      {{ svc.subtitle }}
+                    </span>
                   </div>
                 </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">GEN-001</td>
-                <td class="py-4 px-4">
-                  <span class="badge bg-blue-50 text-blue-700 border-blue-100"
-                    >Medicina General</span
-                  >
+                <td class="py-4 px-4 text-slate-500 font-mono">
+                  {{ svc.code }}
                 </td>
-                <td class="py-4 px-4 font-bold text-slate-700">$180,000</td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
-                    >Activo</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div
-                    class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button
-                      class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >edit</span
-                      >
-                    </button>
-                    <button
-                      class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >delete</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 font-medium text-slate-800">
-                  <div class="flex flex-col">
-                    <span>Panel Metabólico Completo</span>
-                    <span class="text-[10px] text-slate-400 font-normal"
-                      >Análisis sanguíneo</span
-                    >
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">LAB-102</td>
                 <td class="py-4 px-4">
                   <span
-                    class="badge bg-amber-50 text-amber-700 border-amber-100"
-                    >Lab. Clínico</span
+                    class="badge"
+                    [ngClass]="{
+                      'bg-blue-50 text-blue-700 border-blue-100':
+                        svc.specialization === 'Medicina General',
+                      'bg-amber-50 text-amber-700 border-amber-100':
+                        svc.specialization.includes('Lab'),
+                      'bg-secondary/10 text-secondary border-secondary/20':
+                        svc.specialization === 'Cardiología',
+                    }"
                   >
+                    {{ svc.specialization }}
+                  </span>
                 </td>
-                <td class="py-4 px-4 font-bold text-slate-700">$150,000</td>
+                <td class="py-4 px-4 font-bold text-slate-700">
+                  ${{ svc.price | number: "1.0-0" }}
+                </td>
                 <td class="py-4 px-4 text-center">
                   <span
-                    class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
-                    >Activo</span
+                    class="badge flex justify-center w-20 mx-auto"
+                    [ngClass]="{
+                      'bg-green-50 text-green-700 border-green-100':
+                        svc.status === 'Activo',
+                      'bg-slate-100 text-slate-500 border-slate-200':
+                        svc.status === 'Inactivo',
+                    }"
                   >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div
-                    class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button
-                      class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >edit</span
-                      >
-                    </button>
-                    <button
-                      class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >delete</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 font-medium text-slate-800">
-                  Perfil Lipídico Avanzado
-                </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">LAB-205</td>
-                <td class="py-4 px-4">
-                  <span
-                    class="badge bg-amber-50 text-amber-700 border-amber-100"
-                    >Lab. Clínico</span
-                  >
-                </td>
-                <td class="py-4 px-4 font-bold text-slate-700">$95,000</td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
-                    >Activo</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div
-                    class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button
-                      class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >edit</span
-                      >
-                    </button>
-                    <button
-                      class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >delete</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 font-medium text-slate-800">
-                  Examen de Hemoglobina Glicosilada
-                </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">LAB-310</td>
-                <td class="py-4 px-4">
-                  <span
-                    class="badge bg-amber-50 text-amber-700 border-amber-100"
-                    >Lab. Clínico</span
-                  >
-                </td>
-                <td class="py-4 px-4 font-bold text-slate-700">$45,000</td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-slate-100 text-slate-500 border-slate-200 flex justify-center w-20 mx-auto"
-                    >Inactivo</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div
-                    class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button
-                      class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >edit</span
-                      >
-                    </button>
-                    <button
-                      class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >delete</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 font-medium text-slate-800">
-                  Electrocardiograma de Reposo
-                </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">CAR-110</td>
-                <td class="py-4 px-4">
-                  <span
-                    class="badge bg-secondary/10 text-secondary border-secondary/20"
-                    >Cardiología</span
-                  >
-                </td>
-                <td class="py-4 px-4 font-bold text-slate-700">$90,000</td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-green-50 text-green-700 border-green-100 flex justify-center w-20 mx-auto"
-                    >Activo</span
-                  >
+                    {{ svc.status }}
+                  </span>
                 </td>
                 <td class="py-4 pr-6 text-right">
                   <div
