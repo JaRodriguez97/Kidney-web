@@ -1,8 +1,5 @@
 ```
 └── 📁Kinexa-Web
-    └── 📁.qodo
-        └── 📁agents
-        └── 📁workflows
     └── 📁src
         └── 📁app
             └── 📁core
@@ -29,6 +26,7 @@
                 └── 📁user
                     ├── user-header.entity.ts
                     ├── user-role.type.ts
+                    ├── user-update.entity.ts
                     ├── user.entity.ts
             └── 📁features
                 └── 📁auth
