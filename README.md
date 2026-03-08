@@ -79,7 +79,7 @@ Este proyecto es posible gracias a un equipo apasionado por la salud y la tecnol
 ### Instalación
 1. Clona el repositorio:
 	 ```bash
-	 git clone <url-del-repositorio>
+	 git clone <https://github.com/JaRodriguez97/Kidney-web.git>
 	 cd Kinexa-Web
 	 ```
 2. Instala las dependencias:
