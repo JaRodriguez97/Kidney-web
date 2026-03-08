@@ -1,8 +1,10 @@
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/usuario/repositorio/ci.yml?label=build)
-![Coverage](https://img.shields.io/coveralls/github/usuario/repositorio?label=coverage)
+
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-25%25-brightgreen)
 ![Node Version](https://img.shields.io/badge/node-20.20.0-brightgreen)
-![Netlify](https://img.shields.io/netlify/ID_DEL_SITIO?label=netlify)
+![Angular](https://img.shields.io/badge/angular-17.3.x-red)
+![Netlify](https://img.shields.io/badge/netlify-deployed-brightgreen)
 
 # 🌟 Kinexa-Web: Revolucionando el Cuidado Renal
 
@@ -54,13 +56,13 @@ Sí, la privacidad y seguridad son nuestra prioridad.
 
 ---
 
-## 👩‍💻 Créditos y agradecimientos
+<!-- ## 👩‍💻 Créditos y agradecimientos
 Este proyecto es posible gracias a un equipo apasionado por la salud y la tecnología. Agradecemos a todos los profesionales, pacientes y colaboradores que han confiado en Kinexa-Web.
 
 ---
 
 ## 📬 ¿Quieres saber más o colaborar?
-¡Nos encantaría escucharte! Escríbenos a [contacto@kinexa.com](mailto:contacto@kinexa.com) o visita nuestro sitio web para más información.
+¡Nos encantaría escucharte! Escríbenos a [contacto@kinexa.com](mailto:contacto@kinexa.com) o visita nuestro sitio web para más información. -->
 
 ---
 
@@ -93,7 +95,6 @@ Este proyecto es posible gracias a un equipo apasionado por la salud y la tecnol
 	ng serve
 	```
 	Accede a [http://localhost:4200](http://localhost:4200)
-
 - **Build producción:**
 	```bash
 	npm run build
@@ -203,6 +204,7 @@ El backend Express puede exponer endpoints REST adicionales. Ejemplo de estructu
 - Si existen diagramas de flujo, ERD o wireframes, inclúyelos en la carpeta `/docs` o enlázalos aquí.
 - Mantén la documentación técnica actualizada para facilitar el onboarding y la escalabilidad del proyecto.
 
+
 ### Buenas prácticas y recomendaciones
 - Usa la versión de Node indicada en `.nvmrc` para evitar incompatibilidades.
 - Mantén el código formateado según `.editorconfig`.
@@ -213,12 +215,13 @@ El backend Express puede exponer endpoints REST adicionales. Ejemplo de estructu
 - Para despliegue en Netlify, revisa `netlify.toml`.
 
 ### Despliegue en producción
-1. Realiza el build SSR:
-	 ```bash
-	 npm run build && npm run serve:ssr:Kinexa-Web
-	 ```
+1. Build SSR:
+	```bash
+	npm run build && npm run serve:ssr:Kinexa-Web
+	```
 2. Configura tu servidor (Netlify, Vercel, VPS, etc.).
 3. Define la variable de entorno `PORT` si necesitas cambiar el puerto por defecto (4000).
+4. Revisa logs y monitorea el rendimiento tras el despliegue.
 
 ---
 
