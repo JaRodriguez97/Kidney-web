@@ -1,0 +1,40 @@
+.glass-panel {
+	@apply bg-white/60 backdrop-blur-md border border-white/40 shadow-xl rounded-3xl;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-[#1c384e] hover:bg-white/50 transition-all font-semibold cursor-pointer;
+}
+.sidebar-item .material-symbols-outlined {
+	@apply text-[#1c384e] font-bold;
+}
+.sidebar-item.active {
+	@apply bg-primary_p text-white shadow-lg shadow-blue-500/20;
+}
+.sidebar-item.active .material-symbols-outlined {
+	@apply text-white;
+}
+.specialty-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/40 p-8 rounded-3xl flex flex-col items-center text-center cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-white/80;
+}
+.specialty-card.selected {
+	@apply border-primary_p border-2 bg-white/90 shadow-lg ring-4 ring-sky-500/10;
+}
+.step-circle {
+	@apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all;
+}
+.btn-ghost {
+	@apply px-8 py-3 rounded-xl font-bold text-slate-500 border border-slate-200 hover:bg-white/50 transition-all;
+}
+.btn-solid {
+	@apply px-8 py-3 rounded-xl font-bold text-white bg-primary_p hover:bg-sky-700 transition-all shadow-lg shadow-sky-500/30;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.3);
+	border-radius: 20px;
+}

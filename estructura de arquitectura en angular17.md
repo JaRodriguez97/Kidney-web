@@ -146,21 +146,94 @@
                                     ├── users-admin.component.html
                                     ├── users-admin.component.scss
                                     ├── users-admin.component.ts
-                        └── 📁medical
-                            └── 📁medical-dashboard
-                                ├── medical-dashboard.component.html
-                                ├── medical-dashboard.component.scss
-                                ├── medical-dashboard.component.ts
                         └── 📁organization
+                            └── 📁components
                             └── 📁organization-dashboard
                                 ├── organization-dashboard.component.html
                                 ├── organization-dashboard.component.scss
                                 ├── organization-dashboard.component.ts
                         └── 📁patient
+                            └── 📁components
+                                └── 📁appointment-patient
+                                    ├── appointment-patient.component.html
+                                    ├── appointment-patient.component.scss
+                                    ├── appointment-patient.component.ts
+                                └── 📁aside-patient
+                                    ├── aside-patient.component.html
+                                    ├── aside-patient.component.scss
+                                    ├── aside-patient.component.ts
+                                └── 📁clinical-record-patient
+                                    ├── clinical-record-patient.component.html
+                                    ├── clinical-record-patient.component.scss
+                                    ├── clinical-record-patient.component.ts
+                                └── 📁documents-patient
+                                    ├── documents-patient.component.html
+                                    ├── documents-patient.component.scss
+                                    ├── documents-patient.component.ts
+                                └── 📁home-patient
+                                    ├── home-patient.component.html
+                                    ├── home-patient.component.scss
+                                    ├── home-patient.component.ts
+                                └── 📁profile-patient
+                                    ├── profile-patient.component.html
+                                    ├── profile-patient.component.scss
+                                    ├── profile-patient.component.ts
+                                └── 📁results-patient
+                                    ├── results-patient.component.html
+                                    ├── results-patient.component.scss
+                                    ├── results-patient.component.ts
+                                └── 📁support-patient
+                                    ├── support-patient.component.html
+                                    ├── support-patient.component.scss
+                                    ├── support-patient.component.ts
+                                └── 📁top-patient
+                                    ├── top-patient.component.html
+                                    ├── top-patient.component.scss
+                                    ├── top-patient.component.ts
                             └── 📁patient-dashboard
                                 ├── patient-dashboard.component.html
                                 ├── patient-dashboard.component.scss
                                 ├── patient-dashboard.component.ts
+                                ├── patient-dashboard.routes.ts
+                        └── 📁provider
+                            └── 📁components
+                                └── 📁appointment-provider
+                                    ├── appointment-provider.component.html
+                                    ├── appointment-provider.component.scss
+                                    ├── appointment-provider.component.ts
+                                └── 📁aside-provider
+                                    ├── aside-provider.component.html
+                                    ├── aside-provider.component.scss
+                                    ├── aside-provider.component.ts
+                                └── 📁clinical-record-provider
+                                    ├── clinical-record-provider.component.html
+                                    ├── clinical-record-provider.component.scss
+                                    ├── clinical-record-provider.component.ts
+                                └── 📁home-provider
+                                    ├── home-provider.component.html
+                                    ├── home-provider.component.scss
+                                    ├── home-provider.component.ts
+                                └── 📁labs-provider
+                                    ├── labs-provider.component.html
+                                    ├── labs-provider.component.scss
+                                    ├── labs-provider.component.ts
+                                └── 📁patient-provider
+                                    ├── patient-provider.component.html
+                                    ├── patient-provider.component.scss
+                                    ├── patient-provider.component.ts
+                                └── 📁support-provider
+                                    ├── support-provider.component.html
+                                    ├── support-provider.component.scss
+                                    ├── support-provider.component.ts
+                                └── 📁top-provider
+                                    ├── top-provider.component.html
+                                    ├── top-provider.component.scss
+                                    ├── top-provider.component.ts
+                            └── 📁provider-dashboard
+                                ├── provider-dashboard.component.html
+                                ├── provider-dashboard.component.scss
+                                ├── provider-dashboard.component.ts
+                                ├── provider-dashboard.routes.ts
                     └── 📁services
                     └── 📁state
                     └── 📁use-cases
@@ -279,6 +352,7 @@
                 └── 📁pipes
                 └── 📁services
                     ├── platform.service.ts
+                    ├── sidebar.service.ts
                 └── 📁utils
             ├── app.component.html
             ├── app.component.scss
@@ -309,6 +383,7 @@
     ├── .gitignore
     ├── .nvmrc
     ├── angular.json
+    ├── documento-categorias-kinexa.md
     ├── estructura de arquitectura en angular17.md
     ├── netlify.toml
     ├── package-lock.json

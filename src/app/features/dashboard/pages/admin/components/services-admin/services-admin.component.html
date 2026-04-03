@@ -1,11 +1,11 @@
 <main
-  class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
 >
-  <!-- <header class="flex justify-between items-center mb-8 glass-panel px-6 py-4">
+	<!-- <header class="flex justify-between items-center mb-8 glass-panel px-6 py-4">
     <div>
       <h2 class="text-2xl font-bold text-primary">Gestión de Catálogo</h2>
       <p class="text-slate-500 text-sm">
-        Administración de servicios médicos y especializaciones
+        Administración de servicios médicos y tipos de proveedor
       </p>
     </div>
     <div class="flex items-center gap-4">
@@ -26,437 +26,207 @@
       </div>
     </div>
   </header> -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
-    <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
-      <div
-        class="relative glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
-      >
-        <app-input-text
-          icon="search"
-          placeholder="Buscar servicio por nombre..."
-          label=""
-        ></app-input-text>
-        <select class="glass-input cursor-pointer bg-white/40">
-          <option>Especializaciones</option>
-          <option>Medicina General</option>
-          <option>Laboratorio Clínico</option>
-          <option>Cardiología</option>
-          <option>Nutrición</option>
-          <option>Pediatría</option>
-        </select>
-        <select class="glass-input cursor-pointer bg-white/40">
-          <option>Estado: Todos</option>
-          <option>Activos</option>
-          <option>Inactivos</option>
-        </select>
-        <button
-          class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
-        >
-          <span class="material-symbols-outlined text-sm">add</span>
-          Nuevo Servicio
-        </button>
-      </div>
-      <div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr
-                class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
-              >
-                <th
-                  (click)="sort('name')"
-                  class="cursor-pointer py-4 pl-6 font-semibold"
-                >
-                  Nombre del Servicio
-                  <span
-                    *ngIf="sortColumn === 'name'"
-                    class="material-symbols-outlined text-[14px] align-middle"
-                  >
-                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-                  </span>
-                </th>
-                <th
-                  (click)="sort('code')"
-                  class="cursor-pointer py-4 px-4 font-semibold"
-                >
-                  Código
-                  <span
-                    *ngIf="sortColumn === 'code'"
-                    class="material-symbols-outlined text-[14px] align-middle"
-                  >
-                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-                  </span>
-                </th>
-                <th
-                  (click)="sort('specialization')"
-                  class="cursor-pointer py-4 px-4 font-semibold"
-                >
-                  Especialización
-                  <span
-                    *ngIf="sortColumn === 'specialization'"
-                    class="material-symbols-outlined text-[14px] align-middle"
-                  >
-                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-                  </span>
-                </th>
-                <th
-                  (click)="sort('price')"
-                  class="cursor-pointer py-4 px-4 font-semibold"
-                >
-                  Precio
-                  <span
-                    *ngIf="sortColumn === 'price'"
-                    class="material-symbols-outlined text-[14px] align-middle"
-                  >
-                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-                  </span>
-                </th>
-                <th
-                  (click)="sort('status')"
-                  class="cursor-pointer py-4 px-4 font-semibold text-center"
-                >
-                  Estado
-                  <span
-                    *ngIf="sortColumn === 'status'"
-                    class="material-symbols-outlined text-[14px] align-middle"
-                  >
-                    {{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-                  </span>
-                </th>
-                <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm divide-y divide-slate-100">
-              <tr
-                *ngFor="let svc of services"
-                class="group hover:bg-white/60 transition-colors"
-              >
-                <td class="py-4 pl-6 font-medium text-slate-800">
-                  <div class="flex flex-col">
-                    <span>{{ svc.name }}</span>
-                    <span
-                      *ngIf="svc.subtitle"
-                      class="text-[10px] text-slate-400 font-normal"
-                    >
-                      {{ svc.subtitle }}
-                    </span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-slate-500 font-mono">
-                  {{ svc.code }}
-                </td>
-                <td class="py-4 px-4">
-                  <span
-                    class="badge"
-                    [ngClass]="{
-                      'bg-blue-50 text-blue-700 border-blue-100':
-                        svc.specialization === 'Medicina General',
-                      'bg-amber-50 text-amber-700 border-amber-100':
-                        svc.specialization.includes('Lab'),
-                      'bg-secondary/10 text-secondary border-secondary/20':
-                        svc.specialization === 'Cardiología',
-                    }"
-                  >
-                    {{ svc.specialization }}
-                  </span>
-                </td>
-                <td class="py-4 px-4 font-bold text-slate-700">
-                  ${{ svc.price | number: "1.0-0" }}
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge flex justify-center w-20 mx-auto"
-                    [ngClass]="{
-                      'bg-green-50 text-green-700 border-green-100':
-                        svc.status === 'Activo',
-                      'bg-slate-100 text-slate-500 border-slate-200':
-                        svc.status === 'Inactivo',
-                    }"
-                  >
-                    {{ svc.status }}
-                  </span>
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div
-                    class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button
-                      class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >edit</span
-                      >
-                    </button>
-                    <button
-                      class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-                    >
-                      <span class="material-symbols-outlined text-lg"
-                        >delete</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div
-          class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
-        >
-          <span>Mostrando 5 de 42 servicios</span>
-          <div class="flex gap-2">
-            <button
-              class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
-            >
-              Anterior
-            </button>
-            <button
-              class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50"
-            >
-              Siguiente
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
-      <div class="glass-panel p-6 h-full">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="font-bold text-slate-800 text-lg">Especializaciones</h3>
-          <button
-            class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-primary hover:text-white transition-colors text-slate-600"
-          >
-            <span class="material-symbols-outlined text-lg">add</span>
-          </button>
-        </div>
-        <div class="space-y-3">
-          <div
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Medicina General</span
-              >
-            </div>
-            <span
-              class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
-              >15</span
-            >
-          </div>
-          <div
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Lab. Clínico</span
-              >
-            </div>
-            <span
-              class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full"
-              >24</span
-            >
-          </div>
-          <div
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-secondary"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Cardiología</span
-              >
-            </div>
-            <span
-              class="bg-red-100 text-secondary text-xs font-bold px-2 py-0.5 rounded-full"
-              >8</span
-            >
-          </div>
-          <div
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-purple-500"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Nutrición</span
-              >
-            </div>
-            <span
-              class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full"
-              >6</span
-            >
-          </div>
-          <div
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Pediatría</span
-              >
-            </div>
-            <span
-              class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full"
-              >10</span
-            >
-          </div>
-        </div>
-        <div class="mt-8 pt-6 border-t border-slate-200/50">
-          <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-            <h4 class="text-primary font-bold text-sm mb-1">
-              Resumen del Catálogo
-            </h4>
-            <p class="text-slate-500 text-xs mb-3">
-              Estadísticas actuales de servicios
-            </p>
-            <div class="flex justify-between items-end">
-              <div>
-                <span class="text-2xl font-bold text-slate-800">42</span>
-                <span class="text-xs text-slate-500 ml-1">Total</span>
-              </div>
-              <div class="text-right">
-                <span class="text-green-600 font-bold text-sm">38 Activos</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+		<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+			<div
+				class="relative glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
+			>
+				<app-input-text
+					icon="search"
+					placeholder="Buscar servicio por nombre..."
+					label=""
+				></app-input-text>
+				<select class="glass-input cursor-pointer bg-white/40">
+					<option>Tipos de Proveedor</option>
+					<option>Medicina General</option>
+					<option>Laboratorio Clínico</option>
+					<option>Cardiología</option>
+					<option>Nutrición</option>
+					<option>Pediatría</option>
+				</select>
+				<select class="glass-input cursor-pointer bg-white/40">
+					<option>Estado: Todos</option>
+					<option>Activos</option>
+					<option>Inactivos</option>
+				</select>
+				<button
+					class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+				>
+					<span class="material-symbols-outlined text-sm">add</span>
+					Nuevo Servicio
+				</button>
+			</div>
+			<div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
+				<div class="overflow-x-auto">
+					<table class="w-full text-left border-collapse">
+						<thead>
+							<tr
+								class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+							>
+								<th
+									(click)="sort('name')"
+									class="cursor-pointer py-4 pl-6 font-semibold"
+								>
+									Nombre del Servicio
+									<span
+										*ngIf="sortColumn === 'name'"
+										class="material-symbols-outlined text-[14px] align-middle"
+									>
+										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+									</span>
+								</th>
+								<th
+									(click)="sort('code')"
+									class="cursor-pointer py-4 px-4 font-semibold"
+								>
+									Código
+									<span
+										*ngIf="sortColumn === 'code'"
+										class="material-symbols-outlined text-[14px] align-middle"
+									>
+										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+									</span>
+								</th>
+								<th
+									(click)="sort('providerType')"
+									class="cursor-pointer py-4 px-4 font-semibold"
+								>
+									Tipo de Proveedor
+									<span
+										*ngIf="sortColumn === 'providerType'"
+										class="material-symbols-outlined text-[14px] align-middle"
+									>
+										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+									</span>
+								</th>
+								<th
+									(click)="sort('price')"
+									class="cursor-pointer py-4 px-4 font-semibold"
+								>
+									Precio
+									<span
+										*ngIf="sortColumn === 'price'"
+										class="material-symbols-outlined text-[14px] align-middle"
+									>
+										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+									</span>
+								</th>
+								<th
+									(click)="sort('status')"
+									class="cursor-pointer py-4 px-4 font-semibold text-center"
+								>
+									Estado
+									<span
+										*ngIf="sortColumn === 'status'"
+										class="material-symbols-outlined text-[14px] align-middle"
+									>
+										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+									</span>
+								</th>
+								<th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+							</tr>
+						</thead>
+						<tbody class="text-sm divide-y divide-slate-100">
+							<tr
+								*ngFor="let svc of services"
+								class="group hover:bg-white/60 transition-colors"
+							>
+								<td class="py-4 pl-6 font-medium text-slate-800">
+									<div class="flex flex-col">
+										<span>{{ svc.name }}</span>
+										<span
+											*ngIf="svc.subtitle"
+											class="text-[10px] text-slate-400 font-normal"
+										>
+											{{ svc.subtitle }}
+										</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-slate-500 font-mono">
+									{{ svc.code }}
+								</td>
+								<td class="py-4 px-4">
+									<span
+										class="badge"
+										[ngClass]="{
+											'bg-blue-50 text-blue-700 border-blue-100':
+												svc.serviceType === 'MEDICAL_CONSULTATION',
+											'bg-amber-50 text-amber-700 border-amber-100':
+												svc.serviceType.includes('LABORATORY'),
+											'bg-secondary/10 text-secondary border-secondary/20':
+												svc.serviceType === 'IMAGING',
+										}"
+									>
+										{{ svc.serviceType }}
+									</span>
+								</td>
+								<td class="py-4 px-4 font-bold text-slate-700">
+									${{ svc.price | number: "1.0-0" }}
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge flex justify-center w-20 mx-auto"
+										[ngClass]="{
+											'bg-green-50 text-green-700 border-green-100':
+												svc.status === 'Activo',
+											'bg-slate-100 text-slate-500 border-slate-200':
+												svc.status === 'Inactivo',
+										}"
+									>
+										{{ svc.status }}
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div
+										class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+									>
+										<!-- boton para activar modal de editar servicio -->
+										<button
+											class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+											(click)="modelEditHidden = false"
+										>
+											<span class="material-symbols-outlined text-lg"
+												>edit</span
+											>
+										</button>
+										<button
+											class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+										>
+											<span class="material-symbols-outlined text-lg"
+												>delete</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div
+					class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+				>
+					<span>Mostrando 5 de 42 servicios</span>
+					<div class="flex gap-2">
+						<button
+							class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+						>
+							Anterior
+						</button>
+						<button
+							class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50"
+						>
+							Siguiente
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+			<app-service-provider-types></app-service-provider-types>
+		</div>
+	</div>
 </main>
-<div class="fixed inset-0 z-50 hidden" id="editModal">
-  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
-  <div class="absolute inset-0 flex items-center justify-center p-4">
-    <div
-      class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
-    >
-      <div
-        class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"
-      >
-        <h3 class="text-lg font-bold text-primary">Editar Servicio</h3>
-        <button class="text-slate-400 hover:text-secondary">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <div class="p-6 overflow-y-auto space-y-5">
-        <div class="grid grid-cols-2 gap-5">
-          <div class="col-span-2">
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Nombre del Servicio</label
-            >
-            <input
-              class="w-full rounded-xl border-slate-200 text-sm focus:border-primary focus:ring-primary/20"
-              type="text"
-              value="Consulta Médica General"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Código Interno</label
-            >
-            <input
-              class="w-full rounded-xl border-slate-200 text-sm focus:border-primary focus:ring-primary/20 bg-slate-50"
-              type="text"
-              value="GEN-001"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Precio (COP)</label
-            >
-            <div class="relative">
-              <span class="absolute left-3 top-2 text-slate-500">$</span>
-              <input
-                class="w-full rounded-xl border-slate-200 text-sm pl-7 focus:border-primary focus:ring-primary/20"
-                type="text"
-                value="180,000"
-              />
-            </div>
-          </div>
-          <div class="col-span-2">
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Categorías / Especialización</label
-            >
-            <div
-              class="flex flex-wrap gap-2 p-3 border border-slate-200 rounded-xl bg-slate-50"
-            >
-              <span
-                class="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1"
-              >
-                Medicina General
-                <button class="hover:text-blue-900">×</button>
-              </span>
-              <button
-                class="text-xs text-primary font-semibold hover:underline px-2"
-              >
-                + Añadir
-              </button>
-            </div>
-          </div>
-          <div class="col-span-2">
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Descripción</label
-            >
-            <textarea
-              class="w-full rounded-xl border-slate-200 text-sm focus:border-primary focus:ring-primary/20"
-              rows="3"
-            >
-Consulta inicial para evaluación de estado de salud general y diagnóstico preliminar.</textarea
-            >
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1.5"
-              >Tiempo Estimado</label
-            >
-            <select
-              class="w-full rounded-xl border-slate-200 text-sm focus:border-primary focus:ring-primary/20"
-            >
-              <option>30 minutos</option>
-              <option selected="">45 minutos</option>
-              <option>60 minutos</option>
-            </select>
-          </div>
-          <div
-            class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100"
-          >
-            <span class="text-sm font-semibold text-slate-700"
-              >Estado del Servicio</span
-            >
-            <div
-              class="relative inline-block w-11 h-6 transition duration-200 ease-in-out"
-            >
-              <input
-                class="absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 checked:border-green-500"
-                id="toggle"
-                type="checkbox"
-              />
-              <label
-                class="block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer checked:bg-green-500"
-                for="toggle"
-              ></label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3"
-      >
-        <button
-          class="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-200 transition-colors"
-        >
-          Cancelar
-        </button>
-        <button
-          class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
-        >
-          Guardar Cambios
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-service-edit-modal
+	[visible]="!modelEditHidden"
+	(close)="modelEditHidden = true"
+></app-service-edit-modal>

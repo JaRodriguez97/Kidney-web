@@ -1,0 +1,6 @@
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary/10 hover:text-primary transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary text-white shadow-lg shadow-primary/30;
+}

@@ -1,0 +1,448 @@
+<section
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
+>
+	<div class="glass-card mb-6 p-4 flex items-center justify-between">
+		<div class="flex items-center gap-6">
+			<div
+				class="w-16 h-16 rounded-20 bg-purple-50 flex items-center justify-center overflow-hidden border border-white/60"
+			>
+				<img
+					alt="María Paula Restrepo"
+					class="w-full h-full object-cover"
+					src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFdGOVSC-_6sE96I8StZP3gOy82nFBAEiX0u9zDNzHItYAlDr6-NZksqJGKANJd8hPgU464crXbsVDc1zbrSw8s7sXovmHtcXjtbsO7KJrqvNxviG8WZB6A4f5e0Ytz8phjgyaFlzJTJUShBTVv2LqyBlTV46kcPJ-ix6yOajoDBnIK4cpqZpr_EAOZBU6CpQAaoUydc8QNay6-cAsneQXoiODA2aRPgCAHtGBCHqTZmHywta0rU63dAInUQvVg4GLOoigGjNaTVw"
+				/>
+			</div>
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-1">
+				<div>
+					<p class="text-[10px] uppercase font-bold text-slate-400">
+						Identificación
+					</p>
+					<p class="text-sm font-bold text-slate-700">CC 110.237.452</p>
+				</div>
+				<div>
+					<p class="text-[10px] uppercase font-bold text-slate-400">Edad</p>
+					<p class="text-sm font-bold text-slate-700">34 años</p>
+				</div>
+				<div>
+					<p class="text-[10px] uppercase font-bold text-slate-400">
+						Tipo de Sangre
+					</p>
+					<p class="text-sm font-bold text-slate-700">O +</p>
+				</div>
+				<div>
+					<p class="text-[10px] uppercase font-bold text-slate-400">
+						Ubicación
+					</p>
+					<p class="text-sm font-bold text-slate-700">Cali, Valle</p>
+				</div>
+			</div>
+		</div>
+		<div class="hidden md:block">
+			<span class="badge bg-amber-50 text-amber-600 border-amber-200 px-4 py-2">
+				<span class="material-symbols-outlined text-base">warning</span>
+				Riesgo: Medio
+			</span>
+		</div>
+	</div>
+	<div class="flex flex-col lg:flex-row gap-8 h-full">
+		<div class="flex-1 flex flex-col gap-6">
+			<div
+				class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+			>
+				<div class="flex flex-wrap items-center gap-4 w-full">
+					<div
+						class="glass-input flex items-center h-11 px-3 flex-1 min-w-[200px]"
+					>
+						<span class="material-symbols-outlined text-slate-400 text-lg mr-2"
+							>search</span
+						>
+						<input
+							class="bg-transparent border-none w-full text-sm outline-none placeholder:text-slate-400 focus:ring-0 p-0"
+							placeholder="Buscar prueba por nombre..."
+							type="text"
+						/>
+					</div>
+					<div class="glass-input flex items-center h-11 px-4 gap-3 w-fit">
+						<div class="flex items-center gap-2">
+							<label class="text-[10px] uppercase font-bold text-slate-400"
+								>Inicio</label
+							>
+							<input
+								class="bg-transparent border-none text-xs text-slate-700 focus:ring-0 p-0 h-auto cursor-pointer w-24"
+								type="date"
+								value="2023-10-01"
+							/>
+						</div>
+						<div class="w-px h-6 bg-slate-200/50"></div>
+						<div class="flex items-center gap-2">
+							<label class="text-[10px] uppercase font-bold text-slate-400"
+								>Fin</label
+							>
+							<input
+								class="bg-transparent border-none text-xs text-slate-700 focus:ring-0 p-0 h-auto cursor-pointer w-24"
+								type="date"
+								value="2023-10-24"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="glass-card flex-1 overflow-hidden flex flex-col shadow-glass">
+				<div class="overflow-x-auto flex-1">
+					<table class="w-full text-left border-collapse">
+						<thead
+							class="bg-slate-50/80 border-b border-slate-200/60 sticky top-0 z-10 backdrop-blur-sm"
+						>
+							<tr class="text-[10px] text-slate-500">
+								<th class="py-4 pl-6 font-bold uppercase tracking-wider">
+									Fecha
+								</th>
+								<th class="py-4 font-bold uppercase tracking-wider">Examen</th>
+								<th class="py-4 font-bold uppercase tracking-wider">CUPS</th>
+								<th class="py-4 font-bold uppercase tracking-wider">Estado</th>
+								<th
+									class="py-4 pr-6 font-bold uppercase tracking-wider text-right"
+								>
+									Acciones
+								</th>
+							</tr>
+						</thead>
+						<tbody class="text-sm divide-y divide-slate-100/50">
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									23 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Creatinina Sérica
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Prueba de función renal
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">903841</td>
+								<td class="py-4">
+									<span
+										class="badge bg-amber-50 text-amber-600 border-amber-100"
+									>
+										<span class="material-symbols-outlined text-[12px]"
+											>hourglass_empty</span
+										>
+										Sin validar
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-amber-500 hover:text-amber-700 p-1.5 rounded-lg transition-colors"
+										title="Validar"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>fact_check</span
+										>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									21 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Perfil Lipídico
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Colesterol y triglicéridos
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">904510</td>
+								<td class="py-4">
+									<span class="badge bg-blue-50 text-blue-600 border-blue-100">
+										<span class="material-symbols-outlined text-[12px]"
+											>biotech</span
+										>
+										Muestreo
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-blue-500 hover:text-blue-700 p-1.5 rounded-lg transition-colors"
+										title="Muestreo"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>science</span
+										>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									18 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Glucemia en Ayunas
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Control de azúcar
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">903895</td>
+								<td class="py-4">
+									<span class="badge bg-cyan-50 text-cyan-600 border-cyan-100">
+										<span class="material-symbols-outlined text-[12px]"
+											>settings_backup_restore</span
+										>
+										Procesado
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-cyan-600 hover:text-cyan-800 p-1.5 rounded-lg transition-colors"
+										title="Proceso"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>settings</span
+										>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									15 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Uroanálisis Completo
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Examen físico-químico
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">903016</td>
+								<td class="py-4">
+									<span
+										class="badge bg-purple-50 text-purple-600 border-purple-100"
+									>
+										<span class="material-symbols-outlined text-[12px]"
+											>pending_actions</span
+										>
+										Preeliminar
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-purple-600 hover:text-purple-800 p-1.5 rounded-lg transition-colors"
+										title="Borrador"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>description</span
+										>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									12 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Hemograma Completo
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Conteo celular sanguíneo
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">902204</td>
+								<td class="py-4">
+									<span
+										class="badge bg-green-50 text-green-600 border-green-100"
+									>
+										<span class="material-symbols-outlined text-[12px]"
+											>check_circle</span
+										>
+										Completado
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-green-600 hover:text-green-800 p-1.5 rounded-lg transition-colors"
+										title="Descargar"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>download</span
+										>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+							<tr class="hover:bg-white/40 transition-colors">
+								<td class="py-4 pl-6 text-slate-500 font-medium text-xs">
+									05 Oct, 2023
+								</td>
+								<td class="py-4">
+									<p class="font-bold text-slate-700 uppercase text-xs">
+										Proteína en Orina 24h
+									</p>
+									<p class="text-[10px] text-slate-400 italic">
+										Albuminuria / proteinuria
+									</p>
+								</td>
+								<td class="py-4 font-mono text-xs text-slate-600">903866</td>
+								<td class="py-4">
+									<span
+										class="badge border-[#95262c]/20 text-[#95262c] bg-red-50"
+									>
+										<span class="material-symbols-outlined text-[12px]"
+											>cancel</span
+										>
+										Rechazado
+									</span>
+								</td>
+								<td class="py-4 pr-6 text-right space-x-1">
+									<button
+										class="text-secondary hover:text-red-700 p-1.5 rounded-lg transition-colors"
+										title="Detalle Rechazo"
+									>
+										<span class="material-symbols-outlined text-xl">info</span>
+									</button>
+									<button
+										class="text-slate-400 hover:text-primary p-1.5 rounded-lg transition-colors"
+										title="Vista Previa"
+									>
+										<span class="material-symbols-outlined text-xl"
+											>visibility</span
+										>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div
+					class="p-4 border-t border-slate-200/50 flex items-center justify-between"
+				>
+					<p class="text-[10px] font-bold uppercase text-slate-400">
+						Página 1 de 2
+					</p>
+					<div class="flex gap-2">
+						<button
+							class="px-4 py-1.5 rounded-lg border border-slate-200 bg-white/50 text-slate-600 text-xs font-bold hover:bg-white hover:border-primary transition-all disabled:opacity-50"
+							disabled=""
+						>
+							Anterior
+						</button>
+						<button
+							class="px-4 py-1.5 rounded-lg border border-slate-200 bg-white/50 text-slate-600 text-xs font-bold hover:bg-white hover:border-primary transition-all"
+						>
+							Siguiente
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<aside class="w-full lg:w-80 flex flex-col gap-6">
+			<div class="glass-card p-6 border-l-4 border-l-secondary">
+				<h3
+					class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2"
+				>
+					<span class="material-symbols-outlined text-secondary">warning</span>
+					Alertas Críticas
+				</h3>
+				<div class="space-y-3">
+					<div class="p-3 bg-red-50 rounded-lg border border-red-100">
+						<div class="flex justify-between items-start mb-1">
+							<span class="text-xs font-bold text-red-700">TFG Muy Baja</span>
+							<span class="text-[10px] text-red-400">Hace 10m</span>
+						</div>
+						<p class="text-xs text-slate-600">
+							Paciente: <span class="font-bold">María Restrepo</span>. Valor: 28
+							mL/min. Requiere ajuste.
+						</p>
+					</div>
+					<div
+						class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm"
+					>
+						<div class="flex justify-between items-start mb-1">
+							<span class="text-xs font-bold text-orange-600"
+								>Potasio Elevado</span
+							>
+							<span class="text-[10px] text-slate-400">Ayer</span>
+						</div>
+						<p class="text-xs text-slate-600">
+							Valor reportado: 5.4 mmol/L. Estable con monitoreo.
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="glass-card p-6">
+				<h3
+					class="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2"
+				>
+					<span class="material-symbols-outlined text-primary">analytics</span>
+					Resumen de Riesgos
+				</h3>
+				<div class="flex items-center justify-between mb-4">
+					<div class="text-center">
+						<p class="text-2xl font-bold text-red-600">4</p>
+						<p class="text-[10px] uppercase text-slate-400 font-bold">
+							Riesgo Alto
+						</p>
+					</div>
+					<div class="w-px h-8 bg-slate-200"></div>
+					<div class="text-center">
+						<p class="text-2xl font-bold text-amber-500">12</p>
+						<p class="text-[10px] uppercase text-slate-400 font-bold">
+							Riesgo Medio
+						</p>
+					</div>
+					<div class="w-px h-8 bg-slate-200"></div>
+					<div class="text-center">
+						<p class="text-2xl font-bold text-blue-600">16</p>
+						<p class="text-[10px] uppercase text-slate-400 font-bold">
+							Riesgo Bajo
+						</p>
+					</div>
+				</div>
+			</div>
+		</aside>
+	</div>
+</section>

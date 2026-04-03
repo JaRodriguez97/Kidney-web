@@ -1,647 +1,647 @@
-<main class="relative z-10 flex-1 h-full overflow-hidden flex">
-  <div class="flex-1 h-full overflow-y-auto p-4 lg:p-8 flex flex-col">
-    <header
-      class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 glass-panel px-6 py-4"
-    >
-      <div>
-        <h2 class="text-2xl font-bold text-primary">
-          Gestión de Citas de Laboratorio
-        </h2>
-        <p class="text-slate-500 text-sm">
-          Administración y programación de análisis clínicos
-        </p>
-      </div>
-      <div class="flex items-center gap-4">
-        <div class="h-10 w-[1px] bg-slate-200 hidden sm:block"></div>
-        <div class="flex items-center gap-3">
-          <div class="text-right hidden sm:block">
-            <p class="text-sm font-bold text-slate-800">Dra. Camila Torres</p>
-            <p class="text-xs text-slate-500 text-right">Admin</p>
-          </div>
-          <div
-            class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden"
-          >
-            <img
-              alt="Profile"
-              class="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
-            />
-          </div>
-        </div>
-      </div>
-    </header>
-    <div class="flex flex-col gap-6">
-      <div class="glass-panel p-4 flex flex-wrap items-center gap-4">
-        <div class="relative flex-1 min-w-[240px]">
-          <span
-            class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
-            >search</span
-          >
-          <input
-            class="glass-input w-full pl-10"
-            placeholder="Buscar por paciente..."
-            type="text"
-          />
-        </div>
-        <select
-          class="glass-input cursor-pointer bg-white/40 flex-1 min-w-[150px]"
-        >
-          <option>Especialización: Todas</option>
-          <option>Salud General</option>
-          <option>Renal</option>
-          <option>Cardiología</option>
-          <option>Hematología</option>
-        </select>
-        <select
-          class="glass-input cursor-pointer bg-white/40 flex-1 min-w-[160px]"
-        >
-          <option>Estado de Cita</option>
-          <option>Sin Validar</option>
-          <option>Muestreo</option>
-          <option>Procesado</option>
-          <option>Preeliminar</option>
-          <option>Completado</option>
-          <option>Rechazado</option>
-        </select>
-        <div
-          class="flex items-center gap-2 bg-white/40 rounded-xl px-2 border border-white/60 h-[42px]"
-        >
-          <span class="material-symbols-outlined text-slate-400 pl-2 text-xl"
-            >event</span
-          >
-          <input
-            class="bg-transparent border-none text-sm outline-none py-2 px-1 focus:ring-0 text-slate-600 w-28"
-            placeholder="mm/dd/yyyy"
-            type="date"
-          />
-        </div>
-      </div>
-      <div class="glass-panel p-0 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr
-                class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
-              >
-                <th class="py-4 pl-6 pr-4 font-semibold">Paciente</th>
-                <th class="py-4 px-4 font-semibold">Servicio</th>
-                <th class="py-4 px-4 font-semibold">Técnico Asignado</th>
-                <th class="py-4 px-4 font-semibold">Fecha/Hora</th>
-                <th class="py-4 px-4 font-semibold text-center">Estado</th>
-                <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm divide-y divide-slate-100">
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2HfF7-EvVZNhCNTb-P_xu-Ox3e7OcCMbryZYp2O7NuEJtq2J2NcpmwZ1CoqcF0esVNwuzh7Z2Olfzu1Q297yKzgeRooE4VUkiYb8uZWHCNof6vJciv7jio71-uDNSnmdbt-_0UHuTvD8obyKR3IY7Csao6cTf7yV2xqlBnbA4FpVUM2K1ZPgoybo9JRJFZp8vHLOKrW2mI6eEBG89rWJQhTlqAzdao6-y4jtnKZQ8teYTnZ--iqWtZBFAQPgQa7t_7AtXUh2FRbI"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800"
-                        >Carlos Mendoza</span
-                      >
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.098.342.112</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Hemograma Completo</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Ana Jiménez</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >20 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">07:00 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-amber-50 text-amber-600 border-amber-200 uppercase"
-                    >SIN VALIDAR</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800"
-                        >Ana Sofia Ruiz</span
-                      >
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.152.887.665</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Perfil Lipídico</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Carlos Vega</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >20 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">07:45 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-blue-50 text-blue-600 border-blue-200 uppercase"
-                    >MUESTREO</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBydfEB-zgdJ05vgcrP7clZtJQi_KSfl2CLfmQD4xa9RYQdOu-SADY7F6frUbsb1Vyjq6SSaTwdt96UljNRlr6K1NFVVxvvMkOb5se8hy8gY50JEn3kdHiMqtSZdISAL_Lk8oVkszbSDKnW4DEqp3-px3YqfqRhoZUCx6GodI2AoCt3hAem00U_bXg6q9EU8-M3bJMMYGV7glUhuQnmfhx-wFDhzrQ_hoLx5-NNL-aegABC-kzTOvDcAQXN0-kKxOJ_-rBU3xW1SKY"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800">Luis García</span>
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.114.223.445</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Glucemia en Ayunas</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Ana Jiménez</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >20 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">08:15 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-cyan-50 text-cyan-600 border-cyan-200 uppercase"
-                    >PROCESADO</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfCjeVIlGMiW0qVIlCUg5zVaF0wRC4ffGf8ph9aZ6rr3ccLipmS52c9lr6EXoTiw3CpO3iJyySOy_gN2ipWAOtHNtyG_VYfeDzQv0Tfsn0RDAhNjxiOwBV_TXbG1RvdRsYxj-0OL9pwblO3so-QKFL4c_18uRNDS1f9_DKXIPdzK1tJdc8vO84J5mIqURlbKdxjlL96D8EDGGTmSON6GHfoVFY8MxUOlE4gCZHSE4Q5X7rcD4HLNgBlRSDGpTwGHQsRXJyvfXyc2g"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800"
-                        >María Paula Restrepo</span
-                      >
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.130.456.789</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Creatinina Sérica</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Carlos Vega</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >20 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">08:30 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-purple-50 text-purple-600 border-purple-200 uppercase"
-                    >PREELIMINAR</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2HfF7-EvVZNhCNTb-P_xu-Ox3e7OcCMbryZYp2O7NuEJtq2J2NcpmwZ1CoqcF0esVNwuzh7Z2Olfzu1Q297yKzgeRooE4VUkiYb8uZWHCNof6vJciv7jio71-uDNSnmdbt-_0UHuTvD8obyKR3IY7Csao6cTf7yV2xqlBnbA4FpVUM2K1ZPgoybo9JRJFZp8vHLOKrW2mI6eEBG89rWJQhTlqAzdao6-y4jtnKZQ8teYTnZ--iqWtZBFAQPgQa7t_7AtXUh2FRbI"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800"
-                        >Andrés Felipe Castro</span
-                      >
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.114.987.654</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Hemograma Completo</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Ana Jiménez</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >19 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">10:00 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-green-50 text-green-700 border-green-200 uppercase"
-                    >COMPLETADO</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="group hover:bg-white/60 transition-colors">
-                <td class="py-4 pl-6 pr-4">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
-                    >
-                      <img
-                        alt="User"
-                        class="w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBydfEB-zgdJ05vgcrP7clZtJQi_KSfl2CLfmQD4xa9RYQdOu-SADY7F6frUbsb1Vyjq6SSaTwdt96UljNRlr6K1NFVVxvvMkOb5se8hy8gY50JEn3kdHiMqtSZdISAL_Lk8oVkszbSDKnW4DEqp3-px3YqfqRhoZUCx6GodI2AoCt3hAem00U_bXg6q9EU8-M3bJMMYGV7glUhuQnmfhx-wFDhzrQ_hoLx5-NNL-aegABC-kzTOvDcAQXN0-kKxOJ_-rBU3xW1SKY"
-                      />
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="font-bold text-slate-800"
-                        >Jorge Luis Vargas</span
-                      >
-                      <span class="text-[11px] text-slate-500"
-                        >ID: 1.088.456.123</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700 font-medium"
-                    >Examen de Orina</span
-                  >
-                </td>
-                <td class="py-4 px-4">
-                  <span class="text-slate-700">Lic. Carlos Vega</span>
-                </td>
-                <td class="py-4 px-4">
-                  <div class="flex flex-col">
-                    <span class="text-slate-700 font-semibold"
-                      >18 Nov, 2023</span
-                    >
-                    <span class="text-xs text-slate-500">09:15 AM</span>
-                  </div>
-                </td>
-                <td class="py-4 px-4 text-center">
-                  <span
-                    class="badge bg-red-50 text-secondary border-red-200 uppercase"
-                    >RECHAZADO</span
-                  >
-                </td>
-                <td class="py-4 pr-6 text-right">
-                  <div class="flex items-center justify-end gap-1">
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Vista Previa"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >visibility</span
-                      >
-                    </button>
-                    <button
-                      class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
-                      title="Reagendar"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >event_repeat</span
-                      >
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div
-          class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
-        >
-          <span>Mostrando 6 de 42 laboratorios registrados</span>
-          <div class="flex gap-2">
-            <button
-              class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
-            >
-              Anterior
-            </button>
-            <button
-              class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
-            >
-              Siguiente
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <aside
-    class="w-80 h-full border-l border-white/40 bg-white/40 backdrop-blur-md p-6 hidden xl:flex flex-col gap-6 overflow-y-auto"
-  >
-    <div class="glass-panel p-4">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-slate-800">Calendario</h3>
-        <div class="flex gap-1">
-          <button class="p-1 hover:bg-slate-100 rounded text-slate-400">
-            <span class="material-symbols-outlined text-lg">chevron_left</span>
-          </button>
-          <button class="p-1 hover:bg-slate-100 rounded text-slate-400">
-            <span class="material-symbols-outlined text-lg">chevron_right</span>
-          </button>
-        </div>
-      </div>
-      <div class="text-center mb-2">
-        <p class="text-sm font-bold text-primary uppercase">Noviembre 2023</p>
-      </div>
-      <div
-        class="grid grid-cols-7 gap-1 text-[10px] text-center font-bold text-slate-400 mb-2"
-      >
-        <span>LU</span><span>MA</span><span>MI</span><span>JU</span
-        ><span>VI</span><span>SA</span><span>DO</span>
-      </div>
-      <div class="grid grid-cols-7 gap-1 text-xs text-center">
-        <span class="p-2 text-slate-300">30</span>
-        <span class="p-2 text-slate-300">31</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">1</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">2</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">3</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">4</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">5</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">6</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">7</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">8</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">9</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">10</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">11</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">12</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">13</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">14</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">15</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">16</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">17</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">18</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">19</span>
-        <span
-          class="p-2 bg-primary text-white rounded-lg cursor-pointer font-bold shadow-md shadow-primary/20"
-          >20</span
-        >
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">21</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">22</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">23</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">24</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">25</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">26</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">27</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">28</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">29</span>
-        <span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">30</span>
-        <span class="p-2 text-slate-300">1</span>
-        <span class="p-2 text-slate-300">2</span>
-        <span class="p-2 text-slate-300">3</span>
-      </div>
-    </div>
-    <button
-      class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/95 transition-all shadow-xl shadow-primary/30 border border-white/20"
-    >
-      <span class="material-symbols-outlined text-xl">add_circle</span>
-      + PROGRAMAR LABORATORIO
-    </button>
-    <div class="space-y-4">
-      <h3 class="font-bold text-slate-800 flex items-center gap-2">
-        <span class="material-symbols-outlined text-primary">monitoring</span>
-        Métricas del Día
-      </h3>
-      <div
-        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-amber-500"
-      >
-        <div>
-          <p
-            class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
-          >
-            Sin Validar
-          </p>
-          <p class="text-2xl font-bold text-primary">12</p>
-        </div>
-        <span class="material-symbols-outlined text-slate-300 text-3xl"
-          >pending_actions</span
-        >
-      </div>
-      <div
-        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-blue-500"
-      >
-        <div>
-          <p
-            class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
-          >
-            En Muestreo
-          </p>
-          <p class="text-2xl font-bold text-blue-600">8</p>
-        </div>
-        <span class="material-symbols-outlined text-slate-300 text-3xl"
-          >biotech</span
-        >
-      </div>
-      <div
-        class="glass-card p-4 flex items-center justify-between border-l-4 border-l-secondary"
-      >
-        <div>
-          <p
-            class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
-          >
-            Rechazados
-          </p>
-          <p class="text-2xl font-bold text-secondary">3</p>
-        </div>
-        <span class="material-symbols-outlined text-slate-300 text-3xl"
-          >cancel</span
-        >
-      </div>
-    </div>
-    <div
-      class="mt-4 p-5 rounded-2xl bg-primary text-white space-y-3 shadow-lg shadow-primary/20 relative overflow-hidden group"
-    >
-      <div
-        class="absolute -right-4 -top-4 w-16 h-16 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform"
-      ></div>
-      <p
-        class="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-2"
-      >
-        <span class="material-symbols-outlined text-sm">lightbulb</span>
-        Tip de Gestión
-      </p>
-      <p class="text-xs leading-relaxed font-medium">
-        Recuerde que los pacientes pueden agendar sus citas de laboratorio de
-        forma autónoma a través del Portal del Paciente sin necesidad de orden
-        previa.
-      </p>
-    </div>
-  </aside>
-</main>
+<section class="relative z-10 flex-1 h-full overflow-hidden flex">
+	<div class="flex-1 h-full overflow-y-auto pr-4 lg:pr-8 flex flex-col">
+		<header
+			class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 glass-panel px-6 py-4"
+		>
+			<div>
+				<h2 class="text-2xl font-bold text-primary">
+					Gestión de Citas de Laboratorio
+				</h2>
+				<p class="text-slate-500 text-sm">
+					Administración y programación de análisis clínicos
+				</p>
+			</div>
+			<div class="flex items-center gap-4">
+				<div class="h-10 w-[1px] bg-slate-200 hidden sm:block"></div>
+				<div class="flex items-center gap-3">
+					<div class="text-right hidden sm:block">
+						<p class="text-sm font-bold text-slate-800">Dra. Camila Torres</p>
+						<p class="text-xs text-slate-500 text-right">Admin</p>
+					</div>
+					<div
+						class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden"
+					>
+						<img
+							alt="Profile"
+							class="w-full h-full object-cover"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
+						/>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="flex flex-col gap-6">
+			<div class="glass-panel p-4 flex flex-wrap items-center gap-4">
+				<div class="relative flex-1 min-w-[240px]">
+					<span
+						class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
+						>search</span
+					>
+					<input
+						class="glass-input w-full pl-10"
+						placeholder="Buscar por paciente..."
+						type="text"
+					/>
+				</div>
+				<select
+					class="glass-input cursor-pointer bg-white/40 flex-1 min-w-[150px]"
+				>
+					<option>Tipo de Proveedor: Todos</option>
+					<option>Salud General</option>
+					<option>Cardiología</option>
+					<option>Hematología</option>
+					<option>Renal</option>
+				</select>
+				<select
+					class="glass-input cursor-pointer bg-white/40 flex-1 min-w-[160px]"
+				>
+					<option>Estado de Cita</option>
+					<option>Sin Validar</option>
+					<option>Muestreo</option>
+					<option>Procesado</option>
+					<option>Preeliminar</option>
+					<option>Completado</option>
+					<option>Rechazado</option>
+				</select>
+				<div
+					class="flex items-center gap-2 bg-white/40 rounded-xl px-2 border border-white/60 h-[42px]"
+				>
+					<span class="material-symbols-outlined text-slate-400 pl-2 text-xl"
+						>event</span
+					>
+					<input
+						class="bg-transparent border-none text-sm outline-none py-2 px-1 focus:ring-0 text-slate-600 w-28"
+						placeholder="mm/dd/yyyy"
+						type="date"
+					/>
+				</div>
+			</div>
+			<div class="glass-panel p-0 overflow-hidden">
+				<div class="overflow-x-auto">
+					<table class="w-full text-left border-collapse">
+						<thead>
+							<tr
+								class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+							>
+								<th class="py-4 pl-6 pr-4 font-semibold">Paciente</th>
+								<th class="py-4 px-4 font-semibold">Servicio</th>
+								<th class="py-4 px-4 font-semibold">Técnico Asignado</th>
+								<th class="py-4 px-4 font-semibold">Fecha/Hora</th>
+								<th class="py-4 px-4 font-semibold text-center">Estado</th>
+								<th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+							</tr>
+						</thead>
+						<tbody class="text-sm divide-y divide-slate-100">
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2HfF7-EvVZNhCNTb-P_xu-Ox3e7OcCMbryZYp2O7NuEJtq2J2NcpmwZ1CoqcF0esVNwuzh7Z2Olfzu1Q297yKzgeRooE4VUkiYb8uZWHCNof6vJciv7jio71-uDNSnmdbt-_0UHuTvD8obyKR3IY7Csao6cTf7yV2xqlBnbA4FpVUM2K1ZPgoybo9JRJFZp8vHLOKrW2mI6eEBG89rWJQhTlqAzdao6-y4jtnKZQ8teYTnZ--iqWtZBFAQPgQa7t_7AtXUh2FRbI"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800"
+												>Carlos Mendoza</span
+											>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.098.342.112</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Hemograma Completo</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Ana Jiménez</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>20 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">07:00 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-amber-50 text-amber-600 border-amber-200 uppercase"
+										>SIN VALIDAR</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHEuz0eYU4zxvktEeq7bN-Fblclvyh0rPg02zxoUv-sRVd0xe8fqQiIFCHLz8tewVcsk6TdYtQrEICMt4wWk3TkaCGJ_8svwX6H2br4WFWEBuao0TNGsZWPCAsxCi_419zkg3yC37H6Kf6riM4dm0RVJc4Dret_6nnv5_B514CchyATtJnVDUGz-Zgx0f9SkxNyGVmPX4hf6h4qM6i3GQnrt1H0fto9zzi_wFbV_s2utE7xlSRWIxCNxyMqTtRTHjnjBStIpnLNno"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800"
+												>Ana Sofia Ruiz</span
+											>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.152.887.665</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Perfil Lipídico</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Carlos Vega</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>20 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">07:45 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-blue-50 text-blue-600 border-blue-200 uppercase"
+										>MUESTREO</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuBydfEB-zgdJ05vgcrP7clZtJQi_KSfl2CLfmQD4xa9RYQdOu-SADY7F6frUbsb1Vyjq6SSaTwdt96UljNRlr6K1NFVVxvvMkOb5se8hy8gY50JEn3kdHiMqtSZdISAL_Lk8oVkszbSDKnW4DEqp3-px3YqfqRhoZUCx6GodI2AoCt3hAem00U_bXg6q9EU8-M3bJMMYGV7glUhuQnmfhx-wFDhzrQ_hoLx5-NNL-aegABC-kzTOvDcAQXN0-kKxOJ_-rBU3xW1SKY"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800">Luis García</span>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.114.223.445</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Glucemia en Ayunas</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Ana Jiménez</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>20 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">08:15 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-cyan-50 text-cyan-600 border-cyan-200 uppercase"
+										>PROCESADO</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfCjeVIlGMiW0qVIlCUg5zVaF0wRC4ffGf8ph9aZ6rr3ccLipmS52c9lr6EXoTiw3CpO3iJyySOy_gN2ipWAOtHNtyG_VYfeDzQv0Tfsn0RDAhNjxiOwBV_TXbG1RvdRsYxj-0OL9pwblO3so-QKFL4c_18uRNDS1f9_DKXIPdzK1tJdc8vO84J5mIqURlbKdxjlL96D8EDGGTmSON6GHfoVFY8MxUOlE4gCZHSE4Q5X7rcD4HLNgBlRSDGpTwGHQsRXJyvfXyc2g"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800"
+												>María Paula Restrepo</span
+											>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.130.456.789</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Creatinina Sérica</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Carlos Vega</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>20 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">08:30 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-purple-50 text-purple-600 border-purple-200 uppercase"
+										>PREELIMINAR</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2HfF7-EvVZNhCNTb-P_xu-Ox3e7OcCMbryZYp2O7NuEJtq2J2NcpmwZ1CoqcF0esVNwuzh7Z2Olfzu1Q297yKzgeRooE4VUkiYb8uZWHCNof6vJciv7jio71-uDNSnmdbt-_0UHuTvD8obyKR3IY7Csao6cTf7yV2xqlBnbA4FpVUM2K1ZPgoybo9JRJFZp8vHLOKrW2mI6eEBG89rWJQhTlqAzdao6-y4jtnKZQ8teYTnZ--iqWtZBFAQPgQa7t_7AtXUh2FRbI"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800"
+												>Andrés Felipe Castro</span
+											>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.114.987.654</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Hemograma Completo</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Ana Jiménez</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>19 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">10:00 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-green-50 text-green-700 border-green-200 uppercase"
+										>COMPLETADO</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+							<tr class="group hover:bg-white/60 transition-colors">
+								<td class="py-4 pl-6 pr-4">
+									<div class="flex items-center gap-3">
+										<div
+											class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-white shadow-sm"
+										>
+											<img
+												alt="User"
+												class="w-full h-full object-cover"
+												src="https://lh3.googleusercontent.com/aida-public/AB6AXuBydfEB-zgdJ05vgcrP7clZtJQi_KSfl2CLfmQD4xa9RYQdOu-SADY7F6frUbsb1Vyjq6SSaTwdt96UljNRlr6K1NFVVxvvMkOb5se8hy8gY50JEn3kdHiMqtSZdISAL_Lk8oVkszbSDKnW4DEqp3-px3YqfqRhoZUCx6GodI2AoCt3hAem00U_bXg6q9EU8-M3bJMMYGV7glUhuQnmfhx-wFDhzrQ_hoLx5-NNL-aegABC-kzTOvDcAQXN0-kKxOJ_-rBU3xW1SKY"
+											/>
+										</div>
+										<div class="flex flex-col">
+											<span class="font-bold text-slate-800"
+												>Jorge Luis Vargas</span
+											>
+											<span class="text-[11px] text-slate-500"
+												>ID: 1.088.456.123</span
+											>
+										</div>
+									</div>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700 font-medium"
+										>Examen de Orina</span
+									>
+								</td>
+								<td class="py-4 px-4">
+									<span class="text-slate-700">Lic. Carlos Vega</span>
+								</td>
+								<td class="py-4 px-4">
+									<div class="flex flex-col">
+										<span class="text-slate-700 font-semibold"
+											>18 Nov, 2023</span
+										>
+										<span class="text-xs text-slate-500">09:15 AM</span>
+									</div>
+								</td>
+								<td class="py-4 px-4 text-center">
+									<span
+										class="badge bg-red-50 text-secondary border-red-200 uppercase"
+										>RECHAZADO</span
+									>
+								</td>
+								<td class="py-4 pr-6 text-right">
+									<div class="flex items-center justify-end gap-1">
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Vista Previa"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>visibility</span
+											>
+										</button>
+										<button
+											class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
+											title="Reagendar"
+										>
+											<span class="material-symbols-outlined text-xl"
+												>event_repeat</span
+											>
+										</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div
+					class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+				>
+					<span>Mostrando 6 de 42 laboratorios registrados</span>
+					<div class="flex gap-2">
+						<button
+							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
+						>
+							Anterior
+						</button>
+						<button
+							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+						>
+							Siguiente
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<aside
+		class="w-80 h-full border-l border-white/40 bg-white/40 backdrop-blur-md p-6 hidden xl:flex flex-col gap-6 overflow-y-auto"
+	>
+		<div class="glass-panel p-4">
+			<div class="flex items-center justify-between mb-4">
+				<h3 class="font-bold text-slate-800">Calendario</h3>
+				<div class="flex gap-1">
+					<button class="p-1 hover:bg-slate-100 rounded text-slate-400">
+						<span class="material-symbols-outlined text-lg">chevron_left</span>
+					</button>
+					<button class="p-1 hover:bg-slate-100 rounded text-slate-400">
+						<span class="material-symbols-outlined text-lg">chevron_right</span>
+					</button>
+				</div>
+			</div>
+			<div class="text-center mb-2">
+				<p class="text-sm font-bold text-primary uppercase">Noviembre 2023</p>
+			</div>
+			<div
+				class="grid grid-cols-7 gap-1 text-[10px] text-center font-bold text-slate-400 mb-2"
+			>
+				<span>LU</span><span>MA</span><span>MI</span><span>JU</span
+				><span>VI</span><span>SA</span><span>DO</span>
+			</div>
+			<div class="grid grid-cols-7 gap-1 text-xs text-center">
+				<span class="p-2 text-slate-300">30</span>
+				<span class="p-2 text-slate-300">31</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">1</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">2</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">3</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">4</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">5</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">6</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">7</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">8</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">9</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">10</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">11</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">12</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">13</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">14</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">15</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">16</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">17</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">18</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">19</span>
+				<span
+					class="p-2 bg-primary text-white rounded-lg cursor-pointer font-bold shadow-md shadow-primary/20"
+					>20</span
+				>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">21</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">22</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">23</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">24</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">25</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">26</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">27</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">28</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">29</span>
+				<span class="p-2 hover:bg-primary/5 rounded-lg cursor-pointer">30</span>
+				<span class="p-2 text-slate-300">1</span>
+				<span class="p-2 text-slate-300">2</span>
+				<span class="p-2 text-slate-300">3</span>
+			</div>
+		</div>
+		<button
+			class="w-full bg-primary text-white py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/95 transition-all shadow-xl shadow-primary/30 border border-white/20"
+		>
+			<span class="material-symbols-outlined text-xl">add_circle</span>
+			+ PROGRAMAR LABORATORIO
+		</button>
+		<div class="space-y-4">
+			<h3 class="font-bold text-slate-800 flex items-center gap-2">
+				<span class="material-symbols-outlined text-primary">monitoring</span>
+				Métricas del Día
+			</h3>
+			<div
+				class="glass-card p-4 flex items-center justify-between border-l-4 border-l-amber-500"
+			>
+				<div>
+					<p
+						class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
+					>
+						Sin Validar
+					</p>
+					<p class="text-2xl font-bold text-primary">12</p>
+				</div>
+				<span class="material-symbols-outlined text-slate-300 text-3xl"
+					>pending_actions</span
+				>
+			</div>
+			<div
+				class="glass-card p-4 flex items-center justify-between border-l-4 border-l-blue-500"
+			>
+				<div>
+					<p
+						class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
+					>
+						En Muestreo
+					</p>
+					<p class="text-2xl font-bold text-blue-600">8</p>
+				</div>
+				<span class="material-symbols-outlined text-slate-300 text-3xl"
+					>biotech</span
+				>
+			</div>
+			<div
+				class="glass-card p-4 flex items-center justify-between border-l-4 border-l-secondary"
+			>
+				<div>
+					<p
+						class="text-[10px] font-semibold text-slate-500 uppercase tracking-tight"
+					>
+						Rechazados
+					</p>
+					<p class="text-2xl font-bold text-secondary">3</p>
+				</div>
+				<span class="material-symbols-outlined text-slate-300 text-3xl"
+					>cancel</span
+				>
+			</div>
+		</div>
+		<div
+			class="mt-4 p-5 rounded-2xl bg-primary text-white space-y-3 shadow-lg shadow-primary/20 relative overflow-hidden group"
+		>
+			<div
+				class="absolute -right-4 -top-4 w-16 h-16 bg-white/10 rounded-full blur-xl group-hover:scale-150 transition-transform"
+			></div>
+			<p
+				class="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-2"
+			>
+				<span class="material-symbols-outlined text-sm">lightbulb</span>
+				Tip de Gestión
+			</p>
+			<p class="text-xs leading-relaxed font-medium">
+				Recuerde que los pacientes pueden agendar sus citas de laboratorio de
+				forma autónoma a través del Portal del Paciente sin necesidad de orden
+				previa.
+			</p>
+		</div>
+	</aside>
+</section>

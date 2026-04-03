@@ -1,0 +1,135 @@
+/* Paneles de vidrio */
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-200;
+}
+
+/* Sidebar */
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary_p/10 hover:text-primary_p transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary_p text-white shadow-lg shadow-primary_p/30;
+}
+
+/* Botones */
+.btn-primary_p {
+	@apply bg-primary_p text-white px-4 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary_p/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.icon-action-btn {
+	@apply w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white/50 text-slate-500 hover:text-primary_p hover:border-primary_p hover:bg-white transition-all active:scale-90;
+}
+.icon-action-btn-danger {
+	@apply w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white/50 text-[#dc2626] hover:text-white hover:border-[#dc2626] hover:bg-[#dc2626] transition-all active:scale-90;
+}
+
+/* Badge */
+.badge {
+	@apply inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold uppercase tracking-wide rounded-full;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}
+
+/* FullCalendar overrides */
+.fc-wrapper {
+	::ng-deep {
+		.fc {
+			font-family: inherit;
+		}
+
+		.fc .fc-toolbar-title {
+			font-size: 1rem;
+			font-weight: 700;
+			color: #1e293b;
+			text-transform: capitalize;
+		}
+
+		.fc .fc-button {
+			background: transparent;
+			border: 1px solid #e2e8f0;
+			color: #64748b;
+			border-radius: 0.5rem;
+			padding: 0.25rem 0.5rem;
+			font-size: 0.75rem;
+			font-weight: 600;
+			box-shadow: none;
+			transition: all 0.2s;
+
+			&:hover {
+				background: #f1f5f9;
+				border-color: #cbd5e1;
+				color: #334155;
+			}
+
+			&:active,
+			&.fc-button-active {
+				background: var(--color-primary_p, #0284c7) !important;
+				color: white !important;
+				border-color: var(--color-primary_p, #0284c7) !important;
+			}
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+		.fc .fc-daygrid-day-number {
+			font-size: 0.8rem;
+			font-weight: 500;
+			color: #334155;
+			padding: 4px 8px;
+		}
+
+		.fc .fc-col-header-cell-cushion {
+			font-size: 0.65rem;
+			font-weight: 700;
+			color: #94a3b8;
+			text-transform: uppercase;
+			padding: 6px 0;
+		}
+
+		.fc .fc-daygrid-day.fc-day-today {
+			background: rgba(2, 132, 199, 0.06);
+		}
+
+		.fc .fc-daygrid-day {
+			border-color: #f1f5f9;
+		}
+
+		.fc .fc-scrollgrid {
+			border-color: #f1f5f9;
+		}
+
+		.fc th {
+			border-color: #f1f5f9;
+		}
+
+		.fc .fc-daygrid-event {
+			border-radius: 0.375rem;
+			padding: 1px 4px;
+			font-size: 0.65rem;
+			font-weight: 600;
+			border: none;
+		}
+
+		.fc .fc-daygrid-day-frame {
+			min-height: 50px;
+		}
+
+		.fc .fc-day-other .fc-daygrid-day-number {
+			color: #cbd5e1;
+		}
+	}
+}

@@ -1,0 +1,22 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/40 shadow-sm rounded-xl hover:bg-white/80 transition-all duration-200;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary_p/10 hover:text-primary_p transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary_p text-white shadow-lg shadow-primary_p/30;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}

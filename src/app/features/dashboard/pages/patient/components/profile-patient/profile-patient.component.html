@@ -1,0 +1,218 @@
+<section
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
+>
+	<div class="space-y-6 mx-auto w-full">
+		<section class="glass-panel p-8">
+			<div class="card-header">
+				<div
+					class="w-10 h-10 rounded-full bg-blue-50 text-primary_p flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">badge</span>
+				</div>
+				<div>
+					<h3 class="card-title">Información Personal</h3>
+					<p class="text-xs text-slate-500">
+						Datos de identificación del paciente
+					</p>
+				</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<div>
+					<label class="form-label">Primer Nombre</label>
+					<input class="form-input-glass" type="text" value="Juan" />
+				</div>
+				<div>
+					<label class="form-label">Segundo Nombre</label>
+					<input class="form-input-glass" type="text" value="Camilo" />
+				</div>
+				<div>
+					<label class="form-label">Primer Apellido</label>
+					<input class="form-input-glass" type="text" value="Pérez" />
+				</div>
+				<div>
+					<label class="form-label">Segundo Apellido</label>
+					<input class="form-input-glass" type="text" value="Rodríguez" />
+				</div>
+			</div>
+		</section>
+		<section class="glass-panel p-8">
+			<div class="card-header">
+				<div
+					class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">contact_mail</span>
+				</div>
+				<div>
+					<h3 class="card-title">Información de Contacto y Ubicación</h3>
+					<p class="text-xs text-slate-500">
+						Detalles para notificaciones y correspondencia
+					</p>
+				</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+				<div class="lg:col-span-1">
+					<label class="form-label">Correo Electrónico</label>
+					<div class="relative">
+						<span
+							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
+							>mail</span
+						>
+						<input
+							class="form-input-glass pl-10"
+							type="email"
+							value="juan.perez@email.com"
+						/>
+					</div>
+				</div>
+				<div class="lg:col-span-1">
+					<label class="form-label">Teléfono Celular</label>
+					<div class="relative">
+						<span
+							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
+							>smartphone</span
+						>
+						<input
+							class="form-input-glass pl-10"
+							type="tel"
+							value="+57 300 123 4567"
+						/>
+					</div>
+				</div>
+				<div class="lg:col-span-1">
+					<label class="form-label">Ciudad</label>
+					<select class="form-input-glass">
+						<option selected="">Cali</option>
+						<option>Bogotá</option>
+						<option>Medellín</option>
+					</select>
+				</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div>
+					<label class="form-label">Barrio</label>
+					<input class="form-input-glass" type="text" value="El Ingenio" />
+				</div>
+				<div>
+					<label class="form-label">Comuna</label>
+					<input class="form-input-glass" type="text" value="17" />
+				</div>
+				<div class="md:col-span-1">
+					<label class="form-label">Dirección Residencial</label>
+					<div class="relative">
+						<span
+							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
+							>home_pin</span
+						>
+						<input
+							class="form-input-glass pl-10"
+							type="text"
+							value="Cra 83 # 14-50 Apto 402"
+						/>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="glass-panel p-8">
+			<div class="card-header border-none pb-0 mb-4">
+				<div
+					class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">credit_card</span>
+				</div>
+				<div>
+					<h3 class="card-title">Métodos de Pago</h3>
+					<p class="text-xs text-slate-500">
+						Gestione sus tarjetas para copagos y servicios
+					</p>
+				</div>
+			</div>
+			<div class="bg-slate-50/50 rounded-2xl p-6 border border-slate-200/60">
+				<div class="flex flex-col md:flex-row gap-8 items-start">
+					<div
+						class="w-full md:w-80 h-auto rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 relative shadow-xl shadow-slate-900/10 overflow-hidden shrink-0"
+					>
+						<div
+							class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl"
+						></div>
+						<div class="flex justify-between items-start mb-8">
+							<span class="material-symbols-outlined text-3xl opacity-80"
+								>contactless</span
+							>
+							<span class="font-bold italic text-lg opacity-90">VISA</span>
+						</div>
+						<div class="mb-6">
+							<p class="text-xs text-slate-400 mb-1">Número de Tarjeta</p>
+							<p class="text-xl font-mono tracking-widest">
+								**** **** **** 1234
+							</p>
+						</div>
+						<div class="flex justify-between items-end">
+							<div>
+								<p class="text-[10px] text-slate-400 uppercase">Titular</p>
+								<p class="text-sm font-medium tracking-wide">JUAN PÉREZ</p>
+							</div>
+							<div>
+								<p class="text-[10px] text-slate-400 uppercase">Expira</p>
+								<p class="text-sm font-medium">10/26</p>
+							</div>
+						</div>
+					</div>
+					<div class="flex-1 w-full space-y-4">
+						<div
+							class="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-slate-100"
+						>
+							<div
+								class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"
+							>
+								<span class="material-symbols-outlined">check_circle</span>
+							</div>
+							<div class="flex-1">
+								<h4 class="font-bold text-slate-800 text-sm">
+									Tarjeta Principal Activa
+								</h4>
+								<p class="text-xs text-slate-500">
+									Esta tarjeta se usará para cobros automáticos autorizados.
+								</p>
+							</div>
+							<button
+								class="text-primary_p text-sm font-medium hover:underline"
+							>
+								Editar
+							</button>
+						</div>
+						<button
+							class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-primary_p hover:text-primary_p hover:bg-primary_p/5 transition-all"
+						>
+							<span class="material-symbols-outlined">add_card</span>
+							<span class="font-semibold text-sm"
+								>Registrar nueva tarjeta Débito/Crédito</span
+							>
+						</button>
+						<div
+							class="flex items-center justify-center gap-4 text-slate-400 pt-2"
+						>
+							<div class="flex items-center gap-1">
+								<span class="material-symbols-outlined text-xs">lock</span>
+								<span class="text-[10px]">Pagos Seguros SSL</span>
+							</div>
+							<div class="flex items-center gap-1">
+								<span class="material-symbols-outlined text-xs"
+									>verified_user</span
+								>
+								<span class="text-[10px]">PCI DSS Compliant</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="flex justify-end p-4">
+			<button
+				class="bg-primary_p hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg shadow-primary_p/30 transition-all transform hover:scale-[1.02] flex items-center gap-2"
+			>
+				<span class="material-symbols-outlined">save</span>
+				Guardar Cambios
+			</button>
+		</div>
+	</div>
+</section>

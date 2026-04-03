@@ -1,0 +1,18 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/60 shadow-glass rounded-2xl;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary_p/10 hover:text-primary_p transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary_p text-white shadow-lg shadow-primary_p/30;
+}
+.bento-card {
+	@apply glass-panel p-6 flex flex-col h-full transition-all duration-300;
+}
+.action-option {
+	@apply flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-transparent bg-white/50 hover:border-primary_p/30 hover:bg-white hover:shadow-card-hover cursor-pointer transition-all gap-3 text-center h-full;
+}
+.form-input-glass {
+	@apply w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary_p/50 focus:border-primary_p outline-none transition-all placeholder:text-slate-400 text-slate-700;
+}

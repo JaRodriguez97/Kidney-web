@@ -1,0 +1,157 @@
+<div
+	*ngIf="visible"
+	class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm"
+>
+	<div
+		class="relative bg-white/70 backdrop-blur-xl border border-white/60 shadow-glass rounded-2xl w-full max-w-lg overflow-hidden flex flex-col"
+	>
+		<!-- Header -->
+		<div
+			class="px-6 py-5 border-b border-white/50 flex justify-between items-start bg-white/30"
+		>
+			<div>
+				<h3 class="text-xl font-bold text-primary">Crear Tipo de Proveedor</h3>
+				<p class="text-sm text-slate-500 mt-1">
+					Defina un nuevo tipo de proveedor para organizar los servicios
+				</p>
+			</div>
+			<button
+				(click)="onCancel()"
+				class="text-slate-400 hover:text-secondary transition-colors p-1 rounded-full hover:bg-white/50"
+			>
+				<span class="material-symbols-outlined">close</span>
+			</button>
+		</div>
+
+		<!-- Body -->
+		<form
+			[formGroup]="form"
+			(ngSubmit)="onSubmit()"
+			class="p-6 space-y-5 overflow-y-auto max-h-[70vh]"
+		>
+			<!-- Code -->
+			<div>
+				<label class="block text-sm font-bold text-slate-700 mb-2"
+					>Código</label
+				>
+				<input
+					formControlName="code"
+					class="w-full rounded-xl border border-[#1c384e] bg-white/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none placeholder:text-slate-400 uppercase"
+					placeholder="Ej: NEPHROLOGY"
+					type="text"
+				/>
+				<div
+					*ngIf="form.get('code')?.touched && form.get('code')?.invalid"
+					class="mt-1 text-xs text-red-500"
+				>
+					<span *ngIf="form.get('code')?.errors?.['required']"
+						>El código es requerido.</span
+					>
+					<span *ngIf="form.get('code')?.errors?.['maxlength']"
+						>Máximo 50 caracteres.</span
+					>
+					<span *ngIf="form.get('code')?.errors?.['pattern']"
+						>Solo UPPER_SNAKE_CASE (ej: GENERAL_MEDICINE).</span
+					>
+				</div>
+			</div>
+
+			<!-- Name -->
+			<div>
+				<label class="block text-sm font-bold text-slate-700 mb-2"
+					>Nombre</label
+				>
+				<input
+					formControlName="name"
+					class="w-full rounded-xl border border-[#1c384e] bg-white/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none placeholder:text-slate-400"
+					placeholder="Ej: Nefrología"
+					type="text"
+				/>
+				<div
+					*ngIf="form.get('name')?.touched && form.get('name')?.invalid"
+					class="mt-1 text-xs text-red-500"
+				>
+					<span *ngIf="form.get('name')?.errors?.['required']"
+						>El nombre es requerido.</span
+					>
+					<span *ngIf="form.get('name')?.errors?.['maxlength']"
+						>Máximo 150 caracteres.</span
+					>
+				</div>
+			</div>
+
+			<!-- Description -->
+			<div>
+				<label class="block text-sm font-bold text-slate-700 mb-2"
+					>Descripción</label
+				>
+				<textarea
+					formControlName="description"
+					class="w-full rounded-xl border border-white/60 bg-white/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none placeholder:text-slate-400 resize-none"
+					placeholder="Describa el alcance de este tipo de proveedor..."
+					rows="3"
+				></textarea>
+			</div>
+
+			<!-- Requires Professional License -->
+			<div
+				class="flex items-center justify-between p-4 rounded-xl bg-white/40 border border-white/50"
+			>
+				<div>
+					<span class="block text-sm font-bold text-slate-700"
+						>Requiere Licencia Profesional</span
+					>
+					<span class="text-xs text-slate-500"
+						>Indica si este tipo de proveedor necesita tarjeta profesional</span
+					>
+				</div>
+				<label class="relative inline-flex items-center cursor-pointer">
+					<input
+						formControlName="requiresProfessionalLicense"
+						class="sr-only peer"
+						type="checkbox"
+					/>
+					<div
+						class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"
+					></div>
+				</label>
+			</div>
+
+			<!-- Permisos (placeholder para API futura) -->
+			<div>
+				<label class="block text-sm font-bold text-slate-700 mb-2"
+					>Permisos</label
+				>
+				<div
+					class="p-4 rounded-xl bg-white/40 border border-dashed border-slate-300 text-center"
+				>
+					<span class="material-symbols-outlined text-slate-400 text-3xl"
+						>lock</span
+					>
+					<p class="text-sm text-slate-400 mt-1">
+						Los permisos estarán disponibles próximamente
+					</p>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div class="flex justify-end gap-3 pt-2">
+				<button
+					type="button"
+					(click)="onCancel()"
+					class="px-5 py-2.5 rounded-xl text-slate-600 font-semibold hover:bg-slate-100 transition-colors"
+				>
+					Cancelar
+				</button>
+				<button
+					type="submit"
+					[disabled]="form.invalid || isSubmitting"
+					class="px-5 py-2.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+				>
+					<span class="material-symbols-outlined text-lg">save</span>
+					{{ isSubmitting ? "Guardando..." : "Guardar Tipo de Proveedor" }}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,1 +1,24 @@
-<p>patient-dashboard works!</p>
+<section
+	class="bg-slate-50 font-sans text-slate-800 antialiased h-screen overflow-hidden flex selection:bg-primary_p selection:text-white"
+>
+	<div class="fixed inset-0 z-0">
+		<img
+			alt="Background"
+			class="w-full h-full object-cover opacity-20 blur-sm"
+			src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi2bavdH1R1RA62UNvU5eAf89Go3pszC9IaIQXx9Ax0CXMRhN9z09d3lXTI0hMwxTjr41_CnwjHL5rhAUpPNyqMwQk2ocRy0wxIrf8nqHb0NG7OOPiW7obsGIDDw3y5DyiOExBSDZ-UB7ZxFurYIwV9dHAcM5swNAlzofOXfG7YCVRldKGpG9wZmyt1BlUxc6zwWDllSCPxiK3WM8uzSpoGx8Kf6JHM_56iR2Aq23O57rqOqgU4XCZaiTeSsCqsKVQ0yfETaBc97Y"
+		/>
+		<div
+			class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white/50 to-blue-100/50 mix-blend-overlay"
+		></div>
+	</div>
+
+	<app-aside-patient></app-aside-patient>
+
+	<main
+		class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden p-4 lg:p-8 flex flex-col"
+	>
+		<app-top-patient></app-top-patient>
+
+		<router-outlet />
+	</main>
+</section>

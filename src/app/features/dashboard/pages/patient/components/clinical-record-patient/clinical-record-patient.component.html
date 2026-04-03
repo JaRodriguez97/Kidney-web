@@ -1,0 +1,277 @@
+<section
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
+>
+	<div class="grid grid-cols-12 gap-6 pb-6">
+		<div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+			<div
+				class="glass-card p-4 flex flex-col md:flex-row gap-4 items-center justify-between"
+			>
+				<div class="flex flex-1 w-full relative">
+					<span
+						class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+						>search</span
+					>
+					<input
+						class="w-full pl-10 pr-4 py-2 bg-white/50 border border-slate-200 rounded-xl text-sm focus:ring-primary_p focus:border-primary_p"
+						placeholder="Buscar por diagnóstico o médico..."
+						type="text"
+					/>
+				</div>
+				<div class="flex items-center gap-2 w-full md:w-auto">
+					<div
+						class="flex items-center bg-white/50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 gap-2"
+					>
+						<span class="material-symbols-outlined text-sm"
+							>calendar_today</span
+						>
+						<span>Rango de fechas</span>
+					</div>
+					<button
+						class="bg-white/50 border border-slate-200 rounded-xl p-2 text-slate-600 hover:bg-white transition-colors"
+					>
+						<span class="material-symbols-outlined">filter_list</span>
+					</button>
+				</div>
+			</div>
+			<div class="space-y-6 relative">
+				<div
+					class="absolute left-[40px] top-0 bottom-0 w-0.5 bg-slate-200 hidden md:block"
+				></div>
+				<div class="relative flex flex-col md:flex-row gap-6">
+					<div class="hidden md:flex items-center justify-center z-10">
+						<div
+							class="w-10 h-10 rounded-full bg-primary_p border-4 border-white shadow-sm flex items-center justify-center text-white"
+						>
+							<span class="material-symbols-outlined text-sm"
+								>medical_services</span
+							>
+						</div>
+					</div>
+					<div class="glass-card p-6 flex-1 hover:shadow-md transition-shadow">
+						<div class="flex flex-col md:flex-row justify-between gap-4">
+							<div class="flex-1">
+								<div class="flex items-center gap-2 mb-2">
+									<span
+										class="text-xs font-bold text-primary_p uppercase tracking-wider"
+										>28 Septiembre, 2023</span
+									>
+									<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+									<span class="text-xs font-medium text-slate-500"
+										>08:00 AM</span
+									>
+								</div>
+								<h4 class="text-lg font-bold text-slate-800">
+									Consulta de Medicina General
+								</h4>
+								<div
+									class="flex items-center gap-2 mt-1 mb-4 text-sm text-slate-600"
+								>
+									<span class="material-symbols-outlined text-sm"
+										>person_pin</span
+									>
+									<span>Dr. Alejandro Vargas</span>
+								</div>
+								<div
+									class="bg-blue-50/50 rounded-xl p-4 border border-blue-100"
+								>
+									<p class="text-[11px] font-bold text-blue-600 uppercase mb-1">
+										Diagnóstico Principal
+									</p>
+									<p class="text-sm font-bold text-slate-800">
+										I10 - Hipertensión esencial
+									</p>
+									<div class="mt-3">
+										<p
+											class="text-[11px] font-bold text-slate-500 uppercase mb-1"
+										>
+											Plan de Manejo
+										</p>
+										<p class="text-sm text-slate-600 leading-relaxed">
+											Control de presión arterial diario, reducción de ingesta
+											de sodio y ajuste de dosis de Losartán. Se solicita
+											monitoreo MAPA.
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="flex md:flex-col gap-2 shrink-0">
+								<button class="icon-action-btn" title="Ver Detalle">
+									<span class="material-symbols-outlined">visibility</span>
+								</button>
+								<button class="icon-action-btn" title="Descargar Informe">
+									<span class="material-symbols-outlined">download</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="relative flex flex-col md:flex-row gap-6">
+					<div class="hidden md:flex items-center justify-center z-10">
+						<div
+							class="w-10 h-10 rounded-full bg-emerald-500 border-4 border-white shadow-sm flex items-center justify-center text-white"
+						>
+							<span class="material-symbols-outlined text-sm">nutrition</span>
+						</div>
+					</div>
+					<div class="glass-card p-6 flex-1 hover:shadow-md transition-shadow">
+						<div class="flex flex-col md:flex-row justify-between gap-4">
+							<div class="flex-1">
+								<div class="flex items-center gap-2 mb-2">
+									<span
+										class="text-xs font-bold text-emerald-600 uppercase tracking-wider"
+										>30 Agosto, 2023</span
+									>
+									<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+									<span class="text-xs font-medium text-slate-500"
+										>11:30 AM</span
+									>
+								</div>
+								<h4 class="text-lg font-bold text-slate-800">
+									Chequeo Nutricional
+								</h4>
+								<div
+									class="flex items-center gap-2 mt-1 mb-4 text-sm text-slate-600"
+								>
+									<span class="material-symbols-outlined text-sm"
+										>person_pin</span
+									>
+									<span>Dra. Maria Elena Ruiz</span>
+								</div>
+								<div
+									class="bg-emerald-50/50 rounded-xl p-4 border border-emerald-100"
+								>
+									<p
+										class="text-[11px] font-bold text-emerald-600 uppercase mb-1"
+									>
+										Plan Nutricional
+									</p>
+									<p class="text-sm font-bold text-slate-800">
+										Plan alimenticio hiposódico
+									</p>
+									<div class="mt-3 text-sm text-slate-600 leading-relaxed">
+										Incrementar consumo de vegetales verdes y frutas. Restringir
+										alimentos procesados y embutidos. Control de peso quincenal.
+									</div>
+								</div>
+							</div>
+							<div class="flex md:flex-col gap-2 shrink-0">
+								<button class="icon-action-btn" title="Ver Detalle">
+									<span class="material-symbols-outlined">visibility</span>
+								</button>
+								<button class="icon-action-btn" title="Descargar Informe">
+									<span class="material-symbols-outlined">download</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+			<div class="glass-card p-6">
+				<div class="flex items-center justify-between mb-4">
+					<h4 class="font-bold text-slate-800">Octubre 2023</h4>
+					<div class="flex gap-1">
+						<button
+							class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500"
+						>
+							<span class="material-symbols-outlined text-sm"
+								>chevron_left</span
+							>
+						</button>
+						<button
+							class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500"
+						>
+							<span class="material-symbols-outlined text-sm"
+								>chevron_right</span
+							>
+						</button>
+					</div>
+				</div>
+				<div class="grid grid-cols-7 gap-1 text-center mb-2">
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Do</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Lu</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Ma</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Mi</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Ju</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Vi</div>
+					<div class="text-[10px] font-bold text-slate-400 uppercase">Sa</div>
+				</div>
+				<div class="grid grid-cols-7 gap-1 text-slate-700 font-medium text-sm">
+					<div class="calendar-day">1</div>
+					<div class="calendar-day text-slate-300">2</div>
+					<div class="calendar-day">3</div>
+					<div class="calendar-day">4</div>
+					<div class="calendar-day">5</div>
+					<div class="calendar-day">6</div>
+					<div class="calendar-day">7</div>
+					<div class="calendar-day">8</div>
+					<div class="calendar-day">9</div>
+					<div class="calendar-day">10</div>
+					<div class="calendar-day">11</div>
+					<div class="calendar-day active">12</div>
+					<div class="calendar-day">13</div>
+					<div class="calendar-day">14</div>
+					<div class="calendar-day">15</div>
+					<div class="calendar-day">16</div>
+					<div class="calendar-day">17</div>
+					<div class="calendar-day">18</div>
+					<div class="calendar-day text-slate-300">19</div>
+					<div class="calendar-day">20</div>
+					<div class="calendar-day">21</div>
+					<div class="calendar-day">22</div>
+					<div class="calendar-day">23</div>
+					<div class="calendar-day">24</div>
+					<div class="calendar-day">25</div>
+					<div class="calendar-day">26</div>
+					<div class="calendar-day">27</div>
+					<div class="calendar-day">28</div>
+					<div class="calendar-day text-slate-300">29</div>
+					<div class="calendar-day">30</div>
+					<div class="calendar-day">31</div>
+				</div>
+			</div>
+			<div class="glass-card p-6">
+				<h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+					<span class="material-symbols-outlined text-primary_p"
+						>analytics</span
+					>
+					Resumen de Salud
+				</h4>
+				<div class="space-y-4">
+					<div class="p-4 rounded-2xl bg-white/40 border border-white/60">
+						<div class="flex items-center gap-3 mb-2">
+							<div
+								class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600"
+							>
+								<span class="material-symbols-outlined text-xl"
+									>event_available</span
+								>
+							</div>
+							<span class="text-sm font-semibold text-slate-600"
+								>Consultas Realizadas</span
+							>
+						</div>
+						<p class="text-2xl font-extrabold text-slate-800 ml-11">12</p>
+					</div>
+					<div class="p-4 rounded-2xl bg-white/40 border border-white/60">
+						<div class="flex items-center gap-3 mb-2">
+							<div
+								class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600"
+							>
+								<span class="material-symbols-outlined text-xl">schedule</span>
+							</div>
+							<span class="text-sm font-semibold text-slate-600"
+								>Última Atención</span
+							>
+						</div>
+						<p class="text-lg font-bold text-slate-800 ml-11">Hace 14 días</p>
+						<p class="text-[11px] text-slate-500 ml-11 mt-1 font-medium">
+							Medicina General - Dr. Vargas
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

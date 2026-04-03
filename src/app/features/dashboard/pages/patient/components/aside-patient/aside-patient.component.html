@@ -1,0 +1,84 @@
+<aside
+	[ngClass]="{
+		'w-64 opacity-100 translate-x-0 border-r': isSidebarVisible$ | async,
+		'w-0 opacity-0 -translate-x-full border-r-0': !(isSidebarVisible$ | async),
+	}"
+	class="relative z-10 h-full flex flex-col bg-white/60 backdrop-blur-md p-6 transition-all duration-300 ease-in-out overflow-hidden"
+>
+	<div class="flex items-center mb-6 px-2">
+		<img
+			src="assets/img/logo.png"
+			srcset="assets/img/logo.png 1x, assets/img/logo.png 2x"
+			width="150"
+			loading="lazy"
+			alt="Kidney Medicine logo"
+			class="rounded-lg object-contain"
+		/>
+	</div>
+	<nav class="space-y-1.5 flex-1 overflow-y-auto pr-2">
+		<a
+			(click)="setActive(0)"
+			[class.active]="activeIndex === 0"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">dashboard</span>
+			Resumen
+		</a>
+		<a
+			(click)="setActive(1)"
+			[class.active]="activeIndex === 1"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">calendar_month</span>
+			Citas
+		</a>
+		<a
+			(click)="setActive(2)"
+			[class.active]="activeIndex === 2"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">history_edu</span>
+			Historial
+		</a>
+		<a
+			(click)="setActive(3)"
+			[class.active]="activeIndex === 3"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">science</span>
+			Resultados
+		</a>
+		<a
+			(click)="setActive(4)"
+			[class.active]="activeIndex === 4"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">description</span>
+			Documentos
+		</a>
+		<a
+			(click)="setActive(5)"
+			[class.active]="activeIndex === 5"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">person</span>
+			Perfil
+		</a>
+	</nav>
+	<div class="mt-auto pt-6 border-t border-slate-200/50">
+		<a
+			(click)="setActive(6)"
+			[class.active]="activeIndex === 6"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">headset_mic</span>
+			Soporte
+		</a>
+		<a
+			class="sidebar-item text-secondary hover:bg-red-50 hover:text-red-700 mt-2 cursor-pointer"
+		>
+			<span class="material-symbols-outlined">logout</span>
+			Cerrar Sesión
+		</a>
+	</div>
+</aside>

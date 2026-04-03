@@ -1,19 +1,17 @@
-
-
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-25%25-brightgreen)
 ![Node Version](https://img.shields.io/badge/node-20.20.0-brightgreen)
 ![Angular](https://img.shields.io/badge/angular-17.3.x-red)
 ![Netlify](https://img.shields.io/badge/netlify-deployed-brightgreen)
 
-# 🌟 Kinexa-Web: Revolucionando el Cuidado Renal
+# 🌟 Kinexa-Web: Revolucionando el Cuidado de Tu Salud
 
-¡Bienvenido a Kinexa-Web! Una plataforma innovadora diseñada para transformar la experiencia de pacientes, médicos y aliados en el mundo de la salud renal. Aquí la tecnología se pone al servicio de las personas, haciendo el cuidado más humano, accesible y eficiente.
+¡Bienvenido a Kinexa-Web! Una plataforma innovadora diseñada para transformar la experiencia de pacientes, médicos y aliados en el mundo de la salud. Aquí la tecnología se pone al servicio de las personas, haciendo el cuidado más humano, accesible y eficiente.
 
 ---
 
 ## ¿Qué es Kinexa-Web?
-Kinexa-Web es una solución digital que conecta a todos los actores del ecosistema renal: pacientes, profesionales de la salud y aliados. Nuestra misión es facilitar la gestión, el seguimiento y la comunicación, para que el bienestar sea el centro de todo.
+Kinexa-Web es una solución digital que conecta a todos los actores del ecosistema: pacientes, profesionales de la salud y aliados. Nuestra misión es facilitar la gestión, el seguimiento y la comunicación, para que el bienestar sea el centro de todo.
 
 ---
 
@@ -30,7 +28,7 @@ Kinexa-Web es una solución digital que conecta a todos los actores del ecosiste
 - Registro y gestión de pacientes
 - Paneles de control intuitivos
 - Seguimiento de tratamientos y citas
-- Blog educativo sobre salud renal
+- Blog educativo sobre salud
 - Soporte y ayuda en tiempo real
 - Seguridad y privacidad de tus datos
 

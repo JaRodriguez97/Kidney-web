@@ -1,0 +1,379 @@
+<div class="grid grid-cols-12 gap-6 pb-6">
+	<div
+		class="col-span-12 lg:col-span-5 glass-card p-6 flex flex-col justify-between relative overflow-hidden"
+	>
+		<div
+			class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-50/50 to-transparent pointer-events-none"
+		></div>
+		<div>
+			<div class="flex justify-between items-start mb-4">
+				<span
+					class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-100/50 text-sky-700 text-[11px] font-bold uppercase tracking-wide rounded-full"
+				>
+					<span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+					Próxima Cita
+				</span>
+				<div class="text-right">
+					<span class="block text-3xl font-bold text-slate-800 leading-none"
+						>12</span
+					>
+					<span
+						class="text-[11px] font-bold text-slate-400 uppercase tracking-widest"
+						>Octubre</span
+					>
+				</div>
+			</div>
+			<h3 class="text-xl font-bold text-slate-900 mb-6">
+				Chequeo Médico Integral
+			</h3>
+			<div class="flex items-start gap-4 mb-8">
+				<div
+					class="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 shrink-0 border border-sky-100"
+				>
+					<span class="material-symbols-outlined">medical_services</span>
+				</div>
+				<div>
+					<p class="font-bold text-slate-800 text-sm">Dr. Alejandro Vargas</p>
+					<p class="text-xs text-slate-500 mb-2">Médico Especialista</p>
+					<div class="flex gap-4 text-xs text-slate-400">
+						<div class="flex items-center gap-1">
+							<span class="material-symbols-outlined text-[14px]"
+								>schedule</span
+							>
+							07:00 AM
+						</div>
+						<div class="flex items-center gap-1">
+							<span class="material-symbols-outlined text-[14px]"
+								>location_on</span
+							>
+							Cons. 304, Torre B
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="flex gap-3 mt-auto">
+			<button class="btn-primary_p flex-1 py-2.5 text-sm">
+				<span class="material-symbols-outlined text-lg">calendar_month</span>
+				Reprogramar
+			</button>
+			<button
+				class="btn-outline flex-1 py-2.5 text-sm bg-white border-slate-200"
+			>
+				Cancelar
+			</button>
+		</div>
+	</div>
+	<div class="col-span-12 md:col-span-5 lg:col-span-3 glass-card p-6">
+		<div class="flex items-center gap-2 mb-6">
+			<span class="material-symbols-outlined text-sky-600 text-xl">bolt</span>
+			<h3 class="font-bold text-slate-800">Acciones Rápidas</h3>
+		</div>
+		<div class="space-y-3">
+			<button
+				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
+			>
+				<div
+					class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0"
+				>
+					<span class="material-symbols-outlined text-[20px]">add_circle</span>
+				</div>
+				<div class="min-w-0">
+					<span
+						class="block text-sm font-semibold text-slate-700 group-hover:text-slate-900"
+						>Agendar Cita</span
+					>
+					<span
+						class="block text-[11px] text-slate-400 font-medium leading-tight mt-0.5"
+						>Programar consultas presenciales o virtuales</span
+					>
+				</div>
+			</button>
+			<button
+				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
+			>
+				<div
+					class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0"
+				>
+					<span class="material-symbols-outlined text-[20px]">download</span>
+				</div>
+				<div class="min-w-0">
+					<span
+						class="block text-sm font-semibold text-slate-700 group-hover:text-slate-900"
+						>Certificados</span
+					>
+					<span
+						class="block text-[11px] text-slate-400 font-medium leading-tight mt-0.5"
+						>Gestionar incapacidades y documentos</span
+					>
+				</div>
+			</button>
+			<button
+				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
+			>
+				<div
+					class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0"
+				>
+					<span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+				</div>
+				<div class="min-w-0">
+					<span
+						class="block text-sm font-semibold text-slate-700 group-hover:text-slate-900"
+						>Contactar</span
+					>
+					<span
+						class="block text-[11px] text-slate-400 font-medium leading-tight mt-0.5"
+						>Atención al paciente y soporte técnico</span
+					>
+				</div>
+			</button>
+		</div>
+	</div>
+	<div
+		class="col-span-12 md:col-span-7 lg:col-span-4 glass-card p-6 flex flex-col"
+	>
+		<div class="flex items-center justify-between mb-4">
+			<h3 class="font-bold text-slate-800">Resultados</h3>
+			<button class="text-xs font-bold text-primary_p hover:text-sky-700">
+				Ver todos
+			</button>
+		</div>
+		<div class="space-y-3 overflow-y-auto pr-1 custom-scrollbar max-h-[280px]">
+			<div
+				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+			>
+				<div>
+					<div class="flex items-center gap-2 mb-1">
+						<h4 class="text-sm font-bold text-slate-800">Hemograma Completo</h4>
+						<span
+							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+							>Disponible</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">01 Oct 2023</p>
+				</div>
+				<button class="btn-download-icon" title="Descargar">
+					<span class="material-symbols-outlined text-[18px]">download</span>
+				</button>
+			</div>
+			<div
+				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+			>
+				<div>
+					<div class="flex items-center gap-2 mb-1">
+						<h4 class="text-sm font-bold text-slate-800">Hemoglobina</h4>
+						<span
+							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+							>Disponible</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">01 Oct 2023</p>
+				</div>
+				<button class="btn-download-icon" title="Descargar">
+					<span class="material-symbols-outlined text-[18px]">download</span>
+				</button>
+			</div>
+			<div
+				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+			>
+				<div>
+					<div class="flex items-center gap-2 mb-1">
+						<h4 class="text-sm font-bold text-slate-800">Perfil Lipídico</h4>
+						<span
+							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+							>Disponible</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">28 Sep 2023</p>
+				</div>
+				<button class="btn-download-icon" title="Descargar">
+					<span class="material-symbols-outlined text-[18px]">download</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-span-12 lg:col-span-8 glass-card p-6">
+		<div class="flex items-center justify-between mb-2">
+			<div>
+				<div class="flex items-center gap-2">
+					<span class="material-symbols-outlined text-primary_p"
+						>monitoring</span
+					>
+					<h3 class="font-bold text-slate-800">Evolución de Salud General</h3>
+				</div>
+				<p class="text-xs text-slate-400 mt-1">
+					Histórico de indicadores principales (últimos 6 meses)
+				</p>
+			</div>
+			<div class="flex bg-white rounded-lg p-1 border border-slate-100">
+				<button
+					class="px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700 rounded-md shadow-sm"
+				>
+					6 Meses
+				</button>
+				<button
+					class="px-3 py-1 text-xs font-medium text-slate-400 hover:text-slate-600"
+				>
+					1 Año
+				</button>
+			</div>
+		</div>
+		<div class="h-[200px] w-full mt-6 relative">
+			<div
+				class="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-[10px] text-slate-400 font-medium text-right pr-2"
+			>
+				<span>100</span>
+				<span>80</span>
+				<span>60</span>
+				<span>40</span>
+			</div>
+			<div class="absolute left-8 right-0 top-2 bottom-6">
+				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
+				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
+				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
+				<svg
+					class="absolute inset-0 w-full h-full overflow-visible"
+					preserveAspectRatio="none"
+					viewBox="0 0 400 100"
+					width="100%"
+					height="100%"
+				>
+					<defs>
+						<linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+							<stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2"></stop>
+							<stop offset="100%" stop-color="#3b82f6" stop-opacity="0"></stop>
+						</linearGradient>
+					</defs>
+					<path
+						d="M0,80 C50,78 100,75 150,75 C200,75 250,50 300,40 C350,30 380,50 400,60 V100 H0 Z"
+						fill="url(#chartGradient)"
+					></path>
+					<path
+						d="M0,80 C50,78 100,75 150,75 C200,75 250,50 300,40 C350,30 380,50 400,60"
+						fill="none"
+						stroke="#2563eb"
+						stroke-linecap="round"
+						stroke-width="3"
+					></path>
+					<circle
+						cx="0"
+						cy="80"
+						fill="white"
+						r="3"
+						stroke="#2563eb"
+						stroke-width="2"
+					></circle>
+					<circle
+						cx="150"
+						cy="75"
+						fill="white"
+						r="3"
+						stroke="#2563eb"
+						stroke-width="2"
+					></circle>
+					<circle
+						cx="300"
+						cy="40"
+						fill="white"
+						r="3"
+						stroke="#2563eb"
+						stroke-width="2"
+					></circle>
+					<circle
+						cx="400"
+						cy="60"
+						fill="white"
+						r="3"
+						stroke="#2563eb"
+						stroke-width="2"
+					></circle>
+				</svg>
+			</div>
+			<div
+				class="absolute left-8 right-0 bottom-0 flex justify-between text-[10px] text-slate-500 font-bold px-1"
+			>
+				<span>Abr</span>
+				<span>May</span>
+				<span>Jun</span>
+				<span>Jul</span>
+				<span>Ago</span>
+				<span>Sep</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-span-12 lg:col-span-4 glass-card p-6 flex flex-col">
+		<div class="flex items-center justify-between mb-6">
+			<h3 class="font-bold text-slate-800">Documentos</h3>
+			<button class="text-slate-400 hover:text-slate-600">
+				<span class="material-symbols-outlined text-lg">more_horiz</span>
+			</button>
+		</div>
+		<div class="space-y-4 flex-1">
+			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+				<div
+					class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center shrink-0 border border-red-100 group-hover:bg-red-100 transition-colors"
+				>
+					<span class="material-symbols-outlined text-red-500 text-[20px]"
+						>picture_as_pdf</span
+					>
+				</div>
+				<div class="flex-1 min-w-0">
+					<div class="flex justify-between items-center">
+						<h4 class="text-sm font-bold text-slate-700 truncate">
+							Orden Médica #9821
+						</h4>
+						<span class="material-symbols-outlined text-slate-300 text-sm"
+							>chevron_right</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">Dr. Vargas • 02 Oct</p>
+				</div>
+			</a>
+			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+				<div
+					class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 group-hover:bg-blue-100 transition-colors"
+				>
+					<span class="material-symbols-outlined text-blue-500 text-[20px]"
+						>description</span
+					>
+				</div>
+				<div class="flex-1 min-w-0">
+					<div class="flex justify-between items-center">
+						<h4 class="text-sm font-bold text-slate-700 truncate">
+							Historia Clínica Sept
+						</h4>
+						<span class="material-symbols-outlined text-slate-300 text-sm"
+							>chevron_right</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">Medicina General • 15 Sep</p>
+				</div>
+			</a>
+			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+				<div
+					class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100 group-hover:bg-emerald-100 transition-colors"
+				>
+					<span class="material-symbols-outlined text-emerald-500 text-[20px]"
+						>receipt_long</span
+					>
+				</div>
+				<div class="flex-1 min-w-0">
+					<div class="flex justify-between items-center">
+						<h4 class="text-sm font-bold text-slate-700 truncate">
+							Factura #F-2910
+						</h4>
+						<span class="material-symbols-outlined text-slate-300 text-sm"
+							>chevron_right</span
+						>
+					</div>
+					<p class="text-[11px] text-slate-400">Pagado • 01 Sep</p>
+				</div>
+			</a>
+		</div>
+		<button
+			class="w-full mt-6 py-3 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-white hover:border-slate-300 transition-all bg-slate-50/50"
+		>
+			Ver todo el archivo
+		</button>
+	</div>
+</div>

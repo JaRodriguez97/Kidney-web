@@ -1,0 +1,26 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-200;
+}
+
+.btn-primary_p {
+	@apply bg-primary_p text-white px-4 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary_p/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.btn-outline {
+	@apply border border-slate-200 bg-white/50 text-slate-600 px-4 py-3 rounded-xl font-semibold hover:bg-white hover:text-primary_p hover:border-primary_p transition-all active:scale-95 text-center;
+}
+.btn-download-icon {
+	@apply w-8 h-8 bg-blue-50/80 hover:bg-blue-100 text-primary_p flex items-center justify-center rounded-lg transition-colors shadow-sm;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}

@@ -1,0 +1,40 @@
+.glass-panel {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-glass rounded-3xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-200;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary_p/10 hover:text-primary_p transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary_p text-white shadow-lg shadow-primary_p/30;
+}
+.btn-primary_p {
+	@apply bg-primary_p text-white px-4 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary_p/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.icon-action-btn {
+	@apply w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white/50 text-slate-500 hover:text-primary_p hover:border-primary_p hover:bg-white transition-all active:scale-90;
+}
+.badge {
+	@apply inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold uppercase tracking-wide rounded-full;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}
+.calendar-day {
+	@apply h-8 w-8 flex items-center justify-center text-sm rounded-full cursor-pointer hover:bg-blue-50 transition-colors relative;
+}
+.calendar-day.active {
+	@apply bg-primary_p text-white font-bold shadow-md shadow-primary_p/20 hover:bg-primary_p;
+}
+.calendar-day.has-event::after {
+	@apply absolute bottom-1 w-1 h-1 bg-secondary rounded-full content-[''];
+}

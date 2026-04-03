@@ -206,20 +206,63 @@
             >{{ countPatient }}</span
           >
         </div>
-        <div
-          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-            <span
-              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-              >Médicos</span
-            >
-          </div>
-          <span
-            class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
-            >{{ countProvider }}</span
+        <div>
+          <div
+            (click)="toggleProviderTypes()"
+            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
           >
+            <div class="flex items-center gap-3">
+              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              <span
+                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+                >Proveedores</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="material-symbols-outlined text-sm text-slate-400 transition-transform"
+                [class.rotate-180]="showProviderTypes"
+                >expand_more</span
+              >  <span
+                class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
+                >{{ countProvider }}</span
+              >
+            
+            </div>
+          </div>
+          <div *ngIf="showProviderTypes" class="mt-2 ml-5 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-500"
+                >Tipos de Proveedores</span
+              >
+              <button
+                (click)="openCreateProviderTypeModal(); $event.stopPropagation()"
+                class="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 hover:bg-primary hover:text-white transition-colors text-blue-600"
+                title="Crear tipo de proveedor"
+              >
+                <span class="material-symbols-outlined text-sm">add</span>
+              </button>
+            </div>
+            <div
+              *ngFor="let pt of providerTypes"
+              class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50/50 border border-blue-100/50 text-xs text-blue-700"
+            >
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+              <span>{{ pt.name }}</span>
+            </div>
+            <p
+              *ngIf="providerTypes.length === 0 && !isLoadingProviderTypes"
+              class="text-xs text-slate-400 px-3 py-1"
+            >
+              Sin tipos registrados
+            </p>
+            <div
+              *ngIf="isLoadingProviderTypes"
+              class="text-xs text-slate-400 px-3 py-1"
+            >
+              Cargando...
+            </div>
+          </div>
         </div>
         <div
           class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
@@ -280,10 +323,10 @@
 </div>
 <div
   *ngIf="showCreateModal"
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-auto"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm overflow-auto"
 >
   <div
-    class="relative modal-glass w-full max-w-3/4 max-h-fit flex flex-col top-0"
+    class="absolute modal-glass w-full max-w-3/4 max-h-fit flex flex-col top-0"
   >
     <div class="px-10 pt-10 pb-6 text-center">
       <!-- <img
@@ -339,7 +382,7 @@
               class="peer hidden"
               name="role"
               type="radio"
-              value="medico"
+              value="proveedor"
               [(ngModel)]="modalRole"
             />
             <div
@@ -351,7 +394,7 @@
               >
               <span
                 class="text-xs font-bold text-slate-600 peer-checked:text-primary"
-                >Médico</span
+                >Proveedor</span
               >
             </div>
           </label>
@@ -400,7 +443,7 @@
         </div>
       </section>
       <app-rol-patient *ngIf="modalRole === 'paciente'" />
-      <!-- <app-rol-provider *ngIf="modalRole === 'medico'" /> -->
+      <app-rol-provider *ngIf="modalRole === 'proveedor'" />
       <app-rol-organization *ngIf="modalRole === 'aliado'" />
       <app-rol-admin *ngIf="modalRole === 'admin'" />
     </div>
@@ -424,3 +467,8 @@
     </div>
   </div>
 </div>
+<app-create-provider-type
+  [visible]="showCreateProviderTypeModal"
+  (close)="closeCreateProviderTypeModal()"
+  (created)="onProviderTypeCreated()"
+></app-create-provider-type>

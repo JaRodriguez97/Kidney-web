@@ -1,0 +1,22 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/40 shadow-sm rounded-xl hover:bg-white/80 transition-all duration-200;
+}
+.btn-primary {
+	@apply bg-primary text-white hover:bg-slate-800 transition-colors shadow-lg shadow-primary/20;
+}
+.btn-secondary {
+	@apply bg-white border border-slate-200 text-slate-700 hover:border-primary hover:text-primary transition-colors;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}

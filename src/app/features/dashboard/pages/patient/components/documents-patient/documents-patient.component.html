@@ -1,0 +1,300 @@
+<section
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col gap-6"
+>
+	<div
+		class="glass-panel p-5 flex flex-col xl:flex-row gap-4 items-center justify-between"
+	>
+		<div class="flex flex-col md:flex-row gap-4 w-full xl:w-auto flex-1">
+			<div class="relative flex-1 max-w-lg">
+				<span
+					class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined"
+					>search</span
+				>
+				<input
+					class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-4 focus:ring-primary_p/10 focus:border-primary_p text-sm transition-all"
+					placeholder="Buscar documento por nombre..."
+					type="text"
+				/>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<select
+					class="pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-4 focus:ring-primary_p/10 focus:border-primary_p text-sm text-slate-600 appearance-none cursor-pointer min-w-[150px]"
+				>
+					<option>Todas las Categorías</option>
+					<option>Médicos</option>
+					<option>Certificados</option>
+					<option>Facturas</option>
+				</select>
+				<div class="relative">
+					<input
+						class="pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-4 focus:ring-primary_p/10 focus:border-primary_p text-sm text-slate-600 cursor-pointer"
+						type="date"
+					/>
+					<span
+						class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]"
+						>calendar_today</span
+					>
+				</div>
+			</div>
+		</div>
+		<button
+			class="w-full xl:w-auto px-6 py-2.5 bg-primary_p text-white rounded-xl font-bold text-sm transition-all hover:bg-[#0274ae] shadow-md shadow-primary_p/20 flex items-center justify-center gap-2"
+		>
+			<span class="material-symbols-outlined text-[20px]">filter_alt</span>
+			Aplicar Filtros
+		</button>
+	</div>
+	<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-8">
+		<div class="glass-card p-6 flex flex-col h-full group">
+			<div class="flex items-start justify-between mb-4">
+				<div
+					class="w-14 h-14 bg-blue-50 text-primary_p rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm group-hover:scale-105 transition-transform"
+				>
+					<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+				</div>
+				<span
+					class="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-blue-100"
+					>Médico</span
+				>
+			</div>
+			<div class="flex-1">
+				<h4 class="text-lg font-bold text-slate-800 leading-tight mb-2">
+					Incapacidad Médica
+				</h4>
+				<div class="space-y-1.5 text-sm text-slate-500">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">event</span>
+						<span>12 Oct 2023</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]"
+							>medical_information</span
+						>
+						<span>Dr. Silva - Medicina General</span>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex gap-3 pt-6 border-t border-slate-100">
+				<button
+					class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">visibility</span>
+					Ver
+				</button>
+				<button
+					class="flex-1 px-4 py-2 bg-primary_p text-white rounded-xl text-sm font-bold shadow-md shadow-primary_p/10 hover:bg-[#0274ae] transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">download</span>
+					Descargar
+				</button>
+			</div>
+		</div>
+		<div class="glass-card p-6 flex flex-col h-full group">
+			<div class="flex items-start justify-between mb-4">
+				<div
+					class="w-14 h-14 bg-blue-50 text-primary_p rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm group-hover:scale-105 transition-transform"
+				>
+					<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+				</div>
+				<span
+					class="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-blue-100"
+					>Médico</span
+				>
+			</div>
+			<div class="flex-1">
+				<h4 class="text-lg font-bold text-slate-800 leading-tight mb-2">
+					Remisión a Especialista
+				</h4>
+				<div class="space-y-1.5 text-sm text-slate-500">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">event</span>
+						<span>10 Oct 2023</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]"
+							>local_hospital</span
+						>
+						<span>Kidney Medicine SAS</span>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex gap-3 pt-6 border-t border-slate-100">
+				<button
+					class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">visibility</span>
+					Ver
+				</button>
+				<button
+					class="flex-1 px-4 py-2 bg-primary_p text-white rounded-xl text-sm font-bold shadow-md shadow-primary_p/10 hover:bg-[#0274ae] transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">download</span>
+					Descargar
+				</button>
+			</div>
+		</div>
+		<div class="glass-card p-6 flex flex-col h-full group">
+			<div class="flex items-start justify-between mb-4">
+				<div
+					class="w-14 h-14 bg-blue-50 text-primary_p rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm group-hover:scale-105 transition-transform"
+				>
+					<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+				</div>
+				<span
+					class="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-blue-100"
+					>Médico</span
+				>
+			</div>
+			<div class="flex-1">
+				<h4 class="text-lg font-bold text-slate-800 leading-tight mb-2">
+					Orden de Laboratorio
+				</h4>
+				<div class="space-y-1.5 text-sm text-slate-500">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">event</span>
+						<span>08 Oct 2023</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]"
+							>medical_services</span
+						>
+						<span>Dr. Alejandro Vargas</span>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex gap-3 pt-6 border-t border-slate-100">
+				<button
+					class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">visibility</span>
+					Ver
+				</button>
+				<button
+					class="flex-1 px-4 py-2 bg-primary_p text-white rounded-xl text-sm font-bold shadow-md shadow-primary_p/10 hover:bg-[#0274ae] transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">download</span>
+					Descargar
+				</button>
+			</div>
+		</div>
+		<div class="glass-card p-6 flex flex-col h-full group">
+			<div class="flex items-start justify-between mb-4">
+				<div
+					class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center border border-amber-100 shadow-sm group-hover:scale-105 transition-transform"
+				>
+					<span class="material-symbols-outlined text-3xl"
+						>workspace_premium</span
+					>
+				</div>
+				<span
+					class="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-amber-100"
+					>Educativo</span
+				>
+			</div>
+			<div class="flex-1">
+				<h4 class="text-lg font-bold text-slate-800 leading-tight mb-2">
+					Certificado de Salud Nutrición
+				</h4>
+				<div class="space-y-1.5 text-sm text-slate-500">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">event</span>
+						<span>05 Oct 2023</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">school</span>
+						<span>Logro del Blog KM</span>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex gap-3 pt-6 border-t border-slate-100">
+				<button
+					class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">visibility</span>
+					Ver
+				</button>
+				<button
+					class="flex-1 px-4 py-2 bg-primary_p text-white rounded-xl text-sm font-bold shadow-md shadow-primary_p/10 hover:bg-[#0274ae] transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">download</span>
+					Descargar
+				</button>
+			</div>
+		</div>
+		<div class="glass-card p-6 flex flex-col h-full group">
+			<div class="flex items-start justify-between mb-4">
+				<div
+					class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-100 shadow-sm group-hover:scale-105 transition-transform"
+				>
+					<span class="material-symbols-outlined text-3xl">receipt_long</span>
+				</div>
+				<span
+					class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-emerald-100"
+					>Administrativo</span
+				>
+			</div>
+			<div class="flex-1">
+				<h4 class="text-lg font-bold text-slate-800 leading-tight mb-2">
+					Factura de Servicio #029
+				</h4>
+				<div class="space-y-1.5 text-sm text-slate-500">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]">event</span>
+						<span>12 Oct 2023</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-[18px]"
+							>corporate_fare</span
+						>
+						<span>Área de Facturación KM</span>
+					</div>
+				</div>
+			</div>
+			<div class="mt-6 flex gap-3 pt-6 border-t border-slate-100">
+				<button
+					class="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">visibility</span>
+					Ver
+				</button>
+				<button
+					class="flex-1 px-4 py-2 bg-primary_p text-white rounded-xl text-sm font-bold shadow-md shadow-primary_p/10 hover:bg-[#0274ae] transition-colors flex items-center justify-center gap-2"
+				>
+					<span class="material-symbols-outlined text-lg">download</span>
+					Descargar
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="flex justify-center mt-auto pb-6">
+		<nav
+			class="flex items-center gap-2 bg-white/40 p-1.5 rounded-2xl border border-white/40 backdrop-blur-sm"
+		>
+			<button
+				class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/60 text-slate-400 hover:text-primary_p transition-colors"
+			>
+				<span class="material-symbols-outlined">chevron_left</span>
+			</button>
+			<button
+				class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary_p text-white font-bold shadow-lg shadow-primary_p/30"
+			>
+				1
+			</button>
+			<button
+				class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/60 text-slate-600 hover:text-primary_p transition-colors font-medium"
+			>
+				2
+			</button>
+			<button
+				class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/60 text-slate-600 hover:text-primary_p transition-colors font-medium"
+			>
+				3
+			</button>
+			<button
+				class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/60 text-slate-400 hover:text-primary_p transition-colors"
+			>
+				<span class="material-symbols-outlined">chevron_right</span>
+			</button>
+		</nav>
+	</div>
+</section>

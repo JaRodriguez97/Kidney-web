@@ -1,96 +1,114 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
+	ReactiveFormsModule,
+	FormBuilder,
+	FormGroup,
+	Validators,
 } from '@angular/forms';
-import { UserService } from '@app/core/services/user.service';
+import { ProviderTypeService } from '@app/core/services/provider-type.service';
+import { ProviderType } from '@app/domains/user/provider-type.entity';
 
 @Component({
-  selector: 'app-rol-provider',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './rol-provider.component.html',
-  styleUrl: './rol-provider.component.scss',
+	selector: 'app-rol-provider',
+	standalone: true,
+	imports: [CommonModule, ReactiveFormsModule],
+	templateUrl: './rol-provider.component.html',
+	styleUrl: './rol-provider.component.scss',
 })
 export class RolProviderComponent implements OnInit {
-  providerForm!: FormGroup;
-  isSubmitting = false;
-  successMessage = '';
-  errorMessage = '';
-  showPassword = false;
+	providerForm!: FormGroup;
+	isSubmitting = false;
+	successMessage = '';
+	errorMessage = '';
+	showPassword = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-  ) {}
+	providerTypes: ProviderType[] = [];
+	isLoadingProviderTypes = false;
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
+	@Output() formDataChange = new EventEmitter<any>();
 
-  initializeForm(): void {
-    this.providerForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      documentNumber: [''],
-      phone: [''],
-      specialty: [''],
-      licenseNumber: [''],
-    });
-  }
+	constructor(
+		private fb: FormBuilder,
+		private providerTypeService: ProviderTypeService,
+	) {}
 
-  // onSubmit(): void {
-  //   if (this.providerForm.invalid) {
-  //     this.errorMessage = 'Por favor completa todos los campos obligatorios';
-  //     return;
-  //   }
+	ngOnInit(): void {
+		this.initializeForm();
+		this.loadProviderTypes();
+	}
 
-  //   this.isSubmitting = true;
-  //   this.errorMessage = '';
-  //   this.successMessage = '';
+	initializeForm(): void {
+		this.providerForm = this.fb.group({
+			// Obligatorios
+			email: ['', [Validators.required, Validators.email]],
+			password: ['', [Validators.required, Validators.minLength(8)]],
+			firstName: ['', [Validators.required, Validators.minLength(2)]],
+			lastName: ['', [Validators.required, Validators.minLength(2)]],
+			providerTypeId: ['', [Validators.required]],
+			documentType: ['CC', [Validators.required]],
+			documentNumber: ['', [Validators.required]],
 
-  //   const formData = this.providerForm.value;
-  //   const providerData = {
-  //     firstName: formData.firstName,
-  //     lastName: formData.lastName,
-  //     email: formData.email,
-  //     password: formData.password,
-  //     roleNames: ['PROVIDER'],
-  //     documentNumber: formData.documentNumber || undefined,
-  //     phone: formData.phone || undefined,
-  //     specialty: formData.specialty || undefined,
-  //     licenseNumber: formData.licenseNumber || undefined,
-  //   };
+			// Opcionales
+			middleName: [''],
+			secondLastName: [''],
+			phone: [''],
+			gender: [''],
+			neighborhood: [''],
+			address: [''],
+			commune: [null],
+		});
 
-  //   this.userService.createUser(providerData).subscribe({
-  //     next: (response) => {
-  //       this.successMessage = 'Médico creado exitosamente';
-  //       this.providerForm.reset();
-  //       this.isSubmitting = false;
-  //       console.log('Provider creado:', response);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al crear PROVEEDOR:', error);
-  //       this.errorMessage =
-  //         error.error?.message || 'Error al crear proveedor. Intenta de nuevo.';
-  //       this.isSubmitting = false;
-  //     },
-  //   });
-  // }
+		this.providerForm.valueChanges.subscribe((value) => {
+			this.formDataChange.emit(value);
+		});
+	}
 
-  // resetForm(): void {
-  //   this.providerForm.reset();
-  //   this.successMessage = '';
-  //   this.errorMessage = '';
-  //   this.showPassword = false;
-  // }
+	loadProviderTypes(): void {
+		this.isLoadingProviderTypes = true;
+		this.providerTypeService.getProviderTypes().subscribe({
+			next: (types) => {
+				this.providerTypes = types;
+				this.isLoadingProviderTypes = false;
+			},
+			error: (err) => {
+				console.error('Error al cargar tipos de proveedor:', err);
+				this.isLoadingProviderTypes = false;
+			},
+		});
+	}
 
-  togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
-  }
+	getFormData(): any {
+		const formData = this.providerForm.value;
+		const data: any = {
+			email: formData.email,
+			password: formData.password,
+			firstName: formData.firstName,
+			lastName: formData.lastName,
+			providerTypeId: formData.providerTypeId,
+			documentType: formData.documentType,
+			documentNumber: formData.documentNumber,
+		};
+
+		if (formData.middleName) data.middleName = formData.middleName;
+		if (formData.secondLastName) data.secondLastName = formData.secondLastName;
+		if (formData.phone) data.phone = formData.phone;
+		if (formData.gender) data.gender = formData.gender;
+		if (formData.neighborhood) data.neighborhood = formData.neighborhood;
+		if (formData.address) data.address = formData.address;
+		if (formData.commune) data.commune = formData.commune;
+
+		return data;
+	}
+
+	resetForm(): void {
+		this.providerForm.reset({ documentType: 'CC', commune: null });
+		this.successMessage = '';
+		this.errorMessage = '';
+		this.showPassword = false;
+	}
+
+	togglePasswordVisibility(): void {
+		this.showPassword = !this.showPassword;
+	}
 }

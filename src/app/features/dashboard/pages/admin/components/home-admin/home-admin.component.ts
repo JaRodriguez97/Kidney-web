@@ -79,7 +79,7 @@ export class HomeAdminComponent implements OnInit {
           paciente: 'Lucia Gomez',
           initials: 'LG',
           initialsColor: 'bg-purple-100 text-purple-600',
-          servicio: 'Nutrición Renal',
+          servicio: 'Nutrición y Cuidado',
           hora: '11:00 AM',
           doctor: 'Lic. K. Diaz',
           estado: {
@@ -122,7 +122,7 @@ export class HomeAdminComponent implements OnInit {
       this.articles = [
         {
           id: '1',
-          title: 'Importancia del Chequeo Renal',
+          title: 'Importancia del Chequeo en salud',
           subtitle: 'Publicado por Dra. Torres',
           time: 'Hace 15 min',
           color: 'bg-primary',
