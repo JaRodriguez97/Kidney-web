@@ -137,18 +137,24 @@
 			</label>
 			<div class="relative group">
 				<select
+					[(ngModel)]="selectedServiceId"
+					(ngModelChange)="onServiceSelectionChange($event)"
 					class="w-full bg-white/80 border border-slate-200 text-slate-700 text-sm rounded-2xl focus:ring-primary_p focus:border-primary_p block p-4 appearance-none font-medium cursor-pointer shadow-sm transition-all"
 					id="cups-selection"
+					[disabled]="
+						!selectedSpecialty || isLoadingServices || services.length === 0
+					"
 				>
-					<option disabled="" value="">Elija una opción del catálogo...</option>
-					<option selected="" value="903841">
-						903841 - Creatinina en suero o otros fluidos
+					<option value="" disabled>
+						{{
+							selectedSpecialty
+								? "Elija una opción del catálogo..."
+								: "Primero seleccione una especialidad"
+						}}
 					</option>
-					<option value="903895">903895 - Nitrógeno ureico [BUN]</option>
-					<option value="906249">
-						906249 - Hemoglobina glicosilada por acción directa
+					<option *ngFor="let service of services" [value]="service.id">
+						{{ service.code }} - {{ service.name }}
 					</option>
-					<option value="902204">902204 - Hemograma IV (Automatizado)</option>
 				</select>
 				<div
 					class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
@@ -162,8 +168,28 @@
 				class="mt-3 text-xs text-slate-400 font-medium flex items-center gap-2"
 			>
 				<span class="material-symbols-outlined text-sm">info</span>
-				Servicios filtrados según la especialidad Laboratorio Clínico
-				seleccionada.
+				Servicios filtrados según la especialidad
+				{{ selectedSpecialtyLabel }} seleccionada.
+			</p>
+			<p
+				*ngIf="isLoadingServices"
+				class="mt-2 text-xs text-primary_p font-semibold"
+			>
+				Cargando servicios...
+			</p>
+			<p *ngIf="servicesError" class="mt-2 text-xs text-red-500 font-semibold">
+				{{ servicesError }}
+			</p>
+			<p
+				*ngIf="
+					selectedSpecialty &&
+					!isLoadingServices &&
+					!servicesError &&
+					services.length === 0
+				"
+				class="mt-2 text-xs text-amber-600 font-semibold"
+			>
+				No hay servicios CUPS disponibles para esta especialidad.
 			</p>
 		</div>
 		<div
@@ -175,38 +201,41 @@
 					Detalles del Servicio Seleccionado
 				</h4>
 			</div>
-			<p class="text-slate-600 text-sm font-medium leading-relaxed mb-6">
-				Análisis clínico especializado para el monitoreo de la función renal y
-				otros parámetros metabólicos esenciales.
-			</p>
-			<div class="grid grid-cols-2 gap-4 mb-6">
-				<div class="bg-white/40 p-4 rounded-2xl border border-white/60">
-					<p
-						class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1"
-					>
-						Precio
-					</p>
-					<p class="text-[#1c384e] font-extrabold text-lg">$45.000</p>
+			<div *ngIf="selectedService; else noServiceSelected" class="space-y-4">
+				<p class="text-slate-600 text-sm font-medium leading-relaxed">
+					{{
+						selectedService.description ||
+							"Servicio médico disponible para agendamiento de citas en esta especialidad."
+					}}
+				</p>
+				<div class="grid grid-cols-2 gap-4">
+					<div class="bg-white/40 p-4 rounded-2xl border border-white/60">
+						<p
+							class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1"
+						>
+							Código CUPS
+						</p>
+						<p class="text-[#1c384e] font-extrabold text-lg">
+							{{ selectedService.code }}
+						</p>
+					</div>
+					<div class="bg-white/40 p-4 rounded-2xl border border-white/60">
+						<p
+							class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1"
+						>
+							Estado
+						</p>
+						<p class="text-[#1c384e] font-bold text-sm leading-tight">
+							{{ selectedService.is_active ? "Activo" : "Inactivo" }}
+						</p>
+					</div>
 				</div>
-				<div class="bg-white/40 p-4 rounded-2xl border border-white/60">
-					<p
-						class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1"
-					>
-						Meta
-					</p>
-					<p class="text-[#1c384e] font-bold text-sm leading-tight">
-						Determinación precisa de biomarcadores para diagnóstico clínico
-					</p>
-				</div>
-			</div>
-			<div class="space-y-4">
 				<div class="flex flex-col gap-2">
 					<span class="text-xs font-bold text-[#1c384e] uppercase tracking-wide"
-						>Requisitos y Recomendaciones:</span
+						>Servicio seleccionado:</span
 					>
 					<p class="text-sm text-slate-500 font-medium">
-						Ayuno estricto de 8 a 12 horas, evitar el consumo de alcohol 24h
-						antes, traer documento de identidad original.
+						{{ selectedService.name }}
 					</p>
 				</div>
 				<div
@@ -217,21 +246,36 @@
 					>
 					<p class="text-xs text-primary_p font-semibold leading-relaxed">
 						<span class="font-bold">Nota de Disponibilidad:</span>
-						Solicitamos presentarse con amplia disponibilidad de tiempo para el
-						proceso de toma de muestra y registro administrativo.
+						Este servicio se validará en el siguiente paso con el profesional
+						disponible y su agenda activa.
 					</p>
 				</div>
 			</div>
+			<ng-template #noServiceSelected>
+				<p class="text-slate-500 text-sm font-medium leading-relaxed">
+					Seleccione una especialidad y luego un servicio CUPS para visualizar
+					los detalles correspondientes.
+				</p>
+			</ng-template>
 		</div>
 	</div>
 	<div class="flex items-center justify-between mt-auto py-8">
 		<button
+			type="button"
+			(click)="cancelProcess()"
 			class="btn-ghost flex items-center gap-2 group hover:text-red-500 hover:border-red-200 transition-colors"
 		>
 			<span class="material-symbols-outlined text-xl">close</span>
 			Cancelar Proceso
 		</button>
-		<button class="btn-solid flex items-center gap-2">
+		<button
+			type="button"
+			(click)="goToNextStep()"
+			[disabled]="!canContinue"
+			class="btn-solid flex items-center gap-2"
+			[class.opacity-50]="!canContinue"
+			[class.cursor-not-allowed]="!canContinue"
+		>
 			Continuar
 			<span class="material-symbols-outlined text-xl">arrow_forward</span>
 		</button>

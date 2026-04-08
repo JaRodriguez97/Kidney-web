@@ -90,6 +90,28 @@
 					</option>
 				</select>
 			</div>
+			<!-- Licencia Profesional - Condicional -->
+			<div *ngIf="selectedProviderTypeRequiresLicense">
+				<label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Número de Licencia Profesional*</label
+				>
+				<input
+					class="glass-input-mandatory w-full"
+					placeholder="Ej. LP-2024-001234"
+					type="text"
+					formControlName="professionalLicenseNumber"
+				/>
+				<div
+					*ngIf="
+						providerForm.get('professionalLicenseNumber')?.invalid &&
+						providerForm.get('professionalLicenseNumber')?.touched
+					"
+					class="text-red-500 text-xs mt-1"
+				>
+					Este campo es requerido para el tipo de proveedor seleccionado
+				</div>
+			</div>
 			<div>
 				<label
 					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
@@ -216,5 +238,10 @@
 				/>
 			</div>
 		</div>
+	</section>
+
+	<!-- Sección de Horario del Proveedor -->
+	<section class="col-span-1 md:col-span-2 space-y-6">
+		<app-provider-schedule-form></app-provider-schedule-form>
 	</section>
 </form>

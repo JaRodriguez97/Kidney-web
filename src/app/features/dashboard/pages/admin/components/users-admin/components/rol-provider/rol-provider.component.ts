@@ -1,4 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+	Component,
+	OnInit,
+	Output,
+	EventEmitter,
+	ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
 	ReactiveFormsModule,
@@ -8,11 +14,12 @@ import {
 } from '@angular/forms';
 import { ProviderTypeService } from '@app/core/services/provider-type.service';
 import { ProviderType } from '@app/domains/user/provider-type.entity';
+import { ProviderScheduleFormComponent } from './provider-schedule-form/provider-schedule-form.component';
 
 @Component({
 	selector: 'app-rol-provider',
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule],
+	imports: [CommonModule, ReactiveFormsModule, ProviderScheduleFormComponent],
 	templateUrl: './rol-provider.component.html',
 	styleUrl: './rol-provider.component.scss',
 })
@@ -25,7 +32,11 @@ export class RolProviderComponent implements OnInit {
 
 	providerTypes: ProviderType[] = [];
 	isLoadingProviderTypes = false;
+	selectedProviderTypeRequiresLicense = false;
+	showScheduleForm = false;
 
+	@ViewChild(ProviderScheduleFormComponent)
+	scheduleFormComponent?: ProviderScheduleFormComponent;
 	@Output() formDataChange = new EventEmitter<any>();
 
 	constructor(
@@ -48,6 +59,7 @@ export class RolProviderComponent implements OnInit {
 			providerTypeId: ['', [Validators.required]],
 			documentType: ['CC', [Validators.required]],
 			documentNumber: ['', [Validators.required]],
+			professionalLicenseNumber: [''], // Dinámicamente requerido
 
 			// Opcionales
 			middleName: [''],
@@ -58,6 +70,32 @@ export class RolProviderComponent implements OnInit {
 			address: [''],
 			commune: [null],
 		});
+
+		// Suscribirse a cambios de providerTypeId para validación condicional de licencia
+		this.providerForm
+			.get('providerTypeId')
+			?.valueChanges.subscribe((typeId) => {
+				if (typeId) {
+					const selectedType = this.providerTypes.find(
+						(pt) => pt.id === typeId,
+					);
+					if (selectedType && selectedType.requiresProfessionalLicense) {
+						this.selectedProviderTypeRequiresLicense = true;
+						this.providerForm
+							.get('professionalLicenseNumber')
+							?.setValidators([Validators.required]);
+					} else {
+						this.selectedProviderTypeRequiresLicense = false;
+						this.providerForm
+							.get('professionalLicenseNumber')
+							?.clearValidators();
+						this.providerForm.get('professionalLicenseNumber')?.reset('');
+					}
+					this.providerForm
+						.get('professionalLicenseNumber')
+						?.updateValueAndValidity();
+				}
+			});
 
 		this.providerForm.valueChanges.subscribe((value) => {
 			this.formDataChange.emit(value);
@@ -90,6 +128,12 @@ export class RolProviderComponent implements OnInit {
 			documentNumber: formData.documentNumber,
 		};
 
+		if (
+			this.selectedProviderTypeRequiresLicense &&
+			formData.professionalLicenseNumber
+		) {
+			data.professionalLicenseNumber = formData.professionalLicenseNumber;
+		}
 		if (formData.middleName) data.middleName = formData.middleName;
 		if (formData.secondLastName) data.secondLastName = formData.secondLastName;
 		if (formData.phone) data.phone = formData.phone;
@@ -97,6 +141,14 @@ export class RolProviderComponent implements OnInit {
 		if (formData.neighborhood) data.neighborhood = formData.neighborhood;
 		if (formData.address) data.address = formData.address;
 		if (formData.commune) data.commune = formData.commune;
+
+		// Incluir schedule si el sub-componente lo proporciona
+		if (this.scheduleFormComponent) {
+			const scheduleData = this.scheduleFormComponent.getScheduleData();
+			if (scheduleData) {
+				data.schedule = scheduleData;
+			}
+		}
 
 		return data;
 	}

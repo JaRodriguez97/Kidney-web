@@ -1,0 +1,152 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-200;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary/10 hover:text-primary transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary text-white shadow-lg shadow-primary/30;
+}
+.btn-primary {
+	@apply bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.btn-secondary {
+	@apply bg-white text-slate-600 px-6 py-3 rounded-xl font-bold border border-slate-200 hover:bg-slate-50 hover:text-slate-800 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.badge {
+	@apply inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold uppercase tracking-wide rounded-full;
+}
+
+.calendar-shell {
+	@apply rounded-2xl border border-white/70 bg-white/40 backdrop-blur-sm p-3  cursor-pointer;
+}
+
+:host ::ng-deep .calendar-shell .fc {
+	--fc-border-color: transparent;
+	--fc-page-bg-color: transparent;
+	--fc-neutral-bg-color: transparent;
+	--fc-today-bg-color: transparent;
+	font-family: inherit;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-toolbar {
+	@apply mb-4 items-center;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-toolbar-title {
+	@apply text-slate-800 text-base md:text-lg font-bold capitalize;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-button {
+	@apply bg-white text-slate-600 border border-slate-100 shadow-sm rounded-xl w-9 h-9 p-0 flex items-center justify-center transition-all;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-button:hover {
+	@apply bg-slate-50 border-slate-200 text-slate-700;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-button:focus {
+	box-shadow: none;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-button .fc-icon {
+	font-size: 1rem;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-col-header-cell-cushion {
+	@apply text-xs font-bold text-slate-400 uppercase tracking-wider py-2;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-daygrid-day {
+	padding: 4px;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-daygrid-day-frame {
+	min-height: 52px;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-daygrid-day-top {
+	justify-content: center;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-daygrid-day-number {
+	@apply h-10 w-10 flex items-center justify-center text-sm font-semibold text-slate-700 rounded-xl border border-slate-100 bg-white shadow-sm transition-all;
+}
+
+:host
+	::ng-deep
+	.calendar-shell
+	.fc
+	.fc-day-available-custom
+	.fc-daygrid-day-number:hover {
+	@apply bg-blue-50 border-blue-200 text-primary;
+	transform: scale(1.05);
+}
+
+:host
+	::ng-deep
+	.calendar-shell
+	.fc
+	.fc-day-selected-custom
+	.fc-daygrid-day-number {
+	@apply bg-primary text-white border-primary shadow-lg;
+	box-shadow: 0 8px 18px rgba(14, 165, 233, 0.25);
+}
+
+:host
+	::ng-deep
+	.calendar-shell
+	.fc
+	.fc-day-disabled-custom
+	.fc-daygrid-day-number {
+	@apply text-slate-300 bg-slate-50 border-slate-100 cursor-not-allowed;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-day-other .fc-daygrid-day-number {
+	@apply opacity-60;
+}
+
+:host ::ng-deep .calendar-shell .fc .fc-scrollgrid,
+:host ::ng-deep .calendar-shell .fc .fc-scrollgrid-section > * {
+	border: 0;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}
+.calendar-day-lg {
+	@apply h-14 w-14 lg:h-16 lg:w-16 flex items-center justify-center text-lg rounded-2xl cursor-pointer transition-all duration-200 border border-transparent;
+}
+.calendar-day-lg:hover:not(.disabled) {
+	@apply bg-blue-50 border-blue-200 text-primary transform scale-105;
+}
+.calendar-day-lg.active {
+	@apply bg-primary text-white font-bold shadow-lg shadow-primary/30 transform scale-105;
+}
+.calendar-day-lg.available {
+	@apply bg-white text-slate-700 font-semibold border-slate-100 hover:border-primary/30 shadow-sm;
+}
+.calendar-day-lg.disabled {
+	@apply text-slate-300 cursor-not-allowed bg-slate-50/50;
+}
+.time-slot {
+	@apply py-3 px-4 rounded-xl border border-slate-200 bg-white/50 text-slate-600 font-semibold text-center cursor-pointer hover:border-primary hover:text-primary hover:bg-blue-50/50 transition-all;
+}
+.time-slot.selected {
+	@apply bg-primary text-white border-primary shadow-md shadow-primary/20;
+}
+.step-indicator {
+	@apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all;
+}
+.step-line {
+	@apply h-1 flex-1 rounded-full transition-all;
+}

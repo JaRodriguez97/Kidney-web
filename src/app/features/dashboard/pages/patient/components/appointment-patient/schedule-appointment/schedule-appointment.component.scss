@@ -23,7 +23,7 @@
 	@apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all;
 }
 .btn-ghost {
-	@apply px-8 py-3 rounded-xl font-bold text-slate-500 border border-slate-200 hover:bg-white/50 transition-all;
+	@apply px-8 py-3 rounded-xl font-bold text-slate-500 border border-slate-200 bg-white hover:bg-red-50 transition-all;
 }
 .btn-solid {
 	@apply px-8 py-3 rounded-xl font-bold text-white bg-primary_p hover:bg-sky-700 transition-all shadow-lg shadow-sky-500/30;

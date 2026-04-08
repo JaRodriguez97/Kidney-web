@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputTextComponent } from '@app/shared/components/form/input-text/input-text.component';
 import { ServiceEditModalComponent } from './components/service-edit-modal/service-edit-modal.component';
 import { ServiceProviderTypesComponent } from './components/service-provider-types/service-provider-types.component';
 import { Service } from '@app/domains/service-catalog/service.entity';
+import {
+	ImportCupsResult,
+	ServiceCatalogService,
+} from '@app/core/services/service-catalog.service';
+import { finalize } from 'rxjs';
 
 @Component({
 	selector: 'app-services-admin',
@@ -17,8 +22,13 @@ import { Service } from '@app/domains/service-catalog/service.entity';
 	templateUrl: './services-admin.component.html',
 	styleUrl: './services-admin.component.scss',
 })
-export class ServicesAdminComponent {
+export class ServicesAdminComponent implements OnInit {
+	private readonly serviceCatalogService = inject(ServiceCatalogService);
+
 	modelEditHidden: boolean = true;
+	isUploading = false;
+	uploadError: string | null = null;
+	uploadResult: ImportCupsResult | null = null;
 
 	services: Service[] = [
 		{
@@ -62,6 +72,66 @@ export class ServicesAdminComponent {
 
 	sortColumn: string = '';
 	sortAscending: boolean = true;
+
+	ngOnInit(): void {
+		this.loadServices();
+	}
+
+	loadServices(): void {
+		this.serviceCatalogService.getServices().subscribe({
+			next: (items) => {
+				this.services = items.map((item) => ({
+					id: item.id,
+					name: item.name,
+					subtitle: item.description || undefined,
+					code: item.code,
+					serviceType: item.service_type,
+					price: 0,
+					description: item.description || undefined,
+					isActive: item.is_active,
+					status: item.is_active ? 'Activo' : 'Inactivo',
+				}));
+			},
+			error: (error) => {
+				console.error('Error cargando servicios', error);
+			},
+		});
+	}
+
+	onCupsFileSelected(event: Event): void {
+		const input = event.target as HTMLInputElement;
+		const file = input.files?.[0];
+
+		if (!file) {
+			return;
+		}
+
+		this.uploadError = null;
+		this.uploadResult = null;
+		this.isUploading = true;
+
+		this.serviceCatalogService
+			.uploadCupsExcel(file)
+			.pipe(
+				finalize(() => {
+					this.isUploading = false;
+					input.value = '';
+				}),
+			)
+			.subscribe({
+				next: (result) => {
+					this.uploadResult = result;
+					this.loadServices();
+				},
+				error: (error) => {
+					console.error('Error cargando archivo CUPS', error);
+					this.uploadError =
+						error?.error?.error ||
+						error?.error?.message ||
+						'No se pudo procesar el archivo CUPS';
+				},
+			});
+	}
 
 	sort(column: string) {
 		if (this.sortColumn === column) {

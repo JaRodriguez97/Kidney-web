@@ -1,0 +1,27 @@
+/* Tabla semanal de horarios */
+.schedule-table-wrapper {
+	@apply border border-slate-200 rounded-xl p-4 bg-white/60;
+}
+
+.schedule-day-row {
+	@apply rounded-lg border transition-all duration-200;
+
+	&--enabled {
+		@apply border-primary/20 bg-white shadow-sm;
+	}
+
+	&--disabled {
+		@apply border-slate-100 bg-slate-50/50 opacity-60;
+
+		.schedule-time-input {
+			@apply bg-slate-100 text-slate-400 cursor-not-allowed;
+		}
+	}
+}
+
+.schedule-time-input {
+	@apply w-full border border-slate-200 rounded-md px-2.5 py-1.5 text-sm
+		text-slate-700 bg-white
+		focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none
+		transition-colors duration-150;
+}

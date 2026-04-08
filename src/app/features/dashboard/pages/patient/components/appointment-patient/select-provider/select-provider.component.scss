@@ -1,0 +1,40 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl;
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-300;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-primary/10 hover:text-primary transition-all font-medium cursor-pointer;
+}
+.sidebar-item.active {
+	@apply bg-primary text-white shadow-lg shadow-primary/30;
+}
+.btn-primary {
+	@apply bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.btn-secondary {
+	@apply bg-white text-slate-600 px-6 py-3 rounded-xl font-bold border border-slate-200 hover:bg-slate-50 hover:text-slate-800 transition-all active:scale-95 text-center flex items-center justify-center gap-2;
+}
+.step-indicator {
+	@apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all;
+}
+.filter-select {
+	@apply bg-white/50 backdrop-blur-sm border-none ring-1 ring-slate-200 rounded-xl px-4 py-2 text-sm font-medium text-slate-600 focus:ring-primary transition-all;
+}
+.professional-card {
+	@apply glass-card p-8 flex flex-col items-center text-center hover:shadow-xl hover:-translate-y-1 cursor-pointer border-2 border-transparent;
+}
+.professional-card.selected {
+	@apply border-primary bg-white/80 ring-4 ring-primary/5;
+}
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
+}

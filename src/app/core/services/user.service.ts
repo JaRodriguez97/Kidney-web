@@ -27,6 +27,23 @@ export interface ProviderUserRequest {
 	licenseNumber?: string;
 }
 
+export interface ScheduleAvailabilityBlock {
+	dayOfWeek: number; // 0-6 (Mon-Sun)
+	startTime: string; // HH:mm format
+	endTime: string; // HH:mm format
+	slotIntervalMinutes: number;
+	maxOverbook?: number;
+}
+
+export interface ScheduleData {
+	clinicBranchId: string;
+	name: string;
+	startDate: string; // YYYY-MM-DD
+	endDate?: string;
+	availabilityBlocks: ScheduleAvailabilityBlock[];
+	generateSlotsUntil?: string;
+}
+
 export interface CreateProviderRequest {
 	email: string;
 	password: string;
@@ -35,6 +52,7 @@ export interface CreateProviderRequest {
 	providerTypeId: string;
 	documentType: string;
 	documentNumber: string;
+	professionalLicenseNumber?: string;
 	middleName?: string;
 	secondLastName?: string;
 	phone?: string;
@@ -42,6 +60,7 @@ export interface CreateProviderRequest {
 	neighborhood?: string;
 	address?: string;
 	commune?: number;
+	schedule?: ScheduleData;
 }
 
 export interface OrganizationUserRequest {
@@ -82,18 +101,21 @@ export class UserService {
 	}
 
 	/**
-	 * Crea un nuevo usuario (Admin o Provider)
+	 * Crea un nuevo usuario (Admin, Patient o Provider)
 	 */
 	createUser(opt: {
 		admin?: AdminUserRequest;
+		patient?: AdminUserRequest;
 		provider?: ProviderUserRequest;
 		organization?: OrganizationUserRequest;
 	}): Observable<User> {
 		let user: any = opt.admin
 			? opt.admin
-			: opt.provider
-				? opt.provider
-				: opt.organization;
+			: opt.patient
+				? opt.patient
+				: opt.provider
+					? opt.provider
+					: opt.organization;
 
 		return this.http.post<User>(this.baseUrl, user);
 	}

@@ -1,0 +1,250 @@
+<div [formGroup]="scheduleForm" class="space-y-6">
+	<!-- Toggle principal -->
+	<div class="flex items-center gap-3">
+		<input
+			type="checkbox"
+			id="enableSchedule"
+			formControlName="enableSchedule"
+			class="w-4 h-4 rounded cursor-pointer accent-primary"
+		/>
+		<label
+			for="enableSchedule"
+			class="text-sm font-semibold text-slate-700 cursor-pointer select-none"
+		>
+			Asignar horario de atención
+		</label>
+	</div>
+
+	<!-- Sección de horario -->
+	<div *ngIf="showScheduleSection" class="space-y-6 border-t pt-6">
+		<h4
+			class="text-primary font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
+		>
+			<span class="w-1.5 h-6 bg-primary rounded-full"></span>
+			Configuración de Horario
+		</h4>
+
+		<!-- Datos generales del horario -->
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<!-- Sede Clínica -->
+			<div>
+				<label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Sede Clínica*</label
+				>
+				<select
+					formControlName="clinicBranchId"
+					class="glass-input-mandatory w-full appearance-none"
+				>
+					<option value="" disabled>Seleccione una sede</option>
+					<option *ngFor="let branch of clinicBranches" [value]="branch.id">
+						{{ branch.name }}
+					</option>
+				</select>
+			</div>
+
+			<!-- Nombre del Horario -->
+			<div>
+				<label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Nombre del Horario*</label
+				>
+				<input
+					formControlName="name"
+					type="text"
+					class="glass-input-mandatory w-full"
+					placeholder="Ej. Turno Mañana"
+				/>
+			</div>
+
+			<!-- Fecha de Inicio -->
+			<div>
+				<label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Fecha de Inicio*</label
+				>
+				<input
+					formControlName="startDate"
+					type="date"
+					class="glass-input-mandatory w-full"
+				/>
+			</div>
+
+			<!-- Fecha de Fin -->
+			<div>
+				<label
+					class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
+					>Fecha de Fin (opcional)</label
+				>
+				<input
+					formControlName="endDate"
+					type="date"
+					class="glass-input-optional w-full"
+				/>
+			</div>
+		</div>
+
+		<!-- Tabla semanal de disponibilidad -->
+		<div class="schedule-table-wrapper">
+			<div class="flex items-center justify-between mb-3">
+				<h5 class="text-sm font-bold text-slate-700 uppercase">
+					Días de Atención
+				</h5>
+				<button
+					type="button"
+					(click)="copyToAllDays()"
+					[disabled]="enabledDaysCount === 0"
+					class="text-xs font-semibold text-primary hover:text-primary-dark disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
+				>
+					Copiar horario a todos los días
+				</button>
+			</div>
+
+			<p class="text-xs text-slate-400 mb-4">
+				Active los días en que el proveedor atenderá y defina el horario para
+				cada uno.
+			</p>
+
+			<!-- Encabezados (desktop) -->
+			<div
+				class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr_1fr] gap-3 px-3 pb-2 text-[11px] font-bold text-slate-400 uppercase"
+			>
+				<span></span>
+				<span>Día</span>
+				<span>Hora Inicio</span>
+				<span>Hora Fin</span>
+				<span>Duración Cita</span>
+			</div>
+
+			<!-- Filas de días -->
+			<div class="space-y-2">
+				<div
+					*ngFor="let day of days"
+					[formGroupName]="'day' + day.value"
+					class="schedule-day-row"
+					[class.schedule-day-row--disabled]="!isDayEnabled(day.value)"
+					[class.schedule-day-row--enabled]="isDayEnabled(day.value)"
+				>
+					<!-- Mobile: card layout -->
+					<div class="md:hidden space-y-3 p-3">
+						<div class="flex items-center gap-3">
+							<input
+								type="checkbox"
+								formControlName="enabled"
+								class="w-4 h-4 rounded cursor-pointer accent-primary"
+								[id]="'day-toggle-' + day.value"
+							/>
+							<label
+								[for]="'day-toggle-' + day.value"
+								class="text-sm font-semibold cursor-pointer select-none"
+								[class.text-slate-700]="isDayEnabled(day.value)"
+								[class.text-slate-400]="!isDayEnabled(day.value)"
+							>
+								{{ day.label }}
+							</label>
+						</div>
+						<div
+							*ngIf="isDayEnabled(day.value)"
+							class="grid grid-cols-3 gap-2 pl-7"
+						>
+							<div>
+								<label class="block text-[10px] font-bold text-slate-400 mb-1"
+									>Inicio</label
+								>
+								<input
+									formControlName="startTime"
+									type="time"
+									class="schedule-time-input"
+								/>
+							</div>
+							<div>
+								<label class="block text-[10px] font-bold text-slate-400 mb-1"
+									>Fin</label
+								>
+								<input
+									formControlName="endTime"
+									type="time"
+									class="schedule-time-input"
+								/>
+							</div>
+							<div>
+								<label class="block text-[10px] font-bold text-slate-400 mb-1"
+									>Duración</label
+								>
+								<select
+									formControlName="slotIntervalMinutes"
+									class="schedule-time-input"
+								>
+									<option *ngFor="let opt of slotOptions" [value]="opt.value">
+										{{ opt.label }}
+									</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<!-- Desktop: row layout -->
+					<div
+						class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr_1fr] gap-3 items-center px-3 py-2.5"
+					>
+						<input
+							type="checkbox"
+							formControlName="enabled"
+							class="w-4 h-4 rounded cursor-pointer accent-primary"
+							[id]="'day-toggle-d-' + day.value"
+						/>
+						<label
+							[for]="'day-toggle-d-' + day.value"
+							class="text-sm font-semibold cursor-pointer select-none"
+							[class.text-slate-700]="isDayEnabled(day.value)"
+							[class.text-slate-400]="!isDayEnabled(day.value)"
+						>
+							{{ day.label }}
+						</label>
+						<input
+							formControlName="startTime"
+							type="time"
+							class="schedule-time-input"
+							[disabled]="!isDayEnabled(day.value)"
+						/>
+						<input
+							formControlName="endTime"
+							type="time"
+							class="schedule-time-input"
+							[disabled]="!isDayEnabled(day.value)"
+						/>
+						<select
+							formControlName="slotIntervalMinutes"
+							class="schedule-time-input"
+							[disabled]="!isDayEnabled(day.value)"
+						>
+							<option *ngFor="let opt of slotOptions" [value]="opt.value">
+								{{ opt.label }}
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<!-- Resumen -->
+			<div
+				*ngIf="enabledDaysCount > 0"
+				class="mt-4 px-3 py-2 bg-primary/5 border border-primary/10 rounded-lg"
+			>
+				<p class="text-xs text-primary font-medium">
+					<span class="font-bold">{{ enabledDaysCount }}</span>
+					{{ enabledDaysCount === 1 ? "día" : "días" }} de atención configurados
+				</p>
+			</div>
+
+			<div
+				*ngIf="enabledDaysCount === 0"
+				class="mt-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg"
+			>
+				<p class="text-xs text-amber-600 font-medium">
+					Active al menos un día de atención.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

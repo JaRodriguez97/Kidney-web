@@ -5,64 +5,124 @@
 		<div
 			class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-50/50 to-transparent pointer-events-none"
 		></div>
-		<div>
-			<div class="flex justify-between items-start mb-4">
-				<span
-					class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-100/50 text-sky-700 text-[11px] font-bold uppercase tracking-wide rounded-full"
-				>
-					<span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-					Próxima Cita
-				</span>
-				<div class="text-right">
-					<span class="block text-3xl font-bold text-slate-800 leading-none"
-						>12</span
-					>
-					<span
-						class="text-[11px] font-bold text-slate-400 uppercase tracking-widest"
-						>Octubre</span
-					>
-				</div>
-			</div>
-			<h3 class="text-xl font-bold text-slate-900 mb-6">
-				Chequeo Médico Integral
-			</h3>
-			<div class="flex items-start gap-4 mb-8">
+		<ng-container *ngIf="isLoading; else appointmentState">
+			<div class="flex-1 flex flex-col justify-center items-center text-center">
 				<div
-					class="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 shrink-0 border border-sky-100"
+					class="w-12 h-12 rounded-xl bg-sky-100/60 text-sky-600 flex items-center justify-center animate-pulse"
 				>
-					<span class="material-symbols-outlined">medical_services</span>
+					<span class="material-symbols-outlined">sync</span>
 				</div>
+				<p class="mt-4 text-sm font-semibold text-slate-700">
+					Consultando agenda de citas...
+				</p>
+				<p class="text-xs text-slate-500 mt-1">
+					Verificando si tienes una cita próxima asignada.
+				</p>
+			</div>
+		</ng-container>
+
+		<ng-template #appointmentState>
+			<ng-container *ngIf="hasUpcomingAppointment; else appointmentEmptyState">
 				<div>
-					<p class="font-bold text-slate-800 text-sm">Dr. Alejandro Vargas</p>
-					<p class="text-xs text-slate-500 mb-2">Médico Especialista</p>
-					<div class="flex gap-4 text-xs text-slate-400">
-						<div class="flex items-center gap-1">
-							<span class="material-symbols-outlined text-[14px]"
-								>schedule</span
+					<div class="flex justify-between items-start mb-4">
+						<span
+							class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-100/50 text-sky-700 text-[11px] font-bold uppercase tracking-wide rounded-full"
+						>
+							<span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+							Próxima Cita
+						</span>
+						<div class="text-right">
+							<span class="block text-3xl font-bold text-slate-800 leading-none"
+								>12</span
 							>
-							07:00 AM
+							<span
+								class="text-[11px] font-bold text-slate-400 uppercase tracking-widest"
+								>Octubre</span
+							>
 						</div>
-						<div class="flex items-center gap-1">
-							<span class="material-symbols-outlined text-[14px]"
-								>location_on</span
-							>
-							Cons. 304, Torre B
+					</div>
+					<h3 class="text-xl font-bold text-slate-900 mb-6">
+						Chequeo Médico Integral
+					</h3>
+					<div class="flex items-start gap-4 mb-8">
+						<div
+							class="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 shrink-0 border border-sky-100"
+						>
+							<span class="material-symbols-outlined">medical_services</span>
+						</div>
+						<div>
+							<p class="font-bold text-slate-800 text-sm">
+								Dr. Alejandro Vargas
+							</p>
+							<p class="text-xs text-slate-500 mb-2">Médico Especialista</p>
+							<div class="flex gap-4 text-xs text-slate-400">
+								<div class="flex items-center gap-1">
+									<span class="material-symbols-outlined text-[14px]"
+										>schedule</span
+									>
+									07:00 AM
+								</div>
+								<div class="flex items-center gap-1">
+									<span class="material-symbols-outlined text-[14px]"
+										>location_on</span
+									>
+									Cons. 304, Torre B
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="flex gap-3 mt-auto">
-			<button class="btn-primary_p flex-1 py-2.5 text-sm">
-				<span class="material-symbols-outlined text-lg">calendar_month</span>
-				Reprogramar
-			</button>
-			<button
-				class="btn-outline flex-1 py-2.5 text-sm bg-white border-slate-200"
-			>
-				Cancelar
-			</button>
-		</div>
+				<div class="flex gap-3 mt-auto">
+					<button class="btn-primary_p flex-1 py-2.5 text-sm">
+						<span class="material-symbols-outlined text-lg"
+							>calendar_month</span
+						>
+						Reprogramar
+					</button>
+					<button
+						class="btn-outline flex-1 py-2.5 text-sm bg-white border-slate-200"
+					>
+						Cancelar
+					</button>
+				</div>
+			</ng-container>
+
+			<ng-template #appointmentEmptyState>
+				<div class="flex-1 flex flex-col">
+					<div class="flex justify-between items-start mb-4">
+						<span
+							class="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-100/50 text-sky-700 text-[11px] font-bold uppercase tracking-wide rounded-full"
+						>
+							<span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+							Próxima Cita
+						</span>
+					</div>
+					<div
+						class="flex-1 flex flex-col items-center justify-center text-center"
+					>
+						<div
+							class="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 text-sky-600 flex items-center justify-center"
+						>
+							<span class="material-symbols-outlined text-2xl">event_busy</span>
+						</div>
+						<h3 class="text-lg font-bold text-slate-800 mt-4">
+							No hay citas creadas o asignadas
+						</h3>
+						<p class="text-sm text-slate-500 mt-2 max-w-[280px]">
+							En este momento no encontramos una cita próxima para mostrar.
+						</p>
+					</div>
+					<button
+						type="button"
+						(click)="goToScheduleAppointment()"
+						class="btn-primary_p mt-6 w-full py-2.5 text-sm"
+					>
+						<span class="material-symbols-outlined text-lg">add_circle</span>
+						Agendar Cita
+					</button>
+				</div>
+			</ng-template>
+		</ng-template>
 	</div>
 	<div class="col-span-12 md:col-span-5 lg:col-span-3 glass-card p-6">
 		<div class="flex items-center gap-2 mb-6">
@@ -71,6 +131,8 @@
 		</div>
 		<div class="space-y-3">
 			<button
+				type="button"
+				(click)="goToScheduleAppointment()"
 				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
 			>
 				<div
@@ -90,6 +152,8 @@
 				</div>
 			</button>
 			<button
+				type="button"
+				(click)="goToDocuments()"
 				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
 			>
 				<div
@@ -109,6 +173,8 @@
 				</div>
 			</button>
 			<button
+				type="button"
+				(click)="goToSupport()"
 				class="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/50 transition-colors group text-left"
 			>
 				<div
@@ -134,61 +200,115 @@
 	>
 		<div class="flex items-center justify-between mb-4">
 			<h3 class="font-bold text-slate-800">Resultados</h3>
-			<button class="text-xs font-bold text-primary_p hover:text-sky-700">
+			<button
+				type="button"
+				*ngIf="hasResults"
+				class="text-xs font-bold text-primary_p hover:text-sky-700"
+			>
 				Ver todos
 			</button>
 		</div>
-		<div class="space-y-3 overflow-y-auto pr-1 custom-scrollbar max-h-[280px]">
+		<ng-container *ngIf="isLoading">
 			<div
-				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+				class="space-y-3 overflow-y-auto pr-1 custom-scrollbar max-h-[280px]"
 			>
-				<div>
-					<div class="flex items-center gap-2 mb-1">
-						<h4 class="text-sm font-bold text-slate-800">Hemograma Completo</h4>
-						<span
-							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
-							>Disponible</span
-						>
-					</div>
-					<p class="text-[11px] text-slate-400">01 Oct 2023</p>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 animate-pulse"
+				>
+					<div class="h-3.5 bg-slate-200/70 rounded w-3/4 mb-2"></div>
+					<div class="h-2.5 bg-slate-200/60 rounded w-1/3"></div>
 				</div>
-				<button class="btn-download-icon" title="Descargar">
-					<span class="material-symbols-outlined text-[18px]">download</span>
-				</button>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 animate-pulse"
+				>
+					<div class="h-3.5 bg-slate-200/70 rounded w-2/3 mb-2"></div>
+					<div class="h-2.5 bg-slate-200/60 rounded w-1/4"></div>
+				</div>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 animate-pulse"
+				>
+					<div class="h-3.5 bg-slate-200/70 rounded w-5/6 mb-2"></div>
+					<div class="h-2.5 bg-slate-200/60 rounded w-1/3"></div>
+				</div>
 			</div>
+		</ng-container>
+
+		<ng-container *ngIf="!isLoading && hasResults">
 			<div
-				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+				class="space-y-3 overflow-y-auto pr-1 custom-scrollbar max-h-[280px]"
 			>
-				<div>
-					<div class="flex items-center gap-2 mb-1">
-						<h4 class="text-sm font-bold text-slate-800">Hemoglobina</h4>
-						<span
-							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
-							>Disponible</span
-						>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<h4 class="text-sm font-bold text-slate-800">
+								Hemograma Completo
+							</h4>
+							<span
+								class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+								>Disponible</span
+							>
+						</div>
+						<p class="text-[11px] text-slate-400">01 Oct 2023</p>
 					</div>
-					<p class="text-[11px] text-slate-400">01 Oct 2023</p>
+					<button class="btn-download-icon" title="Descargar">
+						<span class="material-symbols-outlined text-[18px]">download</span>
+					</button>
 				</div>
-				<button class="btn-download-icon" title="Descargar">
-					<span class="material-symbols-outlined text-[18px]">download</span>
-				</button>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<h4 class="text-sm font-bold text-slate-800">Hemoglobina</h4>
+							<span
+								class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+								>Disponible</span
+							>
+						</div>
+						<p class="text-[11px] text-slate-400">01 Oct 2023</p>
+					</div>
+					<button class="btn-download-icon" title="Descargar">
+						<span class="material-symbols-outlined text-[18px]">download</span>
+					</button>
+				</div>
+				<div
+					class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
+				>
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<h4 class="text-sm font-bold text-slate-800">Perfil Lipídico</h4>
+							<span
+								class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
+								>Disponible</span
+							>
+						</div>
+						<p class="text-[11px] text-slate-400">28 Sep 2023</p>
+					</div>
+					<button class="btn-download-icon" title="Descargar">
+						<span class="material-symbols-outlined text-[18px]">download</span>
+					</button>
+				</div>
 			</div>
-			<div
-				class="p-3 bg-white/40 rounded-xl border border-white/50 flex items-center justify-between hover:bg-white/60 transition-colors"
-			>
-				<div>
-					<div class="flex items-center gap-2 mb-1">
-						<h4 class="text-sm font-bold text-slate-800">Perfil Lipídico</h4>
-						<span
-							class="text-[9px] font-bold text-green-700 bg-green-100/80 px-1.5 py-0.5 rounded"
-							>Disponible</span
-						>
-					</div>
-					<p class="text-[11px] text-slate-400">28 Sep 2023</p>
+		</ng-container>
+
+		<div
+			*ngIf="!isLoading && !hasResults"
+			class="flex-1 flex items-center justify-center"
+		>
+			<div class="text-center max-w-[260px]">
+				<div
+					class="w-12 h-12 mx-auto rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">lab_profile</span>
 				</div>
-				<button class="btn-download-icon" title="Descargar">
-					<span class="material-symbols-outlined text-[18px]">download</span>
-				</button>
+				<p class="text-sm font-semibold text-slate-700 mt-4">
+					No hay resultados disponibles
+				</p>
+				<p class="text-xs text-slate-500 mt-1">
+					Cuando el laboratorio publique tus resultados, aparecerán aquí.
+				</p>
 			</div>
 		</div>
 	</div>
@@ -207,11 +327,13 @@
 			</div>
 			<div class="flex bg-white rounded-lg p-1 border border-slate-100">
 				<button
+					type="button"
 					class="px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700 rounded-md shadow-sm"
 				>
 					6 Meses
 				</button>
 				<button
+					type="button"
 					class="px-3 py-1 text-xs font-medium text-slate-400 hover:text-slate-600"
 				>
 					1 Año
@@ -231,7 +353,19 @@
 				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
 				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
 				<div class="border border-dashed border-slate-200 h-1/4 w-full"></div>
+				<div
+					*ngIf="isLoading"
+					class="absolute inset-0 flex items-center justify-center"
+				>
+					<p
+						class="text-xs font-medium text-slate-500 bg-white/70 px-3 py-1 rounded-full"
+					>
+						Consultando indicadores...
+					</p>
+				</div>
+
 				<svg
+					*ngIf="!isLoading && hasHealthEvolution"
 					class="absolute inset-0 w-full h-full overflow-visible"
 					preserveAspectRatio="none"
 					viewBox="0 0 400 100"
@@ -288,6 +422,82 @@
 						stroke-width="2"
 					></circle>
 				</svg>
+
+				<ng-container *ngIf="!isLoading && !hasHealthEvolution">
+					<svg
+						class="absolute inset-0 w-full h-full overflow-visible"
+						preserveAspectRatio="none"
+						viewBox="0 0 400 100"
+						width="100%"
+						height="100%"
+					>
+						<path
+							d="M0,92 L400,92"
+							fill="none"
+							stroke="#94a3b8"
+							stroke-linecap="round"
+							stroke-width="3"
+							stroke-dasharray="4 4"
+						></path>
+						<circle
+							cx="0"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+						<circle
+							cx="80"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+						<circle
+							cx="160"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+						<circle
+							cx="240"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+						<circle
+							cx="320"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+						<circle
+							cx="400"
+							cy="92"
+							fill="white"
+							r="3"
+							stroke="#94a3b8"
+							stroke-width="2"
+						></circle>
+					</svg>
+					<div
+						class="absolute inset-0 flex items-center justify-center pointer-events-none"
+					>
+						<p
+							class="text-xs font-medium text-slate-500 bg-white/70 px-3 py-1.5 rounded-full border border-slate-100"
+						>
+							Sin datos para graficar en este momento.
+						</p>
+					</div>
+				</ng-container>
 			</div>
 			<div
 				class="absolute left-8 right-0 bottom-0 flex justify-between text-[10px] text-slate-500 font-bold px-1"
@@ -304,11 +514,30 @@
 	<div class="col-span-12 lg:col-span-4 glass-card p-6 flex flex-col">
 		<div class="flex items-center justify-between mb-6">
 			<h3 class="font-bold text-slate-800">Documentos</h3>
-			<button class="text-slate-400 hover:text-slate-600">
+			<button type="button" class="text-slate-400 hover:text-slate-600">
 				<span class="material-symbols-outlined text-lg">more_horiz</span>
 			</button>
 		</div>
-		<div class="space-y-4 flex-1">
+		<ng-container *ngIf="isLoading">
+			<div class="space-y-4 flex-1">
+				<div class="flex items-center gap-4 animate-pulse">
+					<div class="w-10 h-10 rounded-lg bg-slate-200/70 shrink-0"></div>
+					<div class="flex-1">
+						<div class="h-3.5 bg-slate-200/70 rounded w-3/4 mb-2"></div>
+						<div class="h-2.5 bg-slate-200/60 rounded w-1/2"></div>
+					</div>
+				</div>
+				<div class="flex items-center gap-4 animate-pulse">
+					<div class="w-10 h-10 rounded-lg bg-slate-200/70 shrink-0"></div>
+					<div class="flex-1">
+						<div class="h-3.5 bg-slate-200/70 rounded w-2/3 mb-2"></div>
+						<div class="h-2.5 bg-slate-200/60 rounded w-1/3"></div>
+					</div>
+				</div>
+			</div>
+		</ng-container>
+
+		<div *ngIf="!isLoading && hasDocuments" class="space-y-4 flex-1">
 			<a class="flex items-center gap-4 group cursor-pointer" href="#">
 				<div
 					class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center shrink-0 border border-red-100 group-hover:bg-red-100 transition-colors"
@@ -370,10 +599,31 @@
 				</div>
 			</a>
 		</div>
+
+		<div
+			*ngIf="!isLoading && !hasDocuments"
+			class="flex-1 flex items-center justify-center"
+		>
+			<div class="text-center max-w-[260px]">
+				<div
+					class="w-12 h-12 mx-auto rounded-xl bg-slate-100 border border-slate-200 text-slate-500 flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">folder_off</span>
+				</div>
+				<p class="text-sm font-semibold text-slate-700 mt-4">
+					No hay documentos para mostrar
+				</p>
+				<p class="text-xs text-slate-500 mt-1">
+					Aun no hay documentos registrados en la base de datos.
+				</p>
+			</div>
+		</div>
 		<button
+			type="button"
+			(click)="goToDocuments()"
 			class="w-full mt-6 py-3 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-white hover:border-slate-300 transition-all bg-slate-50/50"
 		>
-			Ver todo el archivo
+			Ir a documentos
 		</button>
 	</div>
 </div>

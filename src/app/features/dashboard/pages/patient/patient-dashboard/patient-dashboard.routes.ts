@@ -8,6 +8,8 @@ import { ProfilePatientComponent } from '../components/profile-patient/profile-p
 import { ResultsPatientComponent } from '../components/results-patient/results-patient.component';
 import { SupportPatientComponent } from '../components/support-patient/support-patient.component';
 import { ScheduleAppointmentComponent } from '../components/appointment-patient/schedule-appointment/schedule-appointment.component';
+import { SelectProviderComponent } from '../components/appointment-patient/select-provider/select-provider.component';
+import { SelectDatetimeComponent } from '../components/appointment-patient/select-datetime/select-datetime.component';
 
 export const PATIENT_DASHBOARD_ROUTES: Routes = [
 	{
@@ -20,6 +22,14 @@ export const PATIENT_DASHBOARD_ROUTES: Routes = [
 			{
 				path: 'appointments/schedule',
 				component: ScheduleAppointmentComponent,
+			},
+			{
+				path: 'appointments/schedule/select-provider',
+				component: SelectProviderComponent,
+			},
+			{
+				path: 'appointments/schedule/select-datetime',
+				component: SelectDatetimeComponent,
 			},
 			{ path: 'clinical-record', component: ClinicalRecordPatientComponent },
 			{ path: 'documents', component: DocumentsPatientComponent },

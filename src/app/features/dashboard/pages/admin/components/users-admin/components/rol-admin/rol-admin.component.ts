@@ -44,7 +44,7 @@ export class RolAdminComponent implements OnInit {
       // Datos opcionales
       middleName: [''],
       secondLastName: [''],
-      phone: [''],
+      phone: [null, [Validators.pattern(/^\d{10}$/)]],
     });
     this.adminForm.valueChanges.subscribe((value) => {
       this.formDataChange.emit(value);
