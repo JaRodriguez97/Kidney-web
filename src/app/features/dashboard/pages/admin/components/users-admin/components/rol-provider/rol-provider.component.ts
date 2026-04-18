@@ -118,6 +118,7 @@ export class RolProviderComponent implements OnInit {
 
 	getFormData(): any {
 		const formData = this.providerForm.value;
+		const scheduleData = this.scheduleFormComponent?.getScheduleData() ?? null;
 		const data: any = {
 			email: formData.email,
 			password: formData.password,
@@ -142,15 +143,16 @@ export class RolProviderComponent implements OnInit {
 		if (formData.address) data.address = formData.address;
 		if (formData.commune) data.commune = formData.commune;
 
-		// Incluir schedule si el sub-componente lo proporciona
-		if (this.scheduleFormComponent) {
-			const scheduleData = this.scheduleFormComponent.getScheduleData();
-			if (scheduleData) {
-				data.schedule = scheduleData;
-			}
+		if (scheduleData) {
+			data.schedule = scheduleData;
+			data.clinicBranchId = scheduleData.clinicBranchId;
 		}
 
 		return data;
+	}
+
+	isScheduleReady(): boolean {
+		return !!this.scheduleFormComponent?.getScheduleData();
 	}
 
 	resetForm(): void {

@@ -10,6 +10,88 @@
 .badge {
 	@apply px-2.5 py-1 rounded-full text-[10px] font-bold border flex items-center gap-1.5 w-fit uppercase tracking-wider;
 }
+
+.labs-calendar {
+	// max-height: 180px;
+	overflow: hidden;
+
+	::ng-deep {
+		.fc {
+			font-family: inherit;
+		}
+
+		.fc .fc-toolbar {
+			margin-bottom: 0.2rem;
+		}
+
+		.fc .fc-toolbar-title {
+			font-size: 0.78rem;
+			font-weight: 700;
+			color: #1e293b;
+			text-transform: capitalize;
+		}
+
+		.fc .fc-button {
+			background: transparent;
+			border: 1px solid #e2e8f0;
+			color: #64748b;
+			border-radius: 0.45rem;
+			padding: 0.1rem 0.35rem;
+			font-size: 0.63rem;
+			font-weight: 700;
+			box-shadow: none;
+
+			&:active,
+			&.fc-button-active {
+				background: #1c384e !important;
+				color: #fff !important;
+				border-color: #1c384e !important;
+			}
+		}
+
+		.fc .fc-scrollgrid,
+		.fc th,
+		.fc td {
+			border-color: #f1f5f9;
+		}
+
+		.fc .fc-col-header-cell-cushion {
+			font-size: 0.53rem;
+			font-weight: 700;
+			color: #94a3b8;
+			padding: 2px 0;
+			text-transform: uppercase;
+		}
+
+		.fc .fc-daygrid-day-frame {
+			min-height: 0.95rem;
+		}
+
+		.fc .fc-daygrid-day-number {
+			font-size: 0.63rem;
+			font-weight: 600;
+			color: #334155;
+			padding: 1px 3px;
+		}
+
+		.fc .fc-daygrid-day.fc-day-today {
+			background: rgba(28, 56, 78, 0.06);
+		}
+
+		.fc .provider-day-event {
+			background: #1c384e;
+			border: none;
+			border-radius: 999px;
+			color: #fff;
+			font-size: 0.55rem;
+			font-weight: 700;
+			line-height: 0.8rem;
+			min-height: 0.8rem;
+			padding: 0 0.25rem;
+		}
+	}
+}
+
 ::-webkit-scrollbar {
 	width: 6px;
 }

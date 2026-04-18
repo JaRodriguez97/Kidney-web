@@ -210,7 +210,8 @@ export class UsersAdminComponent implements OnInit {
 		} else if (this.modalRole === 'proveedor') {
 			if (
 				!this.rolProviderComponent ||
-				this.rolProviderComponent.providerForm.invalid
+				this.rolProviderComponent.providerForm.invalid ||
+				!this.rolProviderComponent.isScheduleReady()
 			) {
 				isFormValid = false;
 			} else {

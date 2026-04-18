@@ -19,30 +19,24 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		if (!this.auth.isAuthenticated()) {
-			// redirect to patient login by default
 			this.router.navigate(['/login/patient']);
 			return false;
 		}
 
 		const requiredRole = route.data?.['role'];
-		const user = (this.auth as any).currentUser$?.value || null;
+		const user = this.auth.currentUser;
 
-		// try to read current user from localStorage as fallback
 		const stored = this.platformService.getLocalStorageItem('currentUser');
 		const currentUser = user ?? (stored ? JSON.parse(stored) : null);
 
 		if (requiredRole && currentUser) {
-			// Get first role from roles array (User.entity defines roles as array)
-			const userRole = currentUser.roles?.[0];
+			const hasRequiredRole = currentUser.roles?.includes(requiredRole);
 
-			if (userRole !== requiredRole) {
-				// Don't redirect to another protected route to avoid loops
-				// Instead, redirect to login since they don't have permission
+			if (!hasRequiredRole) {
 				this.router.navigate(['/login/patient']);
 				return false;
 			}
 		} else if (requiredRole && !currentUser) {
-			// No user found, redirect to login
 			this.router.navigate(['/login/patient']);
 			return false;
 		}

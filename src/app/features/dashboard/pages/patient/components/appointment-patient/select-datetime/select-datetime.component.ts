@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,31 +9,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import {
+	AvailableSlot,
 	AppointmentService,
-	GetBookedTimesResponse,
 } from '@app/core/services/appointment.service';
 import { AppointmentBookingStateService } from '@app/core/services/appointment-booking-state.service';
-
-interface VirtualSlot {
-	id: string;
-	startTime: string;
-	endTime: string;
-}
-
-const VIRTUAL_SLOTS: VirtualSlot[] = Array.from({ length: 18 }, (_, index) => {
-	const startMinutes = 8 * 60 + index * 30;
-	const endMinutes = startMinutes + 30;
-	const startHour = String(Math.floor(startMinutes / 60)).padStart(2, '0');
-	const startMinute = String(startMinutes % 60).padStart(2, '0');
-	const endHour = String(Math.floor(endMinutes / 60)).padStart(2, '0');
-	const endMinute = String(endMinutes % 60).padStart(2, '0');
-
-	return {
-		id: `slot-${startHour}${startMinute}`,
-		startTime: `${startHour}:${startMinute}`,
-		endTime: `${endHour}:${endMinute}`,
-	};
-});
 
 @Component({
 	selector: 'app-select-datetime',
@@ -58,13 +38,23 @@ export class SelectDatetimeComponent implements OnInit {
 
 	selectedDate = '';
 	selectedSlotId: string | null = null;
-	availableSlots: VirtualSlot[] = [];
-	bookedTimes: string[] = [];
+	availableSlots: AvailableSlot[] = [];
 	isLoadingSlots = false;
 	slotsError: string | null = null;
-	isSavingAppointment = false;
 
 	calendarOptions!: CalendarOptions;
+
+	private getErrorMessage(error: unknown, fallback: string): string {
+		if (error instanceof HttpErrorResponse) {
+			const backendMessage = (error.error as { message?: string } | null)
+				?.message;
+			if (backendMessage && backendMessage.trim().length > 0) {
+				return backendMessage;
+			}
+		}
+
+		return fallback;
+	}
 
 	ngOnInit(): void {
 		const snapshot = this.appointmentBookingState.getSnapshot();
@@ -80,6 +70,11 @@ export class SelectDatetimeComponent implements OnInit {
 		this.selectedDate = queryMap.get('date') ?? snapshot.slotDate ?? '';
 		this.selectedSlotId = queryMap.get('slotId') ?? snapshot.slotId;
 
+		if (this.selectedDate && this.selectedDate < this.minDate) {
+			this.selectedDate = '';
+			this.selectedSlotId = null;
+		}
+
 		this.initializeCalendar();
 
 		if (!this.specialty || !this.serviceId || !this.providerId) {
@@ -93,24 +88,24 @@ export class SelectDatetimeComponent implements OnInit {
 	}
 
 	get canContinue(): boolean {
-		return !!this.selectedSlotId && !this.isSavingAppointment;
+		return !!this.selectedSlotId;
 	}
 
 	get minDate(): string {
-		return this.getTodayDate();
+		return this.getMinimumBookableDate();
 	}
 
 	get hasDateSelected(): boolean {
 		return !!this.selectedDate;
 	}
 
-	get morningSlots(): VirtualSlot[] {
+	get morningSlots(): AvailableSlot[] {
 		return this.availableSlots.filter(
 			(slot) => this.getHour(slot.startTime) < 12,
 		);
 	}
 
-	get afternoonSlots(): VirtualSlot[] {
+	get afternoonSlots(): AvailableSlot[] {
 		return this.availableSlots.filter(
 			(slot) => this.getHour(slot.startTime) >= 12,
 		);
@@ -132,12 +127,19 @@ export class SelectDatetimeComponent implements OnInit {
 	}
 
 	onDateChange(date: string): void {
+		if (date && date < this.minDate) {
+			this.selectedDate = '';
+			this.selectedSlotId = null;
+			this.availableSlots = [];
+			this.slotsError = 'Solo puedes agendar desde pasado mañana en adelante.';
+			return;
+		}
+
 		this.selectedDate = date;
 		this.selectedSlotId = null;
 
 		if (!date) {
 			this.availableSlots = [];
-			this.bookedTimes = [];
 			this.slotsError = null;
 			return;
 		}
@@ -154,14 +156,10 @@ export class SelectDatetimeComponent implements OnInit {
 		this.initializeCalendar();
 	}
 
-	selectSlot(slot: VirtualSlot): void {
-		if (this.bookedTimes.includes(slot.startTime)) {
-			return;
-		}
-
+	selectSlot(slot: AvailableSlot): void {
 		this.selectedSlotId = slot.id;
 		this.appointmentBookingState.setSlotSelection({
-			slotId: null,
+			slotId: slot.id,
 			slotDate: this.selectedDate,
 			slotStartTime: slot.startTime,
 			slotEndTime: slot.endTime,
@@ -201,55 +199,37 @@ export class SelectDatetimeComponent implements OnInit {
 			return;
 		}
 
-		this.isSavingAppointment = true;
-		this.slotsError = null;
-
 		this.appointmentBookingState.setSlotSelection({
-			slotId: null,
+			slotId: selectedSlot.id,
 			slotDate: this.selectedDate,
 			slotStartTime: selectedSlot.startTime,
 			slotEndTime: selectedSlot.endTime,
 		});
 
-		this.appointmentService
-			.createAppointment({
-				providerId: this.providerId,
-				serviceId: this.serviceId,
-				date: this.selectedDate,
-				startTime: selectedSlot.startTime,
-				endTime: selectedSlot.endTime,
-			})
-			.subscribe({
-				next: () => {
-					this.isSavingAppointment = false;
-					this.router.navigate(['/dashboard/patient/appointments'], {
-						queryParams: {
-							created: '1',
-							specialty: this.specialty ?? undefined,
-							serviceId: this.serviceId ?? undefined,
-							serviceCode: this.serviceCode ?? undefined,
-							serviceName: this.serviceName ?? undefined,
-							providerId: this.providerId ?? undefined,
-							providerName: this.providerName ?? undefined,
-							date: this.selectedDate,
-							startTime: selectedSlot.startTime,
-						},
-					});
+		this.router.navigate(
+			['/dashboard/patient/appointments/schedule/confirm-appointment'],
+			{
+				queryParams: {
+					specialty: this.specialty ?? undefined,
+					serviceId: this.serviceId ?? undefined,
+					serviceCode: this.serviceCode ?? undefined,
+					serviceName: this.serviceName ?? undefined,
+					providerId: this.providerId,
+					providerName: this.providerName ?? undefined,
+					slotId: selectedSlot.id,
+					date: this.selectedDate,
+					startTime: selectedSlot.startTime,
+					endTime: selectedSlot.endTime,
 				},
-				error: () => {
-					this.isSavingAppointment = false;
-					this.slotsError =
-						'No fue posible crear la cita. Verifica la disponibilidad e inténtalo de nuevo.';
-					this.loadSlots();
-				},
-			});
+			},
+		);
 	}
 
-	isSelectedSlot(slot: VirtualSlot): boolean {
+	isSelectedSlot(slot: AvailableSlot): boolean {
 		return this.selectedSlotId === slot.id;
 	}
 
-	trackBySlotId(_: number, slot: VirtualSlot): string {
+	trackBySlotId(_: number, slot: AvailableSlot): string {
 		return slot.id;
 	}
 
@@ -271,9 +251,8 @@ export class SelectDatetimeComponent implements OnInit {
 	}
 
 	private loadSlots(): void {
-		if (!this.providerId || !this.selectedDate) {
+		if (!this.providerId || !this.serviceId || !this.selectedDate) {
 			this.availableSlots = [];
-			this.bookedTimes = [];
 			this.selectedSlotId = null;
 			return;
 		}
@@ -282,12 +261,11 @@ export class SelectDatetimeComponent implements OnInit {
 		this.slotsError = null;
 
 		this.appointmentService
-			.getBookedTimes(this.providerId, this.selectedDate)
+			.getAvailableSlots(this.providerId, this.serviceId, this.selectedDate)
 			.subscribe({
-				next: (response: GetBookedTimesResponse) => {
-					this.bookedTimes = response.bookedTimes;
-					this.availableSlots = VIRTUAL_SLOTS.filter(
-						(slot) => !this.bookedTimes.includes(slot.startTime),
+				next: (slots) => {
+					this.availableSlots = slots.filter(
+						(slot) => slot.available > 0 && slot.status === 'AVAILABLE',
 					);
 
 					if (
@@ -299,12 +277,13 @@ export class SelectDatetimeComponent implements OnInit {
 
 					this.isLoadingSlots = false;
 				},
-				error: () => {
+				error: (error) => {
 					this.availableSlots = [];
-					this.bookedTimes = [];
 					this.selectedSlotId = null;
-					this.slotsError =
-						'No fue posible cargar los horarios disponibles para la fecha seleccionada.';
+					this.slotsError = this.getErrorMessage(
+						error,
+						'No fue posible cargar los horarios disponibles para la fecha seleccionada.',
+					);
 					this.isLoadingSlots = false;
 				},
 			});
@@ -315,7 +294,10 @@ export class SelectDatetimeComponent implements OnInit {
 			plugins: [dayGridPlugin, interactionPlugin],
 			locale: esLocale,
 			initialView: 'dayGridMonth',
-			initialDate: this.selectedDate || this.getTodayDate(),
+			initialDate:
+				this.selectedDate && this.selectedDate >= this.minDate
+					? this.selectedDate
+					: this.minDate,
 			headerToolbar: {
 				left: 'prev',
 				center: 'title',
@@ -361,11 +343,16 @@ export class SelectDatetimeComponent implements OnInit {
 		return 0;
 	}
 
-	private getTodayDate(): string {
-		const today = new Date();
-		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, '0');
-		const day = String(today.getDate()).padStart(2, '0');
+	private getMinimumBookableDate(): string {
+		const now = new Date();
+		const minimumDateUtc = new Date(
+			Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+		);
+		minimumDateUtc.setUTCDate(minimumDateUtc.getUTCDate() + 2);
+
+		const year = minimumDateUtc.getUTCFullYear();
+		const month = String(minimumDateUtc.getUTCMonth() + 1).padStart(2, '0');
+		const day = String(minimumDateUtc.getUTCDate()).padStart(2, '0');
 
 		return `${year}-${month}-${day}`;
 	}

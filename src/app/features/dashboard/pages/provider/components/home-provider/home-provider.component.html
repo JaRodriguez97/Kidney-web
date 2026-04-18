@@ -4,7 +4,7 @@
 	>
 		<div>
 			<p class="text-slate-500 text-sm font-medium mb-1">Citas Hoy</p>
-			<h3 class="text-3xl font-bold text-primary">12</h3>
+			<h3 class="text-3xl font-bold text-primary">{{ appointments.length }}</h3>
 		</div>
 		<div
 			class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center"
@@ -17,7 +17,7 @@
 	>
 		<div>
 			<p class="text-slate-500 text-sm font-medium mb-1">Atendidos</p>
-			<h3 class="text-3xl font-bold text-green-600">8</h3>
+			<h3 class="text-3xl font-bold text-green-600">{{ attendedCount }}</h3>
 		</div>
 		<div
 			class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center"
@@ -30,7 +30,7 @@
 	>
 		<div>
 			<p class="text-slate-500 text-sm font-medium mb-1">Pendientes</p>
-			<h3 class="text-3xl font-bold text-orange-500">4</h3>
+			<h3 class="text-3xl font-bold text-orange-500">{{ pendingCount }}</h3>
 		</div>
 		<div
 			class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center"
@@ -45,7 +45,9 @@
 			<p class="text-slate-500 text-xs font-bold mb-1 uppercase tracking-wider">
 				Próximo Paciente
 			</p>
-			<h3 class="text-3xl font-mono font-bold text-secondary">00:15:00</h3>
+			<h3 class="text-3xl font-mono font-bold text-secondary">
+				{{ currentOrNextAppointment?.startTime | date: "shortTime" }}
+			</h3>
 		</div>
 		<div
 			class="w-12 h-12 rounded-xl bg-red-50 text-secondary flex items-center justify-center animate-pulse"
@@ -60,87 +62,123 @@
 			<div
 				class="glass-panel p-0 overflow-hidden border-t-4 border-t-primary h-full"
 			>
-				<div
-					class="p-6 pb-4 flex justify-between items-start bg-gradient-to-r from-blue-50/50 to-transparent"
-				>
-					<div>
-						<span
-							class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 mb-3 border border-green-200"
-						>
+				@if (currentOrNextAppointment; as currentAppointment) {
+					<div
+						class="p-6 pb-4 flex justify-between items-start bg-gradient-to-r from-blue-50/50 to-transparent"
+					>
+						<div>
 							<span
-								class="w-2 h-2 rounded-full bg-green-600 animate-pulse"
-							></span>
-							EN SALA DE ESPERA
-						</span>
-						<h2 class="text-2xl font-bold text-slate-800">
-							María Paula Restrepo
-						</h2>
-						<p class="text-slate-500 text-sm mt-1">
-							CC. 1.140.852.963 • 34 Años • EPS Sanitas
-						</p>
+								class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 mb-3 border border-green-200"
+							>
+								<span
+									class="w-2 h-2 rounded-full bg-green-600 animate-pulse"
+								></span>
+								{{ getStatusLabel(currentAppointment.status) }}
+							</span>
+							<h2 class="text-2xl font-bold text-slate-800">
+								{{ currentAppointment.patientName }}
+							</h2>
+							<p class="text-slate-500 text-sm mt-1">
+								{{ currentAppointment.serviceName }} •
+								{{ currentAppointment.clinicBranchName }}
+							</p>
+						</div>
+						<div
+							class="w-16 h-16 rounded-full bg-slate-100 border-4 border-white shadow-sm flex items-center justify-center text-slate-400"
+						>
+							<span class="text-lg font-bold text-slate-500">{{
+								getInitials(currentAppointment.patientName)
+							}}</span>
+						</div>
 					</div>
 					<div
-						class="w-16 h-16 rounded-full bg-slate-100 border-4 border-white shadow-sm flex items-center justify-center text-slate-400"
+						class="px-6 py-4 border-t border-slate-100 grid grid-cols-3 gap-4"
 					>
-						<span class="material-symbols-outlined text-3xl">person</span>
+						<div class="col-span-1">
+							<p class="text-xs text-slate-400 font-semibold uppercase">
+								Motivo Consulta
+							</p>
+							<p class="text-sm font-medium text-slate-700 mt-1">
+								{{ currentAppointment.serviceName }}
+							</p>
+						</div>
+						<div class="col-span-1">
+							<p class="text-xs text-slate-400 font-semibold uppercase">
+								Hora Programada
+							</p>
+							<p class="text-sm font-medium text-slate-700 mt-1">
+								{{ currentAppointment.startTime | date: "shortTime" }}
+							</p>
+						</div>
+						<div class="col-span-1">
+							<p class="text-xs text-slate-400 font-semibold uppercase">
+								Estado de Agenda
+							</p>
+							<p
+								class="text-sm font-bold text-orange-500 mt-1 flex items-center gap-1"
+							>
+								<span class="material-symbols-outlined text-sm">schedule</span>
+								{{ getStatusLabel(currentAppointment.status) }}
+							</p>
+						</div>
 					</div>
-				</div>
-				<div class="px-6 py-4 border-t border-slate-100 grid grid-cols-3 gap-4">
-					<div class="col-span-1">
-						<p class="text-xs text-slate-400 font-semibold uppercase">
-							Motivo Consulta
-						</p>
-						<p class="text-sm font-medium text-slate-700 mt-1">
-							Control Mensual Hipertensión
-						</p>
-					</div>
-					<div class="col-span-1">
-						<p class="text-xs text-slate-400 font-semibold uppercase">
-							Última Atención
-						</p>
-						<p class="text-sm font-medium text-slate-700 mt-1">15 Oct 2023</p>
-					</div>
-					<div class="col-span-1">
-						<p class="text-xs text-slate-400 font-semibold uppercase">
-							Riesgo Integral
-						</p>
-						<p
-							class="text-sm font-bold text-orange-500 mt-1 flex items-center gap-1"
+					<div
+						class="p-6 pt-2 bg-slate-50/50 flex flex-col sm:flex-row gap-3 items-center"
+					>
+						<button
+							class="w-full sm:w-auto btn-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm shadow-blue-900/10 hover:shadow-blue-900/20"
 						>
-							<span class="material-symbols-outlined text-sm">warning</span>
-							Moderado
+							<span class="material-symbols-outlined">ring_volume</span>
+							Llamar Paciente
+						</button>
+						<div class="h-8 w-px bg-slate-300 hidden sm:block mx-2"></div>
+						@if (canStartClinicalCare) {
+							<button
+								class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
+							>
+								<span class="material-symbols-outlined text-lg"
+									>play_arrow</span
+								>
+								Iniciar Atención
+							</button>
+						}
+						@if (canReadClinicalRecord) {
+							<button
+								class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
+							>
+								<span class="material-symbols-outlined text-lg"
+									>history_edu</span
+								>
+								Ver Historia
+							</button>
+						}
+						@if (canOrderLabs) {
+							<button
+								class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
+							>
+								<span class="material-symbols-outlined text-lg">science</span>
+								Solicitar Labs
+							</button>
+						}
+					</div>
+				} @else {
+					<div
+						class="p-8 h-full flex flex-col justify-center items-center text-center bg-gradient-to-r from-blue-50/40 to-transparent"
+					>
+						<div
+							class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4"
+						>
+							<span class="material-symbols-outlined text-3xl">event_busy</span>
+						</div>
+						<h2 class="text-2xl font-bold text-slate-800">
+							Sin pacientes en turno
+						</h2>
+						<p class="text-slate-500 text-sm mt-2 max-w-md">
+							No hay citas activas o próximas para mostrar en el panel principal
+							del provider.
 						</p>
 					</div>
-				</div>
-				<div
-					class="p-6 pt-2 bg-slate-50/50 flex flex-col sm:flex-row gap-3 items-center"
-				>
-					<button
-						class="w-full sm:w-auto btn-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm shadow-blue-900/10 hover:shadow-blue-900/20"
-					>
-						<span class="material-symbols-outlined">ring_volume</span>
-						Llamar Paciente
-					</button>
-					<div class="h-8 w-px bg-slate-300 hidden sm:block mx-2"></div>
-					<button
-						class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
-					>
-						<span class="material-symbols-outlined text-lg">play_arrow</span>
-						Iniciar Atención
-					</button>
-					<button
-						class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
-					>
-						<span class="material-symbols-outlined text-lg">history_edu</span>
-						Ver Historia
-					</button>
-					<button
-						class="flex-1 w-full sm:w-auto btn-secondary px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs"
-					>
-						<span class="material-symbols-outlined text-lg">science</span>
-						Solicitar Labs
-					</button>
-				</div>
+				}
 			</div>
 		</div>
 		<div class="lg:col-span-1">
@@ -220,13 +258,13 @@
 						class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold border border-green-100 flex items-center gap-1.5"
 					>
 						<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-						8 Atendidos
+						{{ attendedCount }} Atendidos
 					</span>
 					<span
 						class="px-3 py-1.5 rounded-lg bg-blue-50 text-primary text-xs font-bold border border-blue-100 flex items-center gap-1.5"
 					>
 						<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-						4 Pendientes
+						{{ pendingCount }} Pendientes
 					</span>
 				</div>
 			</div>
@@ -253,145 +291,83 @@
 						</tr>
 					</thead>
 					<tbody class="text-sm divide-y divide-slate-100">
-						<tr
-							class="text-slate-400 bg-slate-50/10 hover:bg-slate-50/30 transition-colors"
-						>
-							<td class="py-4 pl-6 font-medium">08:00 AM</td>
-							<td class="py-4">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400"
-									>
-										CM
-									</div>
-									Carlos Mendoza
-								</div>
-							</td>
-							<td class="py-4 italic">Consulta Medicina General</td>
-							<td class="py-4 pr-6 text-right">
-								<span
-									class="text-[10px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-tighter"
-									>Atendido</span
+						@if (loading) {
+							<tr>
+								<td class="py-8 text-center text-slate-500" colspan="4">
+									Cargando agenda del día...
+								</td>
+							</tr>
+						} @else if (errorMessage) {
+							<tr>
+								<td
+									class="py-8 text-center text-secondary font-medium"
+									colspan="4"
 								>
-							</td>
-						</tr>
-						<tr
-							class="text-slate-400 bg-slate-50/10 hover:bg-slate-50/30 transition-colors"
-						>
-							<td class="py-4 pl-6 font-medium">08:30 AM</td>
-							<td class="py-4">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400"
+									{{ errorMessage }}
+								</td>
+							</tr>
+						} @else if (appointments.length === 0) {
+							<tr>
+								<td class="py-10 px-6 text-center text-slate-500" colspan="4">
+									No hay agenda médica ocupada para hoy.
+								</td>
+							</tr>
+						} @else {
+							@for (
+								appointment of appointments;
+								track trackByAppointment($index, appointment)
+							) {
+								<tr [class]="getRowClasses(appointment.status)">
+									<td
+										class="py-4 pl-6 font-medium"
+										[class.text-primary]="
+											appointment.status === 'CHECKED_IN' ||
+											appointment.status === 'IN_PROGRESS'
+										"
+										[class.font-bold]="
+											appointment.status === 'CHECKED_IN' ||
+											appointment.status === 'IN_PROGRESS'
+										"
 									>
-										AR
-									</div>
-									Ana Sofia Ruiz
-								</div>
-							</td>
-							<td class="py-4 italic">Chequeo Preventivo Anual</td>
-							<td class="py-4 pr-6 text-right">
-								<span
-									class="text-[10px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-tighter"
-									>Atendido</span
-								>
-							</td>
-						</tr>
-						<tr class="bg-primary/5 border-l-4 border-l-primary group">
-							<td class="py-5 pl-5 font-bold text-primary">09:30 AM</td>
-							<td class="py-5">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold"
+										{{ appointment.startTime | date: "shortTime" }}
+									</td>
+									<td class="py-4">
+										<div class="flex items-center gap-3">
+											<div
+												class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500"
+											>
+												{{ getInitials(appointment.patientName) }}
+											</div>
+											<span class="text-slate-800 font-medium">{{
+												appointment.patientName
+											}}</span>
+										</div>
+									</td>
+									<td
+										class="py-4 text-slate-600"
+										[class.font-medium]="
+											appointment.status === 'CHECKED_IN' ||
+											appointment.status === 'IN_PROGRESS'
+										"
 									>
-										MR
-									</div>
-									<span class="font-bold text-slate-800"
-										>María Paula Restrepo</span
-									>
-								</div>
-							</td>
-							<td class="py-5 text-slate-600 font-medium">
-								Control Mensual Hipertensión
-							</td>
-							<td class="py-5 pr-6 text-right">
-								<span
-									class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700 border border-green-200 uppercase tracking-wide"
-								>
-									<span
-										class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"
-									></span>
-									En Sala
-								</span>
-							</td>
-						</tr>
-						<tr class="hover:bg-white/50 transition-colors">
-							<td class="py-4 pl-6 font-medium text-slate-600">10:00 AM</td>
-							<td class="py-4">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-blue-50 text-blue-400 flex items-center justify-center text-xs font-bold"
-									>
-										JV
-									</div>
-									<span class="text-slate-800 font-medium"
-										>Jorge Luis Vargas</span
-									>
-								</div>
-							</td>
-							<td class="py-4 text-slate-600">Evaluación Nutricional</td>
-							<td class="py-4 pr-6 text-right">
-								<span
-									class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide"
-								>
-									Confirmado
-								</span>
-							</td>
-						</tr>
-						<tr class="hover:bg-white/50 transition-colors">
-							<td class="py-4 pl-6 font-medium text-slate-600">10:30 AM</td>
-							<td class="py-4">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-red-50 text-red-300 flex items-center justify-center text-xs font-bold"
-									>
-										DM
-									</div>
-									<span class="text-slate-800 font-medium"
-										>Diana Carolina Monsalve</span
-									>
-								</div>
-							</td>
-							<td class="py-4 text-slate-600">Valoración Cardiovascular</td>
-							<td class="py-4 pr-6 text-right">
-								<span
-									class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold bg-red-50 text-secondary border border-red-100 uppercase tracking-wide"
-								>
-									Ausente
-								</span>
-							</td>
-						</tr>
-						<tr class="hover:bg-white/50 transition-colors">
-							<td class="py-4 pl-6 font-medium text-slate-600">11:00 AM</td>
-							<td class="py-4">
-								<div class="flex items-center gap-3">
-									<div
-										class="w-8 h-8 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-xs font-bold"
-									>
-										RM
-									</div>
-									<span class="text-slate-800 font-medium">Ricardo Mejía</span>
-								</div>
-							</td>
-							<td class="py-4 text-slate-600">Primera vez</td>
-							<td class="py-4 pr-6 text-right">
-								<span
-									class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide"
-								>
-									Confirmado
-								</span>
-							</td>
-						</tr>
+										{{ appointment.serviceName }}
+									</td>
+									<td class="py-4 pr-6 text-right">
+										<span [class]="getStatusClasses(appointment.status)">
+											@if (
+												appointment.status === "CHECKED_IN" ||
+												appointment.status === "IN_PROGRESS"
+											) {
+												<span
+													class="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse"
+												></span>
+											}
+											{{ getStatusLabel(appointment.status) }}
+										</span>
+									</td>
+								</tr>
+							}
+						}
 					</tbody>
 				</table>
 			</div>

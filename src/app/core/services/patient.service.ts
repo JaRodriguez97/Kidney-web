@@ -23,6 +23,30 @@ export interface PatientRequest {
   emergencyContactPhone?: string;
 }
 
+export type ProviderPatientRisk = 'HIGH' | 'MODERATE' | 'LOW' | 'UNCLASSIFIED';
+
+export interface ProviderDashboardPatient {
+  patientId: string;
+  fullName: string;
+  documentType: string | null;
+  lastAttentionDate: string;
+  riskLevel: ProviderPatientRisk;
+  totalAppointments: number;
+}
+
+export interface ProviderPatientsResponse {
+  scope: 'GLOBAL' | 'SELF';
+  selectedProviderId: string | null;
+  stats: {
+    totalPatients: number;
+    highRiskPatients: number;
+    moderateRiskPatients: number;
+    lowRiskPatients: number;
+    unclassifiedRiskPatients: number;
+  };
+  patients: ProviderDashboardPatient[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -33,5 +57,22 @@ export class PatientService {
 
   createPatient(patient: PatientRequest): Observable<any> {
     return this.http.post(this.baseUrl, patient);
+  }
+
+  getProviderPatients(params?: {
+    providerId?: string;
+    search?: string;
+    risk?: ProviderPatientRisk;
+  }): Observable<ProviderPatientsResponse> {
+    return this.http.get<ProviderPatientsResponse>(
+      `${this.baseUrl}provider-dashboard`,
+      {
+        params: {
+          ...(params?.providerId ? { providerId: params.providerId } : {}),
+          ...(params?.search ? { search: params.search } : {}),
+          ...(params?.risk ? { risk: params.risk } : {}),
+        },
+      },
+    );
   }
 }

@@ -1,456 +1,241 @@
-      <div class="flex flex-col lg:flex-row gap-6 h-full items-start">
-        <div class="flex-1 w-full flex flex-col gap-6">
-          <div class="glass-panel p-6 flex-1 flex flex-col">
-            <div
-              class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"
-            >
-              <div class="relative w-full md:w-96">
-                <span
-                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                  >search</span
-                >
-                <input
-                  class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
-                  placeholder="Buscar por nombre o cédula..."
-                  type="text"
-                />
-              </div>
-              <div class="flex gap-3 w-full md:w-auto">
-                <div class="relative">
-                  <select
-                    class="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm text-slate-600 font-medium cursor-pointer"
-                  >
-                    <option>Nivel de Riesgo</option>
-                    <option>Alto</option>
-                    <option>Moderado</option>
-                    <option>Bajo</option>
-                  </select>
-                  <span
-                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
-                    >expand_more</span
-                  >
-                </div>
-                <div class="relative">
-                  <select
-                    class="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm text-slate-600 font-medium cursor-pointer"
-                  >
-                    <option>Última Atención</option>
-                    <option>Esta semana</option>
-                    <option>Este mes</option>
-                    <option>Más de 3 meses</option>
-                  </select>
-                  <span
-                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
-                    >expand_more</span
-                  >
-                </div>
-              </div>
-            </div>
-            <div
-              class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white/40 flex-1"
-            >
-              <table class="w-full text-left border-collapse">
-                <thead
-                  class="bg-slate-50/90 border-b border-slate-200 sticky top-0 backdrop-blur-sm z-10"
-                >
-                  <tr class="text-xs text-slate-500">
-                    <th class="py-4 pl-6 font-bold uppercase tracking-wider">
-                      Paciente
-                    </th>
-                    <th class="py-4 font-bold uppercase tracking-wider">
-                      Identificación
-                    </th>
-                    <th class="py-4 font-bold uppercase tracking-wider">
-                      Edad
-                    </th>
-                    <th class="py-4 font-bold uppercase tracking-wider">
-                      Última Atención
-                    </th>
-                    <th class="py-4 font-bold uppercase tracking-wider">
-                      Riesgo Integral
-                    </th>
-                    <th
-                      class="py-4 pr-6 font-bold uppercase tracking-wider text-right"
-                    >
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="text-sm divide-y divide-slate-100">
-                  <tr class="hover:bg-white/60 transition-colors group">
-                    <td class="py-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden"
-                        >
-                          <img
-                            alt="Paciente"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDthv7jGSnOZzNoy7Y6JzzW-VOPPNp0adwQfysLAH8-xCjY8tBBx0HkOZObvPFpvLQnF_ae6VBdLvR33Y_AzfEohWCmn8_DRgAMCl9KkhklRt56HK7AXtlnZWQFR3voOqH86RDuWl1glJRpLPnjp3hqeV8S61VLmw_bZNqw_pwEm1qipqLtRgTuWLtaoF6SBvYxLFXK6C2ihJuaaBY7tIgpkItnJvUTu-yJuORxUj7PCjbONrRTvZ1BKB7jHmPHorFBHimRA9zzz_k"
-                          />
-                        </div>
-                        <div>
-                          <p class="font-bold text-slate-800">
-                            María Paula Restrepo
-                          </p>
-                          <p class="text-xs text-slate-500">EPS Sanitas</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 text-slate-600 font-mono text-xs">
-                      1.140.852.963
-                    </td>
-                    <td class="py-4 text-slate-600">34 Años</td>
-                    <td class="py-4 text-slate-600">15 Oct 2023</td>
-                    <td class="py-4">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-orange-500"
-                        ></span>
-                        Moderado
-                      </span>
-                    </td>
-                    <td class="py-4 pr-6 text-right">
-                      <div
-                        class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
-                      >
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-                          title="Ver Historia"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >description</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-                          title="Agendar Cita"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >calendar_add_on</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-                          title="Solicitar Labs"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >science</span
-                          >
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-white/60 transition-colors group">
-                    <td class="py-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden"
-                        >
-                          <img
-                            alt="Paciente"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9IQzNiOyigZTuXKOSazHiksU7LPcyK3CS1d6dpe1MCTLayIwSwfuIvi3KBiRy5jsPD0Ro0FlwTra44Sl_cf0yB6jm_UjsL6sHO6A-M_4piSbVCPsq_0C4rQZHdi6z7dXvTVcE1f9YSrTisDd_V5lCT9r0iIqKMZukgqopYyaIkGu2ZhypUFPpbPPL1BnQa5Dwx_V-mCgGrE6E3K_MUvLf6TUjLk2ix4k6ZMd0NCeKWu3cu3kU0YFKL-xdjwJvwX-AYvixqHb1z70"
-                          />
-                        </div>
-                        <div>
-                          <p class="font-bold text-slate-800">
-                            Jorge Luis Vargas
-                          </p>
-                          <p class="text-xs text-slate-500">Sura</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 text-slate-600 font-mono text-xs">
-                      94.521.874
-                    </td>
-                    <td class="py-4 text-slate-600">45 Años</td>
-                    <td class="py-4 text-slate-600">02 Nov 2023</td>
-                    <td class="py-4">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-green-500"
-                        ></span>
-                        Bajo
-                      </span>
-                    </td>
-                    <td class="py-4 pr-6 text-right">
-                      <div
-                        class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
-                      >
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-                          title="Ver Historia"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >description</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-                          title="Agendar Cita"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >calendar_add_on</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-                          title="Solicitar Labs"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >science</span
-                          >
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr
-                    class="bg-red-50/30 hover:bg-red-50/50 transition-colors group border-l-4 border-l-secondary"
-                  >
-                    <td class="py-4 pl-5">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden"
-                        >
-                          <img
-                            alt="Paciente"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuQ5ReW4_wHbY--IGA_YbYD0rb1Sn-ny0pM407yjhxhg6nNs-6mb-Vcw29R65dAi189IbQS8VV0sqGFuCbyERk9t6IbNZjBKR-ceVWPWouU-E2SBn21JQMD2OYfD6CQjWS1BBE_rvxf5pckjIomf8wsG5Ia-e3rzYijK4ikZeVwAZ3TICOKlvHPRDKtyUKPoidFO4fWJvWI9UHEaulmFBzioyqdAYmjdorf8zKyy2vW52SYTF6M46ea7yJe08PaRxsBIVfovzuyDg"
-                          />
-                        </div>
-                        <div>
-                          <p class="font-bold text-slate-800">Carlos Mendoza</p>
-                          <p class="text-xs text-slate-500">Coomeva</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 text-slate-600 font-mono text-xs">
-                      79.654.123
-                    </td>
-                    <td class="py-4 text-slate-600">62 Años</td>
-                    <td class="py-4 text-slate-600">20 Oct 2023</td>
-                    <td class="py-4">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-secondary border border-red-100"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"
-                        ></span>
-                        Alto
-                      </span>
-                    </td>
-                    <td class="py-4 pr-6 text-right">
-                      <div
-                        class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
-                      >
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-                          title="Ver Historia"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >description</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-                          title="Agendar Cita"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >calendar_add_on</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-                          title="Solicitar Labs"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >science</span
-                          >
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-white/60 transition-colors group">
-                    <td class="py-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden"
-                        >
-                          <img
-                            alt="Paciente"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwO3PYCuxsr2T5Pe6vXApOBZsoCprCu3paa8CxhNuZ3J6lpirP_gawFsW765Y5ZrwN8uCjtJpKeY0kL8YB7mVLPxw6kNnzRJRiaRAc6K1DJopUU16nyAsW0cmQanTv367WR3SyA_hkCnyoZMBwkctV9QspSe5i98DHmKF_muAOzzZUgiAGi7iCy7ck9qI9SIWrEj9JIEV_zWMSX91tF-CCBC_Qm2FQywp1Oki5oqwvW6_vjsfrbGuE7A_QITTbckh_vjMqpsW1Aa4"
-                          />
-                        </div>
-                        <div>
-                          <p class="font-bold text-slate-800">Ana Sofia Ruiz</p>
-                          <p class="text-xs text-slate-500">Nueva EPS</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 text-slate-600 font-mono text-xs">
-                      1.020.456.789
-                    </td>
-                    <td class="py-4 text-slate-600">28 Años</td>
-                    <td class="py-4 text-slate-600">10 Nov 2023</td>
-                    <td class="py-4">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-100"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-green-500"
-                        ></span>
-                        Bajo
-                      </span>
-                    </td>
-                    <td class="py-4 pr-6 text-right">
-                      <div
-                        class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
-                      >
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-                          title="Ver Historia"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >description</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-                          title="Agendar Cita"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >calendar_add_on</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-                          title="Solicitar Labs"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >science</span
-                          >
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-white/60 transition-colors group">
-                    <td class="py-4 pl-6">
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 overflow-hidden"
-                        >
-                          <img
-                            alt="Paciente"
-                            class="w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg4FDhYS2GBiXpirKSOPflpo4t1oJ8c73u0q8KLdwRc_g1Ig1-Bzk9n8JylDhdw87jTrY5JBJbt6mvuW6IHqdL2Vt1Bra6LPY3rV06YB3CWatEtAi0GMq5faHiGrol7sBq668SAVlvFxaGyvzqKHmYD9FLO4HjvO31RKobS-RBk65Xk9ClAykR4NyMzlloyekhW7QfDNBUbzQOLzNyoZjuplNdzCxYErwepYhhmb1_weiZNAIPqJtywkAo98i04OtI3Cg3z6DR5E0"
-                          />
-                        </div>
-                        <div>
-                          <p class="font-bold text-slate-800">Ricardo Mejía</p>
-                          <p class="text-xs text-slate-500">Particular</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 text-slate-600 font-mono text-xs">
-                      16.852.369
-                    </td>
-                    <td class="py-4 text-slate-600">55 Años</td>
-                    <td class="py-4 text-slate-600">28 Oct 2023</td>
-                    <td class="py-4">
-                      <span
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100"
-                      >
-                        <span
-                          class="w-1.5 h-1.5 rounded-full bg-orange-500"
-                        ></span>
-                        Moderado
-                      </span>
-                    </td>
-                    <td class="py-4 pr-6 text-right">
-                      <div
-                        class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
-                      >
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-                          title="Ver Historia"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >description</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-                          title="Agendar Cita"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >calendar_add_on</span
-                          >
-                        </button>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-                          title="Solicitar Labs"
-                        >
-                          <span class="material-symbols-outlined text-lg"
-                            >science</span
-                          >
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="flex justify-between items-center pt-6">
-              <p class="text-xs text-slate-500 font-medium">
-                Mostrando 5 de 142 pacientes
-              </p>
-              <div class="flex gap-4">
-                <button class="btn-glass flex items-center gap-2">
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_left</span
-                  >
-                  ANTERIOR
-                </button>
-                <button class="btn-glass flex items-center gap-2">
-                  SIGUIENTE
-                  <span class="material-symbols-outlined text-sm"
-                    >chevron_right</span
-                  >
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="w-full lg:w-80 flex flex-col gap-6">
-          <div class="glass-card p-6 flex flex-col items-center text-center">
-            <div
-              class="w-16 h-16 rounded-full bg-blue-50 text-primary flex items-center justify-center mb-4"
-            >
-              <span class="material-symbols-outlined text-3xl">groups</span>
-            </div>
-            <h3 class="text-3xl font-bold text-slate-800 mb-1">142</h3>
-            <p class="text-slate-500 text-sm font-medium">
-              Total Pacientes Asignados
-            </p>
-          </div>
-          <div
-            class="glass-card p-6 flex flex-col items-center text-center border-b-4 border-b-secondary/20"
-          >
-            <div
-              class="w-16 h-16 rounded-full bg-red-50 text-secondary flex items-center justify-center mb-4 animate-pulse"
-            >
-              <span class="material-symbols-outlined text-3xl">cardiology</span>
-            </div>
-            <h3 class="text-3xl font-bold text-secondary mb-1">12</h3>
-            <p class="text-slate-500 text-sm font-medium">
-              Pacientes con Riesgo Alto
-            </p>
-          </div>
-        </div>
-      </div>
+<div class="flex flex-col lg:flex-row gap-6 h-full items-start">
+	<div class="flex-1 w-full flex flex-col gap-6">
+		<div class="glass-panel p-6 flex-1 flex flex-col">
+			<div
+				class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"
+			>
+				<div class="relative w-full md:w-96">
+					<span
+						class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+						>search</span
+					>
+					<input
+						[(ngModel)]="searchTerm"
+						(ngModelChange)="applyFilters()"
+						class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+						placeholder="Buscar por nombre o número de documento..."
+						type="text"
+					/>
+				</div>
+				<div class="flex gap-3 w-full md:w-auto">
+					<div class="relative">
+						<select
+							[(ngModel)]="riskFilter"
+							(ngModelChange)="applyFilters()"
+							class="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm text-slate-600 font-medium cursor-pointer"
+						>
+							<option value="ALL">Riesgo Integral</option>
+							<option value="HIGH">Alto</option>
+							<option value="MODERATE">Moderado</option>
+							<option value="LOW">Bajo</option>
+							<option value="UNCLASSIFIED">Sin clasificar</option>
+						</select>
+						<span
+							class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+							>expand_more</span
+						>
+					</div>
+					<div class="relative">
+						<select
+							[(ngModel)]="attentionFilter"
+							(ngModelChange)="applyFilters()"
+							class="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm text-slate-600 font-medium cursor-pointer"
+						>
+							<option value="ALL">Ultima Atencion</option>
+							<option value="WEEK">Esta semana</option>
+							<option value="MONTH">Este mes</option>
+							<option value="OVER_3_MONTHS">Mas de 3 meses</option>
+						</select>
+						<span
+							class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm"
+							>expand_more</span
+						>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white/40 flex-1"
+			>
+				<table class="w-full text-left border-collapse">
+					<thead
+						class="bg-slate-50/90 border-b border-slate-200 sticky top-0 backdrop-blur-sm z-10"
+					>
+						<tr class="text-xs text-slate-500">
+							<th class="py-4 pl-6 font-bold uppercase tracking-wider">
+								Paciente
+							</th>
+							<th class="py-4 font-bold uppercase tracking-wider">
+								Identificacion
+							</th>
+							<th class="py-4 font-bold uppercase tracking-wider">Edad</th>
+							<th class="py-4 font-bold uppercase tracking-wider">
+								Ultima Atencion
+							</th>
+							<th class="py-4 font-bold uppercase tracking-wider">
+								Riesgo Integral
+							</th>
+							<th
+								class="py-4 pr-6 font-bold uppercase tracking-wider text-right"
+							>
+								Acciones
+							</th>
+						</tr>
+					</thead>
+					<tbody class="text-sm divide-y divide-slate-100">
+						@if (loading) {
+							<tr>
+								<td class="py-10 px-6 text-center text-slate-500" colspan="6">
+									Cargando pacientes del provider...
+								</td>
+							</tr>
+						} @else if (errorMessage) {
+							<tr>
+								<td
+									class="py-10 px-6 text-center text-secondary font-medium"
+									colspan="6"
+								>
+									{{ errorMessage }}
+								</td>
+							</tr>
+						} @else if (filteredPatients.length === 0) {
+							<tr>
+								<td class="py-10 px-6 text-center text-slate-500" colspan="6">
+									No hay pacientes asociados al provider con los filtros
+									actuales.
+								</td>
+							</tr>
+						} @else {
+							@for (
+								patient of filteredPatients;
+								track trackByPatient($index, patient)
+							) {
+								<tr class="hover:bg-white/60 transition-colors group">
+									<td class="py-4 pl-6">
+										<div class="flex items-center gap-3">
+											<div
+												class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center"
+											>
+												<span class="material-symbols-outlined text-slate-500"
+													>person</span
+												>
+											</div>
+											<div>
+												<p class="font-bold text-slate-800">
+													{{ patient.fullName }}
+												</p>
+												<p class="text-xs text-slate-500">
+													{{ patient.totalAppointments }} atenciones registradas
+												</p>
+											</div>
+										</div>
+									</td>
+									<td class="py-4 text-slate-600 font-mono text-xs">
+										{{ patient.documentType ?? "No disponible" }}
+									</td>
+									<td class="py-4 text-slate-600">No disponible</td>
+									<td class="py-4 text-slate-600">
+										{{ formatDate(patient.lastAttentionDate) }}
+									</td>
+									<td class="py-4">
+										<span [class]="getRiskClasses(patient.riskLevel)">
+											<span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+											{{ getRiskLabel(patient.riskLevel) }}
+										</span>
+									</td>
+									<td class="py-4 pr-6 text-right">
+										<div
+											class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
+										>
+											<button
+												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
+												title="Ver Historia"
+											>
+												<span class="material-symbols-outlined text-lg"
+													>description</span
+												>
+											</button>
+											<button
+												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
+												title="Agendar Cita"
+											>
+												<span class="material-symbols-outlined text-lg"
+													>calendar_add_on</span
+												>
+											</button>
+											<button
+												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
+												title="Solicitar Labs"
+											>
+												<span class="material-symbols-outlined text-lg"
+													>science</span
+												>
+											</button>
+										</div>
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</div>
+			<div class="flex justify-between items-center pt-6">
+				<p class="text-xs text-slate-500 font-medium">
+					Mostrando {{ filteredPatients.length }} de {{ stats.totalPatients }}
+					pacientes
+				</p>
+				<div class="flex gap-4">
+					<button
+						class="btn-glass flex items-center gap-2"
+						type="button"
+						disabled
+					>
+						<span class="material-symbols-outlined text-sm">chevron_left</span>
+						ANTERIOR
+					</button>
+					<button
+						class="btn-glass flex items-center gap-2"
+						type="button"
+						disabled
+					>
+						SIGUIENTE
+						<span class="material-symbols-outlined text-sm">chevron_right</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="w-full lg:w-80 flex flex-col gap-6">
+		<div class="glass-card p-6 flex flex-col items-center text-center">
+			<div
+				class="w-16 h-16 rounded-full bg-blue-50 text-primary flex items-center justify-center mb-4"
+			>
+				<span class="material-symbols-outlined text-3xl">groups</span>
+			</div>
+			<h3 class="text-3xl font-bold text-slate-800 mb-1">
+				{{ stats.totalPatients }}
+			</h3>
+			<p class="text-slate-500 text-sm font-medium">
+				Total Pacientes Asignados
+			</p>
+		</div>
+		<div
+			class="glass-card p-6 flex flex-col items-center text-center border-b-4 border-b-secondary/20"
+		>
+			<div
+				class="w-16 h-16 rounded-full bg-red-50 text-secondary flex items-center justify-center mb-4"
+			>
+				<span class="material-symbols-outlined text-3xl">cardiology</span>
+			</div>
+			<h3 class="text-3xl font-bold text-secondary mb-1">
+				{{ stats.highRiskPatients }}
+			</h3>
+			<p class="text-slate-500 text-sm font-medium">
+				Pacientes con Riesgo Alto
+			</p>
+			<p class="text-[11px] text-slate-400 mt-1">
+				Sin clasificar: {{ stats.unclassifiedRiskPatients }}
+			</p>
+		</div>
+	</div>
+</div>

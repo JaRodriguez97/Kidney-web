@@ -1,22 +1,13 @@
 <div [formGroup]="scheduleForm" class="space-y-6">
-	<!-- Toggle principal -->
-	<div class="flex items-center gap-3">
-		<input
-			type="checkbox"
-			id="enableSchedule"
-			formControlName="enableSchedule"
-			class="w-4 h-4 rounded cursor-pointer accent-primary"
-		/>
-		<label
-			for="enableSchedule"
-			class="text-sm font-semibold text-slate-700 cursor-pointer select-none"
-		>
-			Asignar horario de atención
-		</label>
+	<div class="px-3 py-2 bg-primary/5 border border-primary/10 rounded-lg">
+		<p class="text-xs text-primary font-semibold">
+			La configuración de horario es obligatoria para crear un proveedor
+			agendable.
+		</p>
 	</div>
 
 	<!-- Sección de horario -->
-	<div *ngIf="showScheduleSection" class="space-y-6 border-t pt-6">
+	<div class="space-y-6 border-t pt-6">
 		<h4
 			class="text-primary font-bold text-sm flex items-center gap-2 uppercase tracking-wider"
 		>
@@ -73,15 +64,24 @@
 			<!-- Fecha de Fin -->
 			<div>
 				<label
-					class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
-					>Fecha de Fin (opcional)</label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Fecha de Fin*</label
 				>
 				<input
 					formControlName="endDate"
 					type="date"
-					class="glass-input-optional w-full"
+					class="glass-input-mandatory w-full"
 				/>
 			</div>
+		</div>
+
+		<div
+			*ngIf="dateRangeError"
+			class="px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg"
+		>
+			<p class="text-xs text-amber-700 font-medium">
+				{{ dateRangeError }}
+			</p>
 		</div>
 
 		<!-- Tabla semanal de disponibilidad -->
@@ -107,13 +107,12 @@
 
 			<!-- Encabezados (desktop) -->
 			<div
-				class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr_1fr] gap-3 px-3 pb-2 text-[11px] font-bold text-slate-400 uppercase"
+				class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr] gap-3 px-3 pb-2 text-[11px] font-bold text-slate-400 uppercase"
 			>
 				<span></span>
 				<span>Día</span>
 				<span>Hora Inicio</span>
 				<span>Hora Fin</span>
-				<span>Duración Cita</span>
 			</div>
 
 			<!-- Filas de días -->
@@ -145,7 +144,7 @@
 						</div>
 						<div
 							*ngIf="isDayEnabled(day.value)"
-							class="grid grid-cols-3 gap-2 pl-7"
+							class="grid grid-cols-2 gap-2 pl-7"
 						>
 							<div>
 								<label class="block text-[10px] font-bold text-slate-400 mb-1"
@@ -167,25 +166,18 @@
 									class="schedule-time-input"
 								/>
 							</div>
-							<div>
-								<label class="block text-[10px] font-bold text-slate-400 mb-1"
-									>Duración</label
-								>
-								<select
-									formControlName="slotIntervalMinutes"
-									class="schedule-time-input"
-								>
-									<option *ngFor="let opt of slotOptions" [value]="opt.value">
-										{{ opt.label }}
-									</option>
-								</select>
-							</div>
 						</div>
+						<p
+							*ngIf="getDayValidationMessage(day.value)"
+							class="pl-7 text-xs text-amber-700 font-medium"
+						>
+							{{ getDayValidationMessage(day.value) }}
+						</p>
 					</div>
 
 					<!-- Desktop: row layout -->
 					<div
-						class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr_1fr] gap-3 items-center px-3 py-2.5"
+						class="hidden md:grid md:grid-cols-[40px_120px_1fr_1fr] gap-3 items-center px-3 py-2.5"
 					>
 						<input
 							type="checkbox"
@@ -213,16 +205,13 @@
 							class="schedule-time-input"
 							[disabled]="!isDayEnabled(day.value)"
 						/>
-						<select
-							formControlName="slotIntervalMinutes"
-							class="schedule-time-input"
-							[disabled]="!isDayEnabled(day.value)"
-						>
-							<option *ngFor="let opt of slotOptions" [value]="opt.value">
-								{{ opt.label }}
-							</option>
-						</select>
 					</div>
+					<p
+						*ngIf="getDayValidationMessage(day.value)"
+						class="hidden md:block md:col-span-5 px-3 pb-2 text-xs text-amber-700 font-medium"
+					>
+						{{ getDayValidationMessage(day.value) }}
+					</p>
 				</div>
 			</div>
 
@@ -234,6 +223,15 @@
 				<p class="text-xs text-primary font-medium">
 					<span class="font-bold">{{ enabledDaysCount }}</span>
 					{{ enabledDaysCount === 1 ? "día" : "días" }} de atención configurados
+				</p>
+			</div>
+
+			<div
+				*ngIf="hasInvalidEnabledDays"
+				class="mt-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg"
+			>
+				<p class="text-xs text-amber-700 font-medium">
+					Corrija los días marcados antes de guardar el horario del proveedor.
 				</p>
 			</div>
 

@@ -31,7 +31,6 @@ export interface ScheduleAvailabilityBlock {
 	dayOfWeek: number; // 0-6 (Mon-Sun)
 	startTime: string; // HH:mm format
 	endTime: string; // HH:mm format
-	slotIntervalMinutes: number;
 	maxOverbook?: number;
 }
 
@@ -39,9 +38,8 @@ export interface ScheduleData {
 	clinicBranchId: string;
 	name: string;
 	startDate: string; // YYYY-MM-DD
-	endDate?: string;
+	endDate: string;
 	availabilityBlocks: ScheduleAvailabilityBlock[];
-	generateSlotsUntil?: string;
 }
 
 export interface CreateProviderRequest {
@@ -60,7 +58,8 @@ export interface CreateProviderRequest {
 	neighborhood?: string;
 	address?: string;
 	commune?: number;
-	schedule?: ScheduleData;
+	clinicBranchId: string;
+	schedule: ScheduleData;
 }
 
 export interface OrganizationUserRequest {

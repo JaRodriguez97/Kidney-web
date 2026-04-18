@@ -88,8 +88,7 @@ export const routes: Routes = [
 	},
 	{
 		path: 'dashboard/provider',
-
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		data: { role: 'PROVIDER' },
 		children: PROVIDER_DASHBOARD_ROUTES,
 	},

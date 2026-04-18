@@ -124,7 +124,7 @@ export class LoginComponent {
     if (role === 'ADMIN') {
       this.router.navigate(['/dashboard/admin']);
     } else if (role === 'PROVIDER') {
-      this.router.navigate(['/dashboard/medical']);
+      this.router.navigate(['/dashboard/provider']);
     } else if (role === 'PATIENT') {
       this.router.navigate(['/dashboard/patient']);
     } else {

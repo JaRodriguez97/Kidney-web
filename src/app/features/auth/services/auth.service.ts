@@ -8,6 +8,11 @@ import { User } from '@app/domains/user/user.entity';
 import { UserRole } from '@app/domains/user/user-role.type';
 import { PlatformService } from '@app/shared/services/platform.service';
 
+export interface LoginResponse {
+  accessToken: string;
+  user: User;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,11 +33,11 @@ export class AuthService {
     return this.http.post<void>(`${this.baseUrl}register/patient`, payload);
   }
 
-  login(payload: LoginRequestDto): Observable<any> {
-    return this.http.post(`${this.baseUrl}login`, payload);
+  login(payload: LoginRequestDto): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}login`, payload);
   }
 
-  setSession(authResult: { accessToken: string; user: User }) {
+  setSession(authResult: LoginResponse) {
     try {
       this.platformService.setLocalStorageItem(
         'accessToken',
@@ -58,9 +63,18 @@ export class AuthService {
     return !!this.platformService.getLocalStorageItem('accessToken');
   }
 
+  get currentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
   hasRole(role: UserRole): boolean {
-    const user = this.currentUserSubject.value;
+    const user = this.currentUser;
     return !!user && user.roles.includes(role);
+  }
+
+  hasPermission(permission: string): boolean {
+    const permissions = this.currentUser?.permissions ?? [];
+    return permissions.includes(permission);
   }
 
   private loadUserFromStorage(): User | null {

@@ -4,6 +4,7 @@ export interface User {
   id: string;
   email: string;
   roles: UserRole[];
+  permissions?: string[];
   isActive: boolean;
   status?: string;
   firstName?: string;
@@ -23,4 +24,8 @@ export interface User {
   department?: string;
   emailVerified?: boolean;
   accountLocked?: boolean;
+  providerId?: string;
+  providerTypeId?: string;
+  providerTypeCode?: string;
+  providerTypeName?: string;
 }

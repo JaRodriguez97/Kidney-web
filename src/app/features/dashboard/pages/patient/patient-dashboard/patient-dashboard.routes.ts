@@ -10,6 +10,7 @@ import { SupportPatientComponent } from '../components/support-patient/support-p
 import { ScheduleAppointmentComponent } from '../components/appointment-patient/schedule-appointment/schedule-appointment.component';
 import { SelectProviderComponent } from '../components/appointment-patient/select-provider/select-provider.component';
 import { SelectDatetimeComponent } from '../components/appointment-patient/select-datetime/select-datetime.component';
+import { ConfirmAppointmentComponent } from '../components/appointment-patient/confirm-appointment/confirm-appointment.component';
 
 export const PATIENT_DASHBOARD_ROUTES: Routes = [
 	{
@@ -30,6 +31,10 @@ export const PATIENT_DASHBOARD_ROUTES: Routes = [
 			{
 				path: 'appointments/schedule/select-datetime',
 				component: SelectDatetimeComponent,
+			},
+			{
+				path: 'appointments/schedule/confirm-appointment',
+				component: ConfirmAppointmentComponent,
 			},
 			{ path: 'clinical-record', component: ClinicalRecordPatientComponent },
 			{ path: 'documents', component: DocumentsPatientComponent },

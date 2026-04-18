@@ -29,7 +29,6 @@ export interface ScheduleFormData {
 		dayOfWeek: number;
 		startTime: string;
 		endTime: string;
-		slotIntervalMinutes: number;
 		maxOverbook?: number;
 	}>;
 }
@@ -49,7 +48,7 @@ interface DayRow {
 })
 export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 	scheduleForm!: FormGroup;
-	showScheduleSection = false;
+	showScheduleSection = true;
 	clinicBranches: ClinicBranchResponse[] = [];
 	private destroy$ = new Subject<void>();
 
@@ -63,20 +62,21 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 		{ value: 6, label: 'Domingo', shortLabel: 'Dom' },
 	];
 
-	slotOptions = [
-		{ value: 15, label: '15 min' },
-		{ value: 20, label: '20 min' },
-		{ value: 30, label: '30 min' },
-		{ value: 45, label: '45 min' },
-		{ value: 60, label: '60 min' },
-	];
-
 	@Output() scheduleDataChange = new EventEmitter<ScheduleFormData | null>();
 
 	constructor(
 		private fb: FormBuilder,
 		private clinicBranchService: ClinicBranchService,
 	) {}
+
+	private toMinutes(value: string | null | undefined): number | null {
+		if (!value || !/^\d{2}:\d{2}$/.test(value)) {
+			return null;
+		}
+
+		const [hours, minutes] = value.split(':').map(Number);
+		return hours * 60 + minutes;
+	}
 
 	ngOnInit(): void {
 		this.initializeForm();
@@ -85,7 +85,6 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 
 	initializeForm(): void {
 		this.scheduleForm = this.fb.group({
-			enableSchedule: [false],
 			clinicBranchId: ['', [Validators.required]],
 			name: [
 				'',
@@ -96,46 +95,31 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 				],
 			],
 			startDate: ['', [Validators.required]],
-			endDate: [''],
+			endDate: ['', [Validators.required]],
 			// 7 FormGroups fijos, uno por día de la semana
-			day0: this.createDayGroup(true, '08:00', '17:00', 30),
-			day1: this.createDayGroup(true, '08:00', '17:00', 30),
-			day2: this.createDayGroup(true, '08:00', '17:00', 30),
-			day3: this.createDayGroup(true, '08:00', '17:00', 30),
-			day4: this.createDayGroup(true, '08:00', '17:00', 30),
-			day5: this.createDayGroup(false, '08:00', '12:00', 30),
-			day6: this.createDayGroup(false, '08:00', '12:00', 30),
+			day0: this.createDayGroup(true, '08:00', '17:00'),
+			day1: this.createDayGroup(true, '08:00', '17:00'),
+			day2: this.createDayGroup(true, '08:00', '17:00'),
+			day3: this.createDayGroup(true, '08:00', '17:00'),
+			day4: this.createDayGroup(true, '08:00', '17:00'),
+			day5: this.createDayGroup(false, '08:00', '12:00'),
+			day6: this.createDayGroup(false, '08:00', '12:00'),
 		});
 
 		this.scheduleForm.valueChanges.subscribe(() => {
-			if (this.showScheduleSection) {
-				this.emitScheduleData();
-			} else {
-				this.scheduleDataChange.emit(null);
-			}
+			this.emitScheduleData();
 		});
-
-		this.scheduleForm
-			.get('enableSchedule')
-			?.valueChanges.subscribe((enabled) => {
-				this.showScheduleSection = enabled;
-				if (!enabled) {
-					this.scheduleDataChange.emit(null);
-				}
-			});
 	}
 
 	private createDayGroup(
 		enabled: boolean,
 		startTime: string,
 		endTime: string,
-		slotInterval: number,
 	): FormGroup {
 		return this.fb.group({
 			enabled: [enabled],
 			startTime: [startTime, [Validators.required]],
 			endTime: [endTime, [Validators.required]],
-			slotIntervalMinutes: [slotInterval, [Validators.required]],
 		});
 	}
 
@@ -151,6 +135,58 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 		return this.days.filter((d) => this.isDayEnabled(d.value)).length;
 	}
 
+	get dateRangeError(): string | null {
+		const startDate = this.scheduleForm?.get('startDate')?.value;
+		const endDate = this.scheduleForm?.get('endDate')?.value;
+
+		if (!startDate || !endDate) {
+			return null;
+		}
+
+		const normalizedStartDate = new Date(`${startDate}T00:00:00`);
+		const normalizedEndDate = new Date(`${endDate}T00:00:00`);
+
+		if (
+			Number.isNaN(normalizedStartDate.getTime()) ||
+			Number.isNaN(normalizedEndDate.getTime())
+		) {
+			return 'Las fechas del horario no son válidas.';
+		}
+
+		if (normalizedStartDate > normalizedEndDate) {
+			return 'La fecha de fin debe ser posterior o igual a la fecha de inicio.';
+		}
+
+		return null;
+	}
+
+	getDayValidationMessage(dayIndex: number): string | null {
+		if (!this.isDayEnabled(dayIndex)) {
+			return null;
+		}
+
+		const dayGroup = this.getDayGroup(dayIndex);
+		const startTime = dayGroup.get('startTime')?.value;
+		const endTime = dayGroup.get('endTime')?.value;
+
+		const startMinutes = this.toMinutes(startTime);
+		const endMinutes = this.toMinutes(endTime);
+
+		if (startMinutes === null || endMinutes === null) {
+			return 'Ingrese horas válidas para este día.';
+		}
+
+		if (startMinutes >= endMinutes) {
+			return 'La hora de fin debe ser mayor a la hora de inicio.';
+		}
+
+		return null;
+	}
+
+	get hasInvalidEnabledDays(): boolean {
+		return this.days.some((day) => !!this.getDayValidationMessage(day.value));
+	}
+
 	copyToAllDays(): void {
 		const firstEnabled = this.days.find((d) => this.isDayEnabled(d.value));
 		if (!firstEnabled) return;
@@ -163,7 +199,6 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 				enabled: true,
 				startTime: source.startTime,
 				endTime: source.endTime,
-				slotIntervalMinutes: source.slotIntervalMinutes,
 			});
 		}
 	}
@@ -195,6 +230,20 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 
 	private buildScheduleData(): ScheduleFormData | null {
 		const formValue = this.scheduleForm.value;
+
+		if (
+			!formValue.clinicBranchId ||
+			!formValue.name ||
+			!formValue.startDate ||
+			!formValue.endDate
+		) {
+			return null;
+		}
+
+		if (this.dateRangeError) {
+			return null;
+		}
+
 		const blocks = this.days
 			.filter((day) => formValue[`day${day.value}`]?.enabled)
 			.map((day) => {
@@ -203,36 +252,35 @@ export class ProviderScheduleFormComponent implements OnInit, OnDestroy {
 					dayOfWeek: day.value,
 					startTime: dayVal.startTime,
 					endTime: dayVal.endTime,
-					slotIntervalMinutes: dayVal.slotIntervalMinutes,
 					maxOverbook: 0,
 				};
 			});
 
 		if (blocks.length === 0) return null;
+		if (this.hasInvalidEnabledDays) return null;
 
 		return {
 			clinicBranchId: formValue.clinicBranchId,
 			name: formValue.name,
 			startDate: formValue.startDate,
-			endDate: formValue.endDate || undefined,
+			endDate: formValue.endDate,
 			availabilityBlocks: blocks,
 		};
 	}
 
 	getScheduleData(): ScheduleFormData | null {
-		if (!this.showScheduleSection) return null;
 		return this.buildScheduleData();
 	}
 
 	resetForm(): void {
-		this.scheduleForm.reset({ enableSchedule: false });
+		this.scheduleForm.reset();
 		for (const day of this.days) {
 			this.getDayGroup(day.value).patchValue({
 				enabled: day.value <= 4,
 				startTime: '08:00',
 				endTime: day.value <= 4 ? '17:00' : '12:00',
-				slotIntervalMinutes: 30,
 			});
 		}
+		this.scheduleDataChange.emit(null);
 	}
 }
