@@ -27,6 +27,7 @@ export class AsideProviderComponent implements OnInit, OnDestroy {
 		'patients',
 		'clinical-record',
 		'appointments',
+		'clinical-attention',
 		'labs',
 		'support',
 	];

@@ -1,0 +1,122 @@
+@if (
+	field.fieldType === "DATE" ||
+	field.fieldType === "DATETIME" ||
+	field.fieldType === "RADIO" ||
+	field.fieldType === "MULTISELECT"
+) {
+	<label class="label-clean" [for]="field.id">
+		{{ field.label }}
+		@if (field.isRequired) {
+			<span class="text-red-500">*</span>
+		}
+	</label>
+}
+
+@switch (field.fieldType) {
+	@case ("TEXT") {
+		<app-input-text
+			[formControl]="control"
+			[label]="field.label"
+			[placeholder]="field.placeholder ?? ''"
+		/>
+	}
+
+	@case ("TEXTAREA") {
+		<app-textarea
+			[formControl]="control"
+			[label]="field.label"
+			[placeholder]="field.placeholder ?? ''"
+			[rows]="4"
+		/>
+	}
+
+	@case ("NUMBER") {
+		<app-input-number
+			[formControl]="control"
+			[label]="field.label"
+			[placeholder]="field.placeholder ?? ''"
+		/>
+	}
+
+	@case ("SELECT") {
+		<app-select
+			[formControl]="control"
+			[label]="field.label"
+			[placeholder]="field.placeholder ?? 'Selecciona una opcion'"
+			[options]="field.options"
+			optionLabel="label"
+			optionValue="id"
+		/>
+	}
+
+	@case ("CHECKBOX") {
+		<app-checkbox [formControl]="control" [label]="field.label" />
+	}
+
+	@case ("DATE") {
+		<input
+			[id]="field.id"
+			type="date"
+			class="input-clean"
+			[formControl]="control"
+			[disabled]="field.isReadonly"
+		/>
+	}
+
+	@case ("DATETIME") {
+		<input
+			[id]="field.id"
+			type="datetime-local"
+			class="input-clean"
+			[formControl]="control"
+			[disabled]="field.isReadonly"
+		/>
+	}
+
+	@case ("RADIO") {
+		<div class="space-y-2 bg-white/40 border border-slate-200 rounded-xl p-3">
+			@for (option of field.options; track option.id) {
+				<label class="option-line" [for]="option.id">
+					<input
+						[id]="option.id"
+						type="radio"
+						name="{{ field.id }}"
+						[checked]="control.value === option.id"
+						[disabled]="field.isReadonly"
+						(change)="onSelectRadio(option.id)"
+					/>
+					<span>{{ option.label }}</span>
+				</label>
+			}
+		</div>
+	}
+
+	@case ("MULTISELECT") {
+		<div class="space-y-2 bg-white/40 border border-slate-200 rounded-xl p-3">
+			@for (option of field.options; track option.id) {
+				<label class="option-line" [for]="option.id">
+					<input
+						[id]="option.id"
+						type="checkbox"
+						[checked]="isMultiSelected(option.id)"
+						[disabled]="field.isReadonly"
+						(change)="onToggleMulti(option.id, $any($event.target).checked)"
+					/>
+					<span>{{ option.label }}</span>
+				</label>
+			}
+		</div>
+	}
+
+	@default {
+		<app-input-text
+			[formControl]="control"
+			[label]="field.label"
+			[placeholder]="field.placeholder ?? ''"
+		/>
+	}
+}
+
+@if (showError) {
+	<p class="text-xs text-red-600 mt-1">Este campo es obligatorio.</p>
+}

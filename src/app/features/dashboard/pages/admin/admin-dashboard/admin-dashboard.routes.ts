@@ -9,22 +9,24 @@ import { LabsAdminComponent } from '../components/labs-admin/labs-admin.componen
 import { ResultsAdminComponent } from '../components/results-admin/results-admin.component';
 import { SettingsAdminComponent } from '../components/settings-admin/settings-admin.component';
 import { SupportAdminComponent } from '../components/support-admin/support-admin.component';
+import { FormsAdminComponent } from '../components/forms-admin/forms-admin.component';
 
 export const ADMIN_DASHBOARD_ROUTES: Routes = [
-  {
-    path: '',
-    component: AdminDashboardComponent,
-    children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeAdminComponent }, // ruta por defecto
-      { path: 'appointments', component: AppointmentAdminComponent },
-      { path: 'articles', component: ArticlesAdminComponent },
-      { path: 'users', component: UsersAdminComponent },
-      { path: 'services', component: ServicesAdminComponent },
-      { path: 'labs', component: LabsAdminComponent },
-      { path: 'results', component: ResultsAdminComponent },
-      { path: 'settings', component: SettingsAdminComponent },
-      { path: 'support', component: SupportAdminComponent },
-    ],
-  },
+	{
+		path: '',
+		component: AdminDashboardComponent,
+		children: [
+			{ path: '', redirectTo: 'home', pathMatch: 'full' },
+			{ path: 'home', component: HomeAdminComponent }, // ruta por defecto
+			{ path: 'appointments', component: AppointmentAdminComponent },
+			{ path: 'articles', component: ArticlesAdminComponent },
+			{ path: 'users', component: UsersAdminComponent },
+			{ path: 'services', component: ServicesAdminComponent },
+			{ path: 'labs', component: LabsAdminComponent },
+			{ path: 'results', component: ResultsAdminComponent },
+			{ path: 'forms', component: FormsAdminComponent },
+			{ path: 'settings', component: SettingsAdminComponent },
+			{ path: 'support', component: SupportAdminComponent },
+		],
+	},
 ];

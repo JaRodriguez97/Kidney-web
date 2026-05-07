@@ -240,6 +240,10 @@ export class AppointmentProviderComponent implements OnInit {
 		);
 	}
 
+	canReenter(appointment: ProviderAgendaItem): boolean {
+		return appointment.status === 'IN_PROGRESS';
+	}
+
 	canCancel(appointment: ProviderAgendaItem): boolean {
 		return !['CANCELLED', 'COMPLETED', 'RESCHEDULED', 'NO_SHOW'].includes(
 			appointment.status,
@@ -248,11 +252,18 @@ export class AppointmentProviderComponent implements OnInit {
 
 	showPlayButton(appointment: ProviderAgendaItem): boolean {
 		return (
-			appointment.status === 'CHECKED_IN' || appointment.status === 'CONFIRMED'
+			appointment.status === 'CHECKED_IN' ||
+			appointment.status === 'CONFIRMED' ||
+			appointment.status === 'IN_PROGRESS'
 		);
 	}
 
 	onPlayAction(appointment: ProviderAgendaItem): void {
+		if (appointment.status === 'IN_PROGRESS') {
+			this.openClinicalAttention(appointment, appointment.startTime);
+			return;
+		}
+
 		if (appointment.status === 'CHECKED_IN') {
 			this.applyStatusAction(appointment, 'START');
 			return;
@@ -261,6 +272,11 @@ export class AppointmentProviderComponent implements OnInit {
 		if (appointment.status === 'CONFIRMED') {
 			this.applyStatusAction(appointment, 'CALL');
 		}
+	}
+
+	onReenterAttention(appointment: ProviderAgendaItem): void {
+		this.openMenuAppointmentId = null;
+		this.openClinicalAttention(appointment, appointment.startTime);
 	}
 
 	onOpenPatientProfile(appointment: ProviderAgendaItem): void {
@@ -356,8 +372,17 @@ export class AppointmentProviderComponent implements OnInit {
 		this.appointmentService
 			.updateProviderAppointmentStatus(appointment.id, payload)
 			.subscribe({
-				next: () => {
+				next: (response) => {
 					this.actionLoadingAppointmentId = null;
+
+					if (
+						action === 'START' &&
+						response.appointment.status === 'IN_PROGRESS'
+					) {
+						this.openClinicalAttention(appointment, new Date().toISOString());
+						return;
+					}
+
 					this.loadAgenda();
 				},
 				error: () => {
@@ -366,6 +391,28 @@ export class AppointmentProviderComponent implements OnInit {
 						'No fue posible ejecutar la accion sobre la cita seleccionada.';
 				},
 			});
+	}
+
+	private openClinicalAttention(
+		appointment: ProviderAgendaItem,
+		startedAt: string,
+	): void {
+		void this.router.navigate(['/dashboard/provider/clinical-attention'], {
+			queryParams: {
+				appointmentId: appointment.id,
+				patientId: appointment.patientId,
+				serviceId: appointment.serviceId,
+			},
+			state: {
+				appointmentId: appointment.id,
+				patientId: appointment.patientId,
+				serviceId: appointment.serviceId,
+				patientName: appointment.patientName,
+				serviceName: appointment.serviceName,
+				providerName: appointment.providerName ?? undefined,
+				startedAt,
+			},
+		});
 	}
 
 	private onCalendarDateClick(arg: DateClickArg): void {

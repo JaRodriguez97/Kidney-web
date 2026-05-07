@@ -1,1 +1,21 @@
-<p>checkbox works!</p>
+<label class="checkbox-wrapper" [class.opacity-60]="disabled">
+	<input
+		type="checkbox"
+		class="checkbox-input"
+		[checked]="value"
+		[disabled]="disabled"
+		(change)="handleChange($event)"
+		(blur)="onTouched()"
+	/>
+
+	<span class="checkbox-content">
+		<span class="checkbox-label">{{ label }}</span>
+		@if (description) {
+			<span class="checkbox-description">{{ description }}</span>
+		}
+	</span>
+</label>
+
+@if (showError) {
+	<p class="text-xs text-red-600 mt-1">Este campo es obligatorio.</p>
+}

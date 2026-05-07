@@ -1,0 +1,640 @@
+<section class="relative z-10 flex-1 h-full overflow-y-auto pr-4 lg:pr-8 pb-6">
+	<header
+		class="glass-panel px-6 py-4 mb-6 flex flex-wrap items-center justify-between gap-4"
+	>
+		<div>
+			<h2 class="text-2xl font-bold text-primary">Formularios Dinámicos</h2>
+			<p class="text-slate-500 text-sm">
+				CRUD administrativo de templates, bloques y campos clínicos.
+			</p>
+		</div>
+		<button
+			*ngIf="activeTab === 'templates'"
+			type="button"
+			(click)="openCreateTemplate()"
+			class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+		>
+			<span class="material-symbols-outlined text-sm">add</span>
+			Nuevo Formulario
+		</button>
+	</header>
+
+	<div
+		*ngIf="errorMessage"
+		class="mb-4 px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+	>
+		{{ errorMessage }}
+	</div>
+	<div
+		*ngIf="successMessage"
+		class="mb-4 px-4 py-3 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 text-sm font-medium"
+	>
+		{{ successMessage }}
+	</div>
+
+	<div class="mb-4 inline-flex rounded-xl border border-slate-200 p-1 bg-white/70">
+		<button
+			type="button"
+			(click)="setActiveTab('templates')"
+			class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+			[class]="
+				activeTab === 'templates'
+					? 'bg-primary text-white'
+					: 'text-slate-600 hover:bg-slate-100'
+			"
+		>
+			Templates
+		</button>
+		<button
+			type="button"
+			(click)="setActiveTab('blocks')"
+			class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+			[class]="
+				activeTab === 'blocks'
+					? 'bg-primary text-white'
+					: 'text-slate-600 hover:bg-slate-100'
+			"
+		>
+			Bloques
+		</button>
+		<button
+			type="button"
+			(click)="setActiveTab('fields')"
+			class="px-3 py-1.5 text-sm rounded-lg transition-colors"
+			[class]="
+				activeTab === 'fields'
+					? 'bg-primary text-white'
+					: 'text-slate-600 hover:bg-slate-100'
+			"
+		>
+			Campos
+		</button>
+	</div>
+
+	<div *ngIf="activeTab === 'templates'" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+		<div
+			class="lg:col-span-4 glass-panel p-4 flex flex-col gap-4 min-h-[640px]"
+		>
+			<div class="relative">
+				<span
+					class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400"
+					>search</span
+				>
+				<input
+					[(ngModel)]="searchTerm"
+					type="text"
+					class="glass-input w-full pl-10"
+					placeholder="Buscar por código o nombre"
+				/>
+			</div>
+
+			<div class="text-xs text-slate-500 font-medium">
+				{{ filteredTemplates.length }} formulario(s)
+			</div>
+
+			<div class="flex-1 overflow-y-auto space-y-2 pr-1">
+				<div
+					*ngIf="loadingTemplates"
+					class="text-sm text-slate-500 py-8 text-center"
+				>
+					Cargando formularios...
+				</div>
+
+				<button
+					*ngFor="let template of filteredTemplates; trackBy: trackByTemplate"
+					type="button"
+					(click)="selectTemplate(template.id)"
+					class="w-full text-left rounded-xl border p-3 transition-colors"
+					[class]="
+						selectedTemplateId === template.id
+							? 'border-primary bg-primary/5'
+							: 'border-slate-200 hover:bg-slate-50'
+					"
+				>
+					<div class="flex items-center justify-between gap-2 mb-1">
+						<span class="font-semibold text-slate-800 text-sm">{{
+							template.name
+						}}</span>
+						<div class="flex items-center gap-1.5">
+							<span
+								class="px-2 py-0.5 rounded-lg text-[11px] border"
+								[class]="
+									template.status === 'ACTIVE'
+										? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+										: 'bg-slate-100 text-slate-600 border-slate-200'
+								"
+							>
+								{{
+									template.status === "ACTIVE" ? "Habilitado" : "Deshabilitado"
+								}}
+							</span>
+							<span
+								class="px-2 py-0.5 rounded-lg text-[11px] border"
+								[class]="
+									template.activeVersion
+										? 'bg-indigo-50 text-indigo-700 border-indigo-100'
+										: 'bg-amber-50 text-amber-700 border-amber-100'
+								"
+							>
+								{{ template.activeVersion ? "Publicada" : "Sin publicar" }}
+							</span>
+						</div>
+					</div>
+					<div class="text-xs text-slate-500 font-mono">
+						{{ template.code }}
+					</div>
+					<div class="text-xs text-slate-400 mt-1">
+						Versiones: {{ template.versionsCount }}
+					</div>
+				</button>
+
+				<div
+					*ngIf="!loadingTemplates && filteredTemplates.length === 0"
+					class="text-sm text-slate-500 py-8 text-center"
+				>
+					No hay formularios para mostrar.
+				</div>
+			</div>
+		</div>
+
+		<div class="lg:col-span-8 glass-panel p-5 min-h-[640px]">
+			<div
+				*ngIf="loadingDetail"
+				class="text-sm text-slate-500 py-8 text-center"
+			>
+				Cargando detalle del formulario...
+			</div>
+
+			<ng-container *ngIf="!loadingDetail && selectedTemplateDetail as detail">
+				<div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+					<div>
+						<div class="text-xs text-slate-500 font-mono mb-1">
+							{{ detail.code }}
+						</div>
+						<div class="flex items-center gap-2 mb-1.5">
+							<h3 class="text-xl font-bold text-slate-800">
+								{{ detail.name }}
+							</h3>
+							<span
+								class="px-2 py-0.5 rounded-lg text-xs border"
+								[class]="
+									detail.status === 'ACTIVE'
+										? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+										: 'bg-slate-100 text-slate-600 border-slate-200'
+								"
+							>
+								{{
+									detail.status === "ACTIVE" ? "Habilitado" : "Deshabilitado"
+								}}
+							</span>
+						</div>
+						<p class="text-sm text-slate-500">
+							{{ detail.description || "Sin descripción" }}
+						</p>
+					</div>
+					<div class="flex flex-wrap items-center gap-2">
+						<button
+							type="button"
+							(click)="toggleTemplateStatus()"
+							[disabled]="saving"
+							class="px-3 py-2 rounded-lg border text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+							[class]="
+								detail.status === 'ACTIVE'
+									? 'border-secondary text-secondary hover:bg-red-50'
+									: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+							"
+						>
+							{{ detail.status === "ACTIVE" ? "Deshabilitar" : "Habilitar" }}
+						</button>
+						<button
+							type="button"
+							(click)="openEditTemplate()"
+							class="px-3 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm hover:bg-slate-50"
+						>
+							Editar formulario
+						</button>
+						<button
+							type="button"
+							(click)="createVersionFromCurrentBlocks()"
+							[disabled]="saving"
+							class="px-3 py-2 rounded-lg border border-primary text-primary text-sm hover:bg-primary/5 disabled:opacity-60 disabled:cursor-not-allowed"
+						>
+							Crear versión
+						</button>
+						<button
+							type="button"
+							(click)="openCreateBlock()"
+							class="px-3 py-2 rounded-lg bg-primary text-white text-sm hover:bg-primary/90"
+						>
+							Nuevo bloque
+						</button>
+					</div>
+				</div>
+
+				<div class="rounded-xl border border-slate-200 mb-5 overflow-hidden">
+					<div
+						class="px-4 py-3 bg-slate-50 text-sm font-semibold text-slate-700"
+					>
+						Versiones
+					</div>
+					<div class="divide-y divide-slate-100">
+						<div
+							*ngFor="let version of detail.versions"
+							(click)="selectVersion(version.id)"
+							class="px-4 py-3 flex flex-wrap items-center justify-between gap-3 cursor-pointer"
+							[class]="
+								selectedVersionId === version.id
+									? 'bg-primary/5'
+									: 'hover:bg-slate-50'
+							"
+						>
+							<div>
+								<div class="font-semibold text-sm text-slate-800">
+									v{{ version.versionNumber }}
+								</div>
+								<div class="text-xs text-slate-500">
+									{{ version.releaseNotes || "Sin notas" }}
+								</div>
+							</div>
+							<div class="flex items-center gap-2">
+								<span
+									class="px-2 py-0.5 rounded-md text-xs border"
+									[class]="
+										version.isActive
+											? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+											: 'bg-slate-100 text-slate-600 border-slate-200'
+									"
+								>
+									{{ version.isActive ? "Publicada" : "No publicada" }}
+								</span>
+								<button
+									*ngIf="!version.isActive"
+									type="button"
+									(click)="publishVersion(version.id); $event.stopPropagation()"
+									[disabled]="saving"
+									class="px-2.5 py-1 rounded-md text-xs border border-primary text-primary hover:bg-primary/5 disabled:opacity-60 disabled:cursor-not-allowed"
+								>
+									Publicar
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div
+					*ngIf="loadingVersionBlocks"
+					class="mb-4 px-4 py-2 rounded-lg bg-slate-100 text-slate-600 text-sm"
+				>
+					Cargando bloques de la versión seleccionada...
+				</div>
+
+				<div class="space-y-4">
+					<div
+						*ngFor="let block of displayedBlocks; trackBy: trackByBlock"
+						class="rounded-xl border border-slate-200 overflow-hidden"
+					>
+						<div
+							class="px-4 py-3 bg-slate-50 flex flex-wrap items-center justify-between gap-2"
+						>
+							<div>
+								<div class="text-xs text-slate-500 font-mono">
+									{{ block.code || "SIN_CODIGO" }}
+								</div>
+								<div class="font-semibold text-slate-800">{{ block.name }}</div>
+								<div
+									class="text-xs text-slate-500 flex flex-wrap items-center gap-2"
+								>
+									<span
+										class="px-2 py-0.5 rounded-md border"
+										[class]="
+											block.status === 'ACTIVE'
+												? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+												: 'bg-slate-100 text-slate-600 border-slate-200'
+										"
+									>
+										{{
+											block.status === "ACTIVE" ? "Habilitado" : "Deshabilitado"
+										}}
+									</span>
+									<span>
+										Orden: {{ block.sortOrder }} |
+										{{
+											block.isInActiveVersion
+												? "Incluido en versión activa"
+												: "Fuera de versión activa"
+										}}
+									</span>
+								</div>
+							</div>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									(click)="toggleBlockStatus(block)"
+									[disabled]="saving"
+									class="px-2.5 py-1 rounded-md text-xs border disabled:opacity-60 disabled:cursor-not-allowed"
+									[class]="
+										block.status === 'ACTIVE'
+											? 'border-secondary text-secondary hover:bg-red-50'
+											: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+									"
+								>
+									{{ block.status === "ACTIVE" ? "Deshabilitar" : "Habilitar" }}
+								</button>
+								<button
+									type="button"
+									(click)="openEditBlock(block)"
+									class="px-2.5 py-1 rounded-md text-xs border border-slate-200 text-slate-700 hover:bg-white"
+								>
+									Editar bloque
+								</button>
+								<button
+									type="button"
+									(click)="openCreateField(block.id)"
+									class="px-2.5 py-1 rounded-md text-xs bg-primary text-white hover:bg-primary/90"
+								>
+									Nuevo campo
+								</button>
+							</div>
+						</div>
+
+						<div class="overflow-x-auto">
+							<table class="w-full text-left border-collapse">
+								<thead>
+									<tr
+										class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+									>
+										<th class="py-3 pl-4 pr-2 font-semibold">Campo</th>
+										<th class="py-3 px-2 font-semibold">Tipo</th>
+										<th class="py-3 px-2 font-semibold">Orden</th>
+										<th class="py-3 px-2 font-semibold">Requerido</th>
+										<th class="py-3 px-2 font-semibold">Estado</th>
+										<th class="py-3 pr-4 pl-2 font-semibold text-right">
+											Acciones
+										</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-slate-100 text-sm">
+									<tr
+										*ngFor="let field of block.fields; trackBy: trackByField"
+										class="hover:bg-white/60"
+									>
+										<td class="py-3 pl-4 pr-2">
+											<div class="font-medium text-slate-800">
+												{{ field.label }}
+											</div>
+											<div class="text-xs text-slate-500 font-mono">
+												{{ field.code || "SIN_CODIGO" }}
+											</div>
+										</td>
+										<td class="py-3 px-2">
+											<span
+												class="px-2 py-0.5 rounded-md text-xs border"
+												[class]="getFieldTypeClass(field.fieldType)"
+											>
+												{{ field.fieldType }}
+											</span>
+										</td>
+										<td class="py-3 px-2 text-slate-600">
+											{{ field.sortOrder ?? "-" }}
+										</td>
+										<td class="py-3 px-2">
+											<span
+												class="px-2 py-0.5 rounded-md text-xs border"
+												[class]="
+													field.isRequired
+														? 'bg-rose-50 text-rose-700 border-rose-100'
+														: 'bg-slate-100 text-slate-600 border-slate-200'
+												"
+											>
+												{{ field.isRequired ? "Sí" : "No" }}
+											</span>
+										</td>
+										<td class="py-3 px-2">
+											<span
+												class="px-2 py-0.5 rounded-md text-xs border"
+												[class]="
+													field.status === 'ACTIVE'
+														? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+														: 'bg-slate-100 text-slate-600 border-slate-200'
+												"
+											>
+												{{
+													field.status === "ACTIVE"
+														? "Habilitado"
+														: "Deshabilitado"
+												}}
+											</span>
+										</td>
+										<td class="py-3 pr-4 pl-2 text-right">
+											<button
+												type="button"
+												(click)="toggleFieldStatus(field)"
+												[disabled]="saving"
+												class="px-2.5 py-1 rounded-md text-xs border mr-2 disabled:opacity-60 disabled:cursor-not-allowed"
+												[class]="
+													field.status === 'ACTIVE'
+														? 'border-secondary text-secondary hover:bg-red-50'
+														: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+												"
+											>
+												{{
+													field.status === "ACTIVE"
+														? "Deshabilitar"
+														: "Habilitar"
+												}}
+											</button>
+											<button
+												type="button"
+												(click)="openEditField(block.id, field)"
+												class="px-2.5 py-1 rounded-md text-xs border border-slate-200 text-slate-700 hover:bg-slate-50"
+											>
+												Editar
+											</button>
+										</td>
+									</tr>
+									<tr *ngIf="block.fields.length === 0">
+										<td
+											colspan="6"
+											class="py-5 px-4 text-center text-slate-500"
+										>
+											Este bloque no tiene campos configurados.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div
+						*ngIf="displayedBlocks.length === 0"
+						class="text-sm text-slate-500 py-8 text-center"
+					>
+						La versión seleccionada no tiene bloques.
+					</div>
+				</div>
+			</ng-container>
+
+			<div
+				*ngIf="!loadingDetail && !selectedTemplateDetail"
+				class="text-sm text-slate-500 py-8 text-center"
+			>
+				Selecciona un formulario para ver su estructura.
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="activeTab === 'blocks'" class="glass-panel p-5 min-h-[640px]">
+		<div class="flex items-center justify-between mb-4">
+			<h3 class="text-lg font-bold text-slate-800">Catálogo de Bloques</h3>
+			<span class="text-xs text-slate-500">
+				{{ filteredBlockCatalog.length }} bloque(s)
+			</span>
+		</div>
+
+		<div *ngIf="loadingBlockCatalog" class="text-sm text-slate-500 py-8 text-center">
+			Cargando bloques...
+		</div>
+
+		<div *ngIf="!loadingBlockCatalog" class="overflow-x-auto rounded-xl border border-slate-200">
+			<table class="w-full text-left border-collapse">
+				<thead>
+					<tr class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider">
+						<th class="py-3 pl-4 pr-2 font-semibold">Bloque</th>
+						<th class="py-3 px-2 font-semibold">Template dueño</th>
+						<th class="py-3 px-2 font-semibold">Campos</th>
+						<th class="py-3 px-2 font-semibold">Estado</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-slate-100 text-sm">
+					<tr
+						*ngFor="let block of filteredBlockCatalog; trackBy: trackByBlockCatalog"
+						class="hover:bg-white/60"
+					>
+						<td class="py-3 pl-4 pr-2">
+							<div class="font-medium text-slate-800">{{ block.name }}</div>
+							<div class="text-xs text-slate-500 font-mono">{{ block.code || 'SIN_CODIGO' }}</div>
+						</td>
+						<td class="py-3 px-2 text-slate-600">{{ block.templateName }}</td>
+						<td class="py-3 px-2 text-slate-600">{{ block.fieldsCount }}</td>
+						<td class="py-3 px-2">
+							<span
+								class="px-2 py-0.5 rounded-md text-xs border"
+								[class]="
+									block.status === 'ACTIVE'
+										? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+										: 'bg-slate-100 text-slate-600 border-slate-200'
+								"
+							>
+								{{ block.status === 'ACTIVE' ? 'Habilitado' : 'Deshabilitado' }}
+							</span>
+						</td>
+					</tr>
+					<tr *ngIf="filteredBlockCatalog.length === 0">
+						<td colspan="4" class="py-6 px-4 text-center text-slate-500">
+							No hay bloques para mostrar.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div *ngIf="activeTab === 'fields'" class="glass-panel p-5 min-h-[640px]">
+		<div class="flex items-center justify-between mb-4">
+			<h3 class="text-lg font-bold text-slate-800">Catálogo de Campos</h3>
+			<span class="text-xs text-slate-500">
+				{{ filteredFieldCatalog.length }} campo(s)
+			</span>
+		</div>
+
+		<div *ngIf="loadingFieldCatalog" class="text-sm text-slate-500 py-8 text-center">
+			Cargando campos...
+		</div>
+
+		<div *ngIf="!loadingFieldCatalog" class="overflow-x-auto rounded-xl border border-slate-200">
+			<table class="w-full text-left border-collapse">
+				<thead>
+					<tr class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider">
+						<th class="py-3 px-2 font-semibold">Campo</th>
+						<th class="py-3 px-2 font-semibold">Tipo</th>
+						<th class="py-3 px-2 font-semibold">Bloque</th>
+						<th class="py-3 px-2 font-semibold">Template</th>
+						<th class="py-3 px-2 font-semibold">Estado</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-slate-100 text-sm">
+					<tr
+						*ngFor="let field of filteredFieldCatalog; trackBy: trackByFieldCatalog"
+						class="hover:bg-white/60"
+					>
+						<td class="py-3 pl-4 pr-2">
+							<div class="font-medium text-slate-800">{{ field.label }}</div>
+							<div class="text-xs text-slate-500 font-mono">{{ field.code || 'SIN_CODIGO' }}</div>
+						</td>
+						<td class="py-3 px-2">
+							<span class="px-2 py-0.5 rounded-md text-xs border" [class]="getFieldTypeClass(field.fieldType)">
+								{{ field.fieldType }}
+							</span>
+						</td>
+						<td class="py-3 px-2 text-slate-600">{{ field.blockName }}</td>
+						<td class="py-3 px-2 text-slate-600">{{ field.templateName }}</td>
+						<td class="py-3 px-2">
+							<span
+								class="px-2 py-0.5 rounded-md text-xs border"
+								[class]="
+									field.status === 'ACTIVE'
+										? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+										: 'bg-slate-100 text-slate-600 border-slate-200'
+								"
+							>
+								{{ field.status === 'ACTIVE' ? 'Habilitado' : 'Deshabilitado' }}
+							</span>
+						</td>
+					</tr>
+					<tr *ngIf="filteredFieldCatalog.length === 0">
+						<td colspan="5" class="py-6 px-4 text-center text-slate-500">
+							No hay campos para mostrar.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<app-template-form-modal
+	[visible]="templateModalVisible"
+	[mode]="templateModalMode"
+	[loading]="saving"
+	[initialData]="buildTemplateModalInitialData()"
+	(close)="onTemplateModalClose()"
+	(save)="onTemplateModalSave($event)"
+></app-template-form-modal>
+
+<app-block-form-modal
+	[visible]="blockModalVisible"
+	[mode]="blockModalMode"
+	[loading]="saving"
+	[availableFields]="allFields"
+	[initialData]="buildBlockModalInitialData()"
+	(close)="onBlockModalClose()"
+	(save)="onBlockModalSave($event)"
+></app-block-form-modal>
+
+<app-field-form-modal
+	[visible]="fieldModalVisible"
+	[mode]="fieldModalMode"
+	[loading]="saving"
+	[initialData]="buildFieldModalInitialData()"
+	(close)="onFieldModalClose()"
+	(save)="onFieldModalSave($event)"
+></app-field-form-modal>
+
+<app-create-version-modal
+	[visible]="versionModalVisible"
+	[loading]="saving"
+	[availableBlocks]="allBlocks"
+	[preSelectedBlockIds]="versionModalPreSelectedBlockIds"
+	(close)="onVersionModalClose()"
+	(save)="onVersionModalSave($event)"
+></app-create-version-modal>

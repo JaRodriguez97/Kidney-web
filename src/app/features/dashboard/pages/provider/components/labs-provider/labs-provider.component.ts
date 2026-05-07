@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, DatesSetArg, EventInput } from '@fullcalendar/core';
@@ -8,21 +8,42 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import {
   GetProviderLabsDashboardResponse,
+  LabResultValueFlag,
   LabsDashboardService,
   ProviderLabDashboardRow,
   ProviderLabStatus,
+  RegisterLabResultRequest,
 } from '@app/core/services/labs-dashboard.service';
+import {
+  AppointmentService,
+  ProviderAppointmentStatusAction,
+} from '@app/core/services/appointment.service';
 import { ProgramLabProviderComponent } from '../program-lab-provider/program-lab-provider.component';
+
+interface EditableResultValue {
+  fieldName: string;
+  value: string;
+  unit: string;
+  referenceRange: string;
+  flag: '' | LabResultValueFlag;
+}
 
 @Component({
   selector: 'app-labs-provider',
   standalone: true,
-  imports: [CommonModule, FormsModule, FullCalendarModule, ProgramLabProviderComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FullCalendarModule,
+    ProgramLabProviderComponent,
+  ],
   templateUrl: './labs-provider.component.html',
   styleUrl: './labs-provider.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LabsProviderComponent implements OnInit, OnDestroy {
   private readonly labsDashboardService = inject(LabsDashboardService);
+  private readonly appointmentService = inject(AppointmentService);
 
   loading = false;
   errorMessage = '';
@@ -32,6 +53,12 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   selectedDate = this.toDateKey(new Date());
   visibleMonth = this.toMonthKey(new Date());
   isProgramModalOpen = false;
+  registerResultRow: ProviderLabDashboardRow | null = null;
+  updatingRows = new Set<string>();
+  registerRows: EditableResultValue[] = [this.createResultRow()];
+  registerNotes = '';
+  registerSaving = false;
+  registerErrorMessage = '';
 
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -181,6 +208,158 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
     this.isProgramModalOpen = false;
   }
 
+  openRegisterResultModal(row: ProviderLabDashboardRow): void {
+    this.registerResultRow = row;
+    this.registerRows = [this.createResultRow()];
+    this.registerNotes = '';
+    this.registerErrorMessage = '';
+  }
+
+  closeRegisterResultModal(reload = false): void {
+    if (this.registerSaving) {
+      return;
+    }
+
+    this.registerResultRow = null;
+    this.registerRows = [this.createResultRow()];
+    this.registerNotes = '';
+    this.registerErrorMessage = '';
+
+    if (reload) {
+      this.loadDashboard();
+    }
+  }
+
+  addRegisterRow(): void {
+    this.registerRows = [...this.registerRows, this.createResultRow()];
+  }
+
+  removeRegisterRow(index: number): void {
+    if (this.registerRows.length === 1) {
+      this.registerRows = [this.createResultRow()];
+      return;
+    }
+
+    this.registerRows = this.registerRows.filter(
+      (_, currentIndex) => currentIndex !== index,
+    );
+  }
+
+  saveRegisterResult(): void {
+    if (!this.registerResultRow) {
+      return;
+    }
+
+    const normalizedRows = this.registerRows
+      .map((row) => ({
+        fieldName: row.fieldName.trim(),
+        value: row.value.trim(),
+        unit: row.unit.trim() || null,
+        referenceRange: row.referenceRange.trim() || null,
+        flag: row.flag || null,
+      }))
+      .filter((row) => row.fieldName.length > 0 && row.value.length > 0);
+
+    if (!normalizedRows.length) {
+      this.registerErrorMessage =
+        'Agrega al menos un resultado con campo y valor para guardar.';
+      return;
+    }
+
+    const payload: RegisterLabResultRequest = {
+      resultValues: normalizedRows,
+      notes: this.registerNotes.trim() || undefined,
+    };
+
+    this.registerSaving = true;
+    this.registerErrorMessage = '';
+
+    this.labsDashboardService
+      .registerResult(this.registerResultRow.appointmentId, payload)
+      .subscribe({
+        next: () => {
+          this.registerSaving = false;
+          this.closeRegisterResultModal(true);
+        },
+        error: () => {
+          this.registerSaving = false;
+          this.registerErrorMessage =
+            'No fue posible registrar el resultado del laboratorio en este momento.';
+        },
+      });
+  }
+
+  getPrimaryActionLabel(status: ProviderLabStatus): string {
+    switch (status) {
+      case 'SIN_VALIDAR':
+        return 'Llamar';
+      case 'TOMA':
+        return 'Iniciar Procesamiento';
+      case 'PROCESADO':
+        return 'Registrar Resultado';
+      case 'PREELIMINAR':
+        return 'Ver Resultado';
+      default:
+        return 'Sin acción';
+    }
+  }
+
+  getPrimaryActionClass(status: ProviderLabStatus): string {
+    switch (status) {
+      case 'SIN_VALIDAR':
+        return 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100';
+      case 'TOMA':
+        return 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100';
+      case 'PROCESADO':
+        return 'bg-primary text-white border-primary hover:bg-primary/90';
+      case 'PREELIMINAR':
+        return 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100';
+      default:
+        return 'bg-slate-100 text-slate-500 border-slate-200';
+    }
+  }
+
+  isActionDisabled(row: ProviderLabDashboardRow): boolean {
+    return row.status === 'CANCELADO' || this.updatingRows.has(row.appointmentId);
+  }
+
+  onPrimaryAction(row: ProviderLabDashboardRow): void {
+    if (row.status === 'SIN_VALIDAR') {
+      this.advanceLabStatus(row.appointmentId, 'CALL');
+      return;
+    }
+
+    if (row.status === 'TOMA') {
+      this.advanceLabStatus(row.appointmentId, 'START');
+      return;
+    }
+
+    if (row.status === 'PROCESADO' || row.status === 'PREELIMINAR') {
+      this.openRegisterResultModal(row);
+    }
+  }
+
+  private advanceLabStatus(
+    appointmentId: string,
+    action: ProviderAppointmentStatusAction,
+  ): void {
+    this.updatingRows.add(appointmentId);
+
+    this.appointmentService
+      .updateProviderAppointmentStatus(appointmentId, { action })
+      .subscribe({
+        next: () => {
+          this.updatingRows.delete(appointmentId);
+          this.loadDashboard();
+        },
+        error: () => {
+          this.updatingRows.delete(appointmentId);
+          this.errorMessage =
+            'No fue posible actualizar el estado del laboratorio en este momento.';
+        },
+      });
+  }
+
   private onCalendarDateClick(arg: DateClickArg): void {
     this.selectedDate = arg.dateStr;
     this.loadDashboard();
@@ -259,6 +438,16 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
 
   private toMonthKey(date: Date): string {
     return date.toISOString().slice(0, 7);
+  }
+
+  private createResultRow(): EditableResultValue {
+    return {
+      fieldName: '',
+      value: '',
+      unit: '',
+      referenceRange: '',
+      flag: '',
+    };
   }
 
 }

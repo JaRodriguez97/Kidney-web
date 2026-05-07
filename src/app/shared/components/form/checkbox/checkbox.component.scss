@@ -1,0 +1,20 @@
+.checkbox-wrapper {
+	@apply flex items-start gap-2 select-none cursor-pointer;
+}
+
+.checkbox-input {
+	@apply mt-0.5 h-4 w-4 rounded border-slate-300;
+	accent-color: #1c384e;
+}
+
+.checkbox-content {
+	@apply flex flex-col;
+}
+
+.checkbox-label {
+	@apply text-sm font-medium text-slate-700;
+}
+
+.checkbox-description {
+	@apply text-xs text-slate-500;
+}

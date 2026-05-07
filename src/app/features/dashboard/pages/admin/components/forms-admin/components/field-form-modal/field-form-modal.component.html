@@ -1,0 +1,91 @@
+<div class="fixed inset-0 z-50" [ngClass]="{ hidden: !visible }">
+	<div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+	<div class="absolute inset-0 flex items-center justify-center p-4">
+		<div
+			class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden"
+		>
+			<div
+				class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"
+			>
+				<h3 class="text-lg font-bold text-primary">
+					{{ mode === "create" ? "Nuevo Campo" : "Editar Campo" }}
+				</h3>
+				<button class="text-slate-400 hover:text-secondary" (click)="onClose()">
+					<span class="material-symbols-outlined">close</span>
+				</button>
+			</div>
+
+			<form class="p-6 space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<app-input-text
+						label="Código"
+						placeholder="Ej: PATIENT_NAME"
+						formControlName="code"
+					></app-input-text>
+
+					<app-select
+						label="Tipo de Campo"
+						placeholder="Selecciona tipo"
+						[options]="fieldTypeOptions"
+						optionLabel="label"
+						optionValue="value"
+						formControlName="fieldType"
+					></app-select>
+				</div>
+
+				<app-input-text
+					label="Etiqueta"
+					formControlName="label"
+				></app-input-text>
+
+				<app-input-text
+					label="Placeholder"
+					formControlName="placeholder"
+				></app-input-text>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<app-input-number
+						label="Orden"
+						[min]="1"
+						formControlName="sortOrder"
+					></app-input-number>
+					<div class="flex items-end pb-2">
+						<app-checkbox
+							label="Campo obligatorio"
+							formControlName="isRequired"
+						></app-checkbox>
+					</div>
+				</div>
+
+				<div *ngIf="requiresOptions(form.controls.fieldType.value)">
+					<app-textarea
+						label="Opciones"
+						placeholder="Formato por línea: etiqueta|valor|codigo"
+						[rows]="5"
+						formControlName="optionsText"
+					></app-textarea>
+					<p class="text-xs text-slate-500 mt-1">
+						Ejemplo: Masculino|M|PATIENT_SEX_M
+					</p>
+				</div>
+
+				<div class="pt-2 flex justify-end gap-3">
+					<button
+						type="button"
+						(click)="onClose()"
+						class="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-200 transition-colors"
+					>
+						Cancelar
+					</button>
+					<button
+						type="submit"
+						[disabled]="loading"
+						class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+					>
+						{{ loading ? "Guardando..." : "Guardar" }}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

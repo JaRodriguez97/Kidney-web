@@ -1,0 +1,89 @@
+<div class="fixed inset-0 z-50" [ngClass]="{ hidden: !visible }">
+	<div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
+	<div class="absolute inset-0 flex items-center justify-center p-4">
+		<div
+			class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
+		>
+			<div
+				class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"
+			>
+				<h3 class="text-lg font-bold text-primary">
+					{{ mode === "create" ? "Nuevo Bloque" : "Editar Bloque" }}
+				</h3>
+				<button class="text-slate-400 hover:text-secondary" (click)="onClose()">
+					<span class="material-symbols-outlined">close</span>
+				</button>
+			</div>
+
+			<form class="p-6 space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+				<app-input-text
+					label="Código"
+					placeholder="Ej: VITAL_SIGNS"
+					formControlName="code"
+				></app-input-text>
+
+				<app-input-text label="Nombre" formControlName="name"></app-input-text>
+
+				<app-textarea
+					label="Descripción"
+					[rows]="3"
+					formControlName="description"
+				></app-textarea>
+
+				<app-input-number
+					label="Orden"
+					[min]="1"
+					formControlName="sortOrder"
+				></app-input-number>
+
+				<div *ngIf="mode === 'create'" class="rounded-xl border border-slate-200 overflow-hidden">
+					<div class="px-4 py-3 bg-slate-50 text-sm font-semibold text-slate-700">
+						Importar campos existentes
+					</div>
+					<div class="max-h-48 overflow-y-auto divide-y divide-slate-100">
+						<label
+							*ngFor="let field of availableFields; trackBy: trackByAvailableField"
+							class="px-4 py-2.5 flex items-start gap-3 cursor-pointer hover:bg-slate-50"
+						>
+							<input
+								type="checkbox"
+								[checked]="isFieldSelected(field.id)"
+								(change)="toggleFieldSelection(field.id, $any($event.target).checked)"
+								class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+							/>
+							<div>
+								<div class="text-sm font-medium text-slate-800">{{ field.label }}</div>
+								<div class="text-xs text-slate-500">
+									{{ field.blockName }} • {{ field.templateName }}
+								</div>
+							</div>
+						</label>
+						<div
+							*ngIf="availableFields.length === 0"
+							class="px-4 py-5 text-sm text-slate-500 text-center"
+						>
+							No hay campos disponibles para importar.
+						</div>
+					</div>
+				</div>
+
+				<div class="pt-2 flex justify-end gap-3">
+					<button
+						type="button"
+						(click)="onClose()"
+						class="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-200 transition-colors"
+					>
+						Cancelar
+					</button>
+					<button
+						type="submit"
+						[disabled]="loading"
+						class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+					>
+						{{ loading ? "Guardando..." : "Guardar" }}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

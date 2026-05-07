@@ -1,147 +1,335 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UserService } from '@app/core/services/user.service';
 import { CommonModule } from '@angular/common';
+import {
+	AppointmentService,
+	GetProviderAgendaResponse,
+	ProviderAgendaItem,
+} from '@app/core/services/appointment.service';
+import { ServiceCatalogService } from '@app/core/services/service-catalog.service';
+import {
+	EducationAdminService,
+	GetAdminEducationDashboardResponse,
+} from '@app/core/services/education-admin.service';
+import {
+	GetProviderLabsDashboardResponse,
+	LabsDashboardService,
+	ProviderLabDashboardRow,
+} from '@app/core/services/labs-dashboard.service';
+import { catchError, forkJoin, of } from 'rxjs';
+
+interface HomeAppointmentRow {
+	id: string;
+	paciente: string;
+	initials: string;
+	initialsColor: string;
+	servicio: string;
+	hora: string;
+	doctor: string;
+	estado: {
+		label: string;
+		colorClass: string;
+		borderClass: string;
+		dotClass?: string;
+		extraClass?: string;
+	};
+}
+
+interface HomeArticleItem {
+	id: string;
+	title: string;
+	subtitle: string;
+	time: string;
+	color: string;
+}
 
 @Component({
-  selector: 'app-home-admin',
-  standalone: true,
-  imports: [RouterModule, DecimalPipe, CommonModule],
-  templateUrl: './home-admin.component.html',
-  styleUrl: './home-admin.component.scss',
+	selector: 'app-home-admin',
+	standalone: true,
+	imports: [RouterModule, DecimalPipe, CommonModule],
+	templateUrl: './home-admin.component.html',
+	styleUrl: './home-admin.component.scss',
 })
 export class HomeAdminComponent implements OnInit {
-  articles: Array<{
-    id: string;
-    title: string;
-    subtitle: string;
-    time: string;
-    color: string;
-  }> | null = null;
-  totalUsers: number | null = null;
-  percent = '%100';
-  appointments: Array<{
-    id: string;
-    paciente: string;
-    initials: string;
-    initialsColor: string;
-    servicio: string;
-    hora: string;
-    doctor: string;
-    estado: {
-      label: string;
-      colorClass: string;
-      borderClass: string;
-      dotClass?: string;
-      extraClass?: string;
-    };
-  }> | null = null;
+	private readonly userService = inject(UserService);
+	private readonly appointmentService = inject(AppointmentService);
+	private readonly serviceCatalogService = inject(ServiceCatalogService);
+	private readonly educationAdminService = inject(EducationAdminService);
+	private readonly labsDashboardService = inject(LabsDashboardService);
 
-  constructor(private userService: UserService) {}
+	articles: HomeArticleItem[] | null = null;
+	totalUsers: number | null = null;
+	percent = '%100';
+	appointments: HomeAppointmentRow[] | null = null;
 
-  ngOnInit(): void {
-    this.userService.getUsers().subscribe((users) => {
-      this.totalUsers = users.length;
-      this.appointments = [
-        {
-          id: '1',
-          paciente: 'Maria Rodriguez',
-          initials: 'MR',
-          initialsColor: 'bg-blue-100 text-blue-600',
-          servicio: 'Nefrología General',
-          hora: '09:30 AM',
-          doctor: 'Dr. A. Vargas',
-          estado: {
-            label: 'Confirmada',
-            colorClass: 'bg-blue-50 text-primary',
-            borderClass: 'border-blue-100',
-            dotClass: 'bg-primary',
-          },
-        },
-        {
-          id: '2',
-          paciente: 'Jorge Perez',
-          initials: 'JP',
-          initialsColor: 'bg-amber-100 text-amber-600',
-          servicio: 'Control Hipertensión',
-          hora: '10:15 AM',
-          doctor: 'Dra. M. López',
-          estado: {
-            label: 'En Sala',
-            colorClass: 'bg-amber-50 text-amber-700',
-            borderClass: 'border-amber-100',
-            dotClass: 'bg-amber-500 animate-pulse',
-          },
-        },
-        {
-          id: '3',
-          paciente: 'Lucia Gomez',
-          initials: 'LG',
-          initialsColor: 'bg-purple-100 text-purple-600',
-          servicio: 'Nutrición y Cuidado',
-          hora: '11:00 AM',
-          doctor: 'Lic. K. Diaz',
-          estado: {
-            label: 'Pendiente',
-            colorClass: 'bg-slate-100 text-slate-600',
-            borderClass: 'border-slate-200',
-          },
-        },
-        {
-          id: '4',
-          paciente: 'Carlos Ruiz',
-          initials: 'CR',
-          initialsColor: 'bg-red-100 text-secondary',
-          servicio: 'Examen Laboratorio',
-          hora: '11:30 AM',
-          doctor: 'Lab. Central',
-          estado: {
-            label: 'Cancelada',
-            colorClass: 'bg-red-50 text-secondary',
-            borderClass: 'border-red-100',
-          },
-        },
-        {
-          id: '5',
-          paciente: 'Andrés Felipe',
-          initials: 'AF',
-          initialsColor: 'bg-blue-100 text-primary',
-          servicio: 'Medicina General',
-          hora: '12:45 PM',
-          doctor: 'Dr. S. Castro',
-          estado: {
-            label: 'Confirmado',
-            colorClass: 'bg-blue-50 text-primary',
-            borderClass: 'border-blue-100',
-            dotClass: 'bg-primary',
-          },
-        },
-      ];
+	activeServices: number | null = null;
+	dayAppointmentsCount: number | null = null;
+	dayCompletedPercent: number | null = null;
+	labsPendingCount: number | null = null;
+	resultsPendingCount: number | null = null;
+	resultsByArea = {
+		hematologia: 0,
+		uroanalisis: 0,
+		otros: 0,
+	};
 
-      this.articles = [
-        {
-          id: '1',
-          title: 'Importancia del Chequeo en salud',
-          subtitle: 'Publicado por Dra. Torres',
-          time: 'Hace 15 min',
-          color: 'bg-primary',
-        },
-        {
-          id: '2',
-          title: 'Nutrición en Pacientes Hipertensos',
-          subtitle: 'Editado hace 2 horas',
-          time: 'Hace 2 horas',
-          color: 'bg-primary',
-        },
-        {
-          id: '3',
-          title: 'Nuevos protocolos de Laboratorio',
-          subtitle: 'Borrador guardado ayer',
-          time: 'Ayer',
-          color: 'bg-secondary',
-        },
-      ];
-    });
-  }
+	ngOnInit(): void {
+		const now = new Date();
+		const todayDate = now.toISOString().slice(0, 10);
+		const month = now.toISOString().slice(0, 7);
+
+		forkJoin({
+			users: this.userService.getUsers().pipe(catchError(() => of([]))),
+			services: this.serviceCatalogService
+				.getServices()
+				.pipe(catchError(() => of([]))),
+			appointments: this.appointmentService
+				.getProviderAgenda(todayDate, undefined, month)
+				.pipe(catchError(() => of(null))),
+			labs: this.labsDashboardService
+				.getProviderDashboard({ date: todayDate, month })
+				.pipe(catchError(() => of(null))),
+			education: this.educationAdminService
+				.getAdminDashboard(5)
+				.pipe(catchError(() => of(null))),
+		}).subscribe(({ users, services, appointments, labs, education }) => {
+			this.totalUsers = users.length;
+			this.activeServices = services.filter(
+				(service) => service.is_active,
+			).length;
+
+			this.applyAppointmentsData(appointments);
+			this.applyLabsData(labs);
+			this.applyEducationData(education);
+		});
+	}
+
+	private applyAppointmentsData(
+		appointments: GetProviderAgendaResponse | null,
+	): void {
+		if (!appointments) {
+			this.appointments = [];
+			this.dayAppointmentsCount = 0;
+			this.dayCompletedPercent = 0;
+			return;
+		}
+
+		const rows = [...appointments.appointments].sort((a, b) => {
+			const left = new Date(a.startTime).getTime();
+			const right = new Date(b.startTime).getTime();
+			return left - right;
+		});
+
+		const completedCount = rows.filter(
+			(row) => row.status === 'COMPLETED',
+		).length;
+
+		this.dayAppointmentsCount = rows.length;
+		this.dayCompletedPercent = rows.length
+			? Math.round((completedCount / rows.length) * 100)
+			: 0;
+
+		this.appointments = rows.slice(0, 6).map((row, index) => {
+			const statusPresentation = this.mapAppointmentStatus(row.status);
+
+			return {
+				id: row.id,
+				paciente: row.patientName,
+				initials: this.getInitials(row.patientName),
+				initialsColor: this.getInitialsClass(index),
+				servicio: row.serviceName,
+				hora: this.formatTime(row.startTime),
+				doctor: row.providerName ?? 'Sin asignar',
+				estado: statusPresentation,
+			};
+		});
+	}
+
+	private applyLabsData(labs: GetProviderLabsDashboardResponse | null): void {
+		if (!labs) {
+			this.labsPendingCount = 0;
+			this.resultsPendingCount = 0;
+			this.resultsByArea = { hematologia: 0, uroanalisis: 0, otros: 0 };
+			return;
+		}
+
+		this.labsPendingCount = labs.stats.withoutValidation;
+
+		const pendingResults = labs.rows.filter(
+			(row) => row.status === 'SIN_VALIDAR' || row.status === 'TOMA',
+		);
+		this.resultsPendingCount = pendingResults.length;
+		this.resultsByArea = this.buildResultsByArea(pendingResults);
+	}
+
+	private applyEducationData(
+		education: GetAdminEducationDashboardResponse | null,
+	): void {
+		if (!education) {
+			this.articles = [];
+			return;
+		}
+
+		this.articles = education.recentArticles.map((article, index) => ({
+			id: article.id,
+			title: article.title,
+			subtitle:
+				article.authorName && article.authorName.length
+					? `Publicado por ${article.authorName}`
+					: 'Publicado',
+			time: this.getRelativeTime(article.publishedAt ?? article.createdAt),
+			color: index % 2 === 0 ? 'bg-primary' : 'bg-secondary',
+		}));
+	}
+
+	private buildResultsByArea(rows: ProviderLabDashboardRow[]): {
+		hematologia: number;
+		uroanalisis: number;
+		otros: number;
+	} {
+		return rows.reduce(
+			(acc, row) => {
+				const serviceName = row.serviceName.toLowerCase();
+
+				if (serviceName.includes('hemat')) {
+					acc.hematologia += 1;
+					return acc;
+				}
+
+				if (serviceName.includes('uro')) {
+					acc.uroanalisis += 1;
+					return acc;
+				}
+
+				acc.otros += 1;
+				return acc;
+			},
+			{
+				hematologia: 0,
+				uroanalisis: 0,
+				otros: 0,
+			},
+		);
+	}
+
+	private mapAppointmentStatus(status: ProviderAgendaItem['status']): {
+		label: string;
+		colorClass: string;
+		borderClass: string;
+		dotClass?: string;
+		extraClass?: string;
+	} {
+		switch (status) {
+			case 'COMPLETED':
+				return {
+					label: 'Finalizada',
+					colorClass: 'bg-slate-100 text-slate-600',
+					borderClass: 'border-slate-200',
+				};
+			case 'CHECKED_IN':
+			case 'IN_PROGRESS':
+				return {
+					label: 'En sala',
+					colorClass: 'bg-amber-50 text-amber-700',
+					borderClass: 'border-amber-100',
+					dotClass: 'bg-amber-500 animate-pulse',
+				};
+			case 'CONFIRMED':
+				return {
+					label: 'Confirmada',
+					colorClass: 'bg-blue-50 text-primary',
+					borderClass: 'border-blue-100',
+					dotClass: 'bg-primary',
+				};
+			case 'PENDING_PAYMENT':
+				return {
+					label: 'Pendiente',
+					colorClass: 'bg-slate-100 text-slate-600',
+					borderClass: 'border-slate-200',
+				};
+			case 'NO_SHOW':
+				return {
+					label: 'Ausente',
+					colorClass: 'bg-purple-50 text-purple-700',
+					borderClass: 'border-purple-100',
+				};
+			case 'RESCHEDULED':
+				return {
+					label: 'Reagendada',
+					colorClass: 'bg-cyan-50 text-cyan-700',
+					borderClass: 'border-cyan-100',
+				};
+			default:
+				return {
+					label: 'Cancelada',
+					colorClass: 'bg-red-50 text-secondary',
+					borderClass: 'border-red-100',
+				};
+		}
+	}
+
+	private getInitials(name: string): string {
+		return name
+			.split(' ')
+			.filter(Boolean)
+			.slice(0, 2)
+			.map((chunk) => chunk[0]?.toUpperCase() ?? '')
+			.join('');
+	}
+
+	private getInitialsClass(index: number): string {
+		const classes = [
+			'bg-blue-100 text-blue-600',
+			'bg-amber-100 text-amber-600',
+			'bg-purple-100 text-purple-600',
+			'bg-red-100 text-secondary',
+			'bg-emerald-100 text-emerald-700',
+			'bg-cyan-100 text-cyan-700',
+		];
+
+		return classes[index % classes.length] ?? classes[0];
+	}
+
+	private formatTime(isoDate: string): string {
+		const parsed = new Date(isoDate);
+
+		if (Number.isNaN(parsed.getTime())) {
+			return '--:--';
+		}
+
+		return parsed.toLocaleTimeString('es-CO', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: true,
+		});
+	}
+
+	private getRelativeTime(isoDate: string): string {
+		const createdAt = new Date(isoDate);
+		const now = new Date();
+		const diffMs = now.getTime() - createdAt.getTime();
+
+		if (!Number.isFinite(diffMs)) {
+			return 'Reciente';
+		}
+
+		const minuteMs = 60 * 1000;
+		const hourMs = 60 * minuteMs;
+		const dayMs = 24 * hourMs;
+
+		if (diffMs < hourMs) {
+			const minutes = Math.max(1, Math.floor(diffMs / minuteMs));
+			return `Hace ${minutes} min`;
+		}
+
+		if (diffMs < dayMs) {
+			const hours = Math.max(1, Math.floor(diffMs / hourMs));
+			return `Hace ${hours} hora${hours > 1 ? 's' : ''}`;
+		}
+
+		const days = Math.max(1, Math.floor(diffMs / dayMs));
+		return `Hace ${days} día${days > 1 ? 's' : ''}`;
+	}
 }

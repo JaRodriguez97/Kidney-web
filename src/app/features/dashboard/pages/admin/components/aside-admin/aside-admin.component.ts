@@ -30,6 +30,7 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 		'appointments',
 		'labs',
 		'results',
+		'forms',
 		'settings',
 		'support',
 	];
@@ -70,14 +71,16 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 	}
 
 	setActive(index: number): void {
+		const route = this.routes[index];
+		if (!route) {
+			return;
+		}
+
 		this.activeIndex = index;
 		this.platformService.setLocalStorageItem(
 			this.STORAGE_KEY,
 			index.toString(),
 		);
-		const route = this.routes[index];
-		if (route !== '' || index === 0) {
-			this.router.navigate(['dashboard/admin/' + route]);
-		}
+		this.router.navigate(['dashboard/admin/' + route]);
 	}
 }
