@@ -10,7 +10,7 @@
     "s": "ng g s services/ServiciosApi/serviciosApi",
     "dev": "ng s -o",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "prerender": "ng run kinexa-web:prerender",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
