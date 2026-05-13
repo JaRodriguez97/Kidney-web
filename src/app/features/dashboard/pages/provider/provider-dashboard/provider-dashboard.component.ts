@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { AsideProviderComponent } from '../components/aside-provider/aside-provider.component';
 import { TopProviderComponent } from '../components/top-provider/top-provider.component';
+import { ProviderTourService } from '@app/core/services/tour/provider-tour.service';
 
 @Component({
 	selector: 'app-provider-dashboard',
@@ -11,33 +11,14 @@ import { TopProviderComponent } from '../components/top-provider/top-provider.co
 	templateUrl: './provider-dashboard.component.html',
 	styleUrl: './provider-dashboard.component.scss',
 })
-export class ProviderDashboardComponent implements OnInit, OnDestroy {
-	private readonly router = inject(Router);
-	private readonly destroy$ = new Subject<void>();
-
-	showTopProvider = true;
+export class ProviderDashboardComponent implements OnInit {
+	private readonly providerTourService = inject(ProviderTourService);
 
 	ngOnInit(): void {
-		this.updateTopProviderVisibility(this.router.url);
-
-		this.router.events
-			.pipe(
-				filter(
-					(event): event is NavigationEnd => event instanceof NavigationEnd,
-				),
-				takeUntil(this.destroy$),
-			)
-			.subscribe((event) => {
-				this.updateTopProviderVisibility(event.urlAfterRedirects);
-			});
+		this.providerTourService.startIfFirstVisit();
 	}
 
-	ngOnDestroy(): void {
-		this.destroy$.next();
-		this.destroy$.complete();
-	}
-
-	private updateTopProviderVisibility(url: string): void {
-		this.showTopProvider = !url.includes('/clinical-attention');
+	onHelpClicked(): void {
+		this.providerTourService.startTour();
 	}
 }

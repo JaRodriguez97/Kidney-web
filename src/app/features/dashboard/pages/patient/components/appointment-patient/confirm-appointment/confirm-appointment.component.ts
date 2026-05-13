@@ -4,6 +4,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppointmentBookingStateService } from '@app/core/services/appointment-booking-state.service';
 import { AppointmentService } from '@app/core/services/appointment.service';
+import { formatColombiaTime } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-confirm-appointment',
@@ -89,6 +90,7 @@ export class ConfirmAppointmentComponent implements OnInit {
 			day: 'numeric',
 			month: 'long',
 			year: 'numeric',
+			timeZone: 'America/Bogota',
 		});
 
 		return formatted.charAt(0).toUpperCase() + formatted.slice(1);
@@ -135,19 +137,23 @@ export class ConfirmAppointmentComponent implements OnInit {
 				next: () => {
 					this.isSubmitting = false;
 					this.appointmentBookingState.clear();
-					this.router.navigate(['/dashboard/patient/appointments'], {
-						queryParams: {
-							created: '1',
-							specialty: this.specialty ?? undefined,
-							serviceId: this.serviceId ?? undefined,
-							serviceCode: this.serviceCode ?? undefined,
-							serviceName: this.serviceName ?? undefined,
-							providerId: this.providerId ?? undefined,
-							providerName: this.providerName ?? undefined,
-							date: this.selectedDate,
-							startTime: this.selectedStartTime,
+					this.router.navigate(
+						['/dashboard/patient/appointments/schedule/payment-gateway'],
+						{
+							queryParams: {
+								specialty: this.specialty ?? undefined,
+								serviceId: this.serviceId ?? undefined,
+								serviceCode: this.serviceCode ?? undefined,
+								serviceName: this.serviceName ?? undefined,
+								providerId: this.providerId ?? undefined,
+								providerName: this.providerName ?? undefined,
+								date: this.selectedDate,
+								startTime: this.selectedStartTime,
+								endTime: this.selectedEndTime || undefined,
+								created: '1',
+							},
 						},
-					});
+					);
 				},
 				error: (error) => {
 					this.isSubmitting = false;
@@ -188,11 +194,8 @@ export class ConfirmAppointmentComponent implements OnInit {
 
 		const parsedDate = new Date(dateTime);
 		if (!Number.isNaN(parsedDate.getTime())) {
-			return parsedDate.toLocaleTimeString('es-CO', {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false,
-			});
+			const formatted = formatColombiaTime(parsedDate);
+			return formatted === '-' ? '--:--' : formatted;
 		}
 
 		return '--:--';

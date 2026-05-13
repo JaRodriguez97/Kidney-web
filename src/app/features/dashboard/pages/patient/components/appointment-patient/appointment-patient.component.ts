@@ -2,14 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import {
 	AppointmentService,
 	PatientAppointment,
 } from '@app/core/services/appointment.service';
+import {
+	formatColombiaDate,
+	formatColombiaTime,
+	getTodayColombiaDateKey,
+	toColombiaDateKey,
+} from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-appointment-patient',
@@ -23,6 +29,8 @@ export class AppointmentPatientComponent implements OnInit {
 	loading = true;
 	upcomingAppointments: PatientAppointment[] = [];
 	pastAppointments: PatientAppointment[] = [];
+	selectedRangeStart: string | null = null;
+	selectedRangeEnd: string | null = null;
 
 	calendarOptions: CalendarOptions = {
 		plugins: [dayGridPlugin, interactionPlugin],
@@ -35,7 +43,10 @@ export class AppointmentPatientComponent implements OnInit {
 		},
 		height: 'auto',
 		editable: false,
-		selectable: false,
+		selectable: true,
+		selectMirror: true,
+		select: (arg) => this.onCalendarRangeSelect(arg),
+		dateClick: (arg) => this.onCalendarDateClick(arg),
 		dayMaxEvents: true,
 		events: [],
 	};
@@ -68,19 +79,51 @@ export class AppointmentPatientComponent implements OnInit {
 	}
 
 	get upcomingCount(): number {
-		return this.upcomingAppointments.length;
+		return this.filteredUpcomingAppointments.length;
 	}
 
 	get completedCount(): number {
-		return this.pastAppointments.filter((a) => a.status === 'COMPLETED').length;
+		return this.filteredPastAppointments.filter((a) => a.status === 'COMPLETED')
+			.length;
 	}
 
 	get cancelledCount(): number {
-		return this.pastAppointments.filter((a) => a.status === 'CANCELLED').length;
+		return this.filteredPastAppointments.filter((a) => a.status === 'CANCELLED')
+			.length;
+	}
+
+	get filteredUpcomingAppointments(): PatientAppointment[] {
+		if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+			return this.upcomingAppointments;
+		}
+
+		return this.upcomingAppointments.filter((appointment) =>
+			this.isWithinSelectedRange(appointment.scheduledDate),
+		);
+	}
+
+	get filteredPastAppointments(): PatientAppointment[] {
+		if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+			return this.pastAppointments;
+		}
+
+		return this.pastAppointments.filter((appointment) =>
+			this.isWithinSelectedRange(appointment.scheduledDate),
+		);
 	}
 
 	setView(view: 'upcoming' | 'past') {
 		this.view = view;
+	}
+
+	onCalendarDateClick(arg: DateClickArg): void {
+		this.selectedRangeStart = arg.dateStr;
+		this.selectedRangeEnd = arg.dateStr;
+	}
+
+	onCalendarRangeSelect(arg: DateSelectArg): void {
+		this.selectedRangeStart = arg.startStr;
+		this.selectedRangeEnd = this.getInclusiveRangeEnd(arg.endStr);
 	}
 
 	goToSchedule() {
@@ -170,37 +213,60 @@ export class AppointmentPatientComponent implements OnInit {
 	}
 
 	getMonth(dateStr: string): string {
-		const date = new Date(dateStr);
-		return date.toLocaleString('es', { month: 'short' });
+		const formatted = formatColombiaDate(dateStr);
+		if (formatted === '-') {
+			return '--';
+		}
+
+		const [day, month] = formatted.split('/');
+		if (!day || !month) {
+			return '--';
+		}
+
+		const monthMap: Record<string, string> = {
+			'01': 'ene',
+			'02': 'feb',
+			'03': 'mar',
+			'04': 'abr',
+			'05': 'may',
+			'06': 'jun',
+			'07': 'jul',
+			'08': 'ago',
+			'09': 'sep',
+			'10': 'oct',
+			'11': 'nov',
+			'12': 'dic',
+		};
+
+		return monthMap[month] ?? '--';
 	}
 
 	getDay(dateStr: string): string {
-		const date = new Date(dateStr);
-		return String(date.getUTCDate()).padStart(2, '0');
+		const formatted = formatColombiaDate(dateStr);
+		if (formatted === '-') {
+			return '--';
+		}
+
+		const [day] = formatted.split('/');
+		return day ?? '--';
 	}
 
 	getTime(timeStr: string): string {
-		const date = new Date(timeStr);
-		return date.toLocaleTimeString('es', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false,
-		});
+		const formatted = formatColombiaTime(timeStr);
+		return formatted === '-' ? '--:--' : formatted;
 	}
 
 	private loadAppointments(): void {
 		this.loading = true;
 		this.appointmentService.getMyAppointments().subscribe({
 			next: (res) => {
-				const today = new Date();
-				today.setHours(0, 0, 0, 0);
+				const todayDateKey = getTodayColombiaDateKey();
 
 				this.upcomingAppointments = res.appointments
 					.filter((a) => {
-						const appointmentDate = new Date(a.scheduledDate);
-						appointmentDate.setHours(0, 0, 0, 0);
+						const appointmentDateKey = toColombiaDateKey(a.scheduledDate);
 						return (
-							appointmentDate >= today &&
+							appointmentDateKey >= todayDateKey &&
 							!AppointmentPatientComponent.PAST_STATUSES.includes(a.status)
 						);
 					})
@@ -212,10 +278,9 @@ export class AppointmentPatientComponent implements OnInit {
 
 				this.pastAppointments = res.appointments
 					.filter((a) => {
-						const appointmentDate = new Date(a.scheduledDate);
-						appointmentDate.setHours(0, 0, 0, 0);
+						const appointmentDateKey = toColombiaDateKey(a.scheduledDate);
 						return (
-							appointmentDate < today ||
+							appointmentDateKey < todayDateKey ||
 							AppointmentPatientComponent.PAST_STATUSES.includes(a.status)
 						);
 					})
@@ -251,5 +316,22 @@ export class AppointmentPatientComponent implements OnInit {
 					'#94a3b8',
 			})),
 		};
+	}
+
+	private isWithinSelectedRange(rawScheduledDate: string): boolean {
+		if (!this.selectedRangeStart || !this.selectedRangeEnd) {
+			return true;
+		}
+
+		const dateKey = toColombiaDateKey(rawScheduledDate);
+		return (
+			dateKey >= this.selectedRangeStart && dateKey <= this.selectedRangeEnd
+		);
+	}
+
+	private getInclusiveRangeEnd(exclusiveEnd: string): string {
+		const endDate = new Date(`${exclusiveEnd}T00:00:00`);
+		endDate.setDate(endDate.getDate() - 1);
+		return toColombiaDateKey(endDate);
 	}
 }

@@ -1,13 +1,30 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import {
+	CalendarOptions,
+	DatesSetArg,
+	DateSelectArg,
+	EventInput,
+} from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
+import esLocale from '@fullcalendar/core/locales/es';
 import {
 	AdminLabResultDashboardRow,
 	AdminResultFilterStatus,
 	GetAdminLabResultsDashboardResponse,
 	LabResultDetailResponse,
 	LabsDashboardService,
+	ProviderLabDashboardCalendarDay,
 } from '@app/core/services/labs-dashboard.service';
+import {
+	formatColombiaDate,
+	toColombiaDateKey,
+	toColombiaMonthKey,
+} from '@app/shared/utils/colombia-date.utils';
+import { catchError, forkJoin, of } from 'rxjs';
 
 type ResultStatus = 'PENDIENTE_FIRMA' | 'PUBLICADO' | 'REVISION';
 
@@ -25,7 +42,7 @@ interface ResultAdminRow {
 @Component({
 	selector: 'app-results-admin',
 	standalone: true,
-	imports: [CommonModule, FormsModule],
+	imports: [CommonModule, FormsModule, FullCalendarModule],
 	templateUrl: './results-admin.component.html',
 	styleUrl: './results-admin.component.scss',
 })
@@ -40,9 +57,30 @@ export class ResultsAdminComponent implements OnInit {
 	searchTerm = '';
 	statusFilter: 'ALL' | AdminResultFilterStatus = 'ALL';
 	selectedDate = this.toDateKey(new Date());
+	selectedRangeStart: string | null = null;
+	selectedRangeEnd: string | null = null;
 	visibleMonth = this.toMonthKey(new Date());
 	publishingRows = new Set<string>();
 	selectedResultDetail: LabResultDetailResponse | null = null;
+	calendarOptions: CalendarOptions = {
+		plugins: [dayGridPlugin, interactionPlugin],
+		initialView: 'dayGridMonth',
+		locale: esLocale,
+		headerToolbar: {
+			left: 'prev',
+			center: 'title',
+			right: 'next',
+		},
+		contentHeight: 300,
+		fixedWeekCount: false,
+		showNonCurrentDates: true,
+		editable: false,
+		selectable: true,
+		events: [],
+		select: (arg) => this.onCalendarRangeSelect(arg),
+		dateClick: (arg) => this.onCalendarDateClick(arg),
+		datesSet: (arg) => this.onCalendarDatesSet(arg),
+	};
 
 	dashboard: GetAdminLabResultsDashboardResponse = {
 		date: this.selectedDate,
@@ -87,7 +125,36 @@ export class ResultsAdminComponent implements OnInit {
 
 	onDateChange(value: string): void {
 		this.selectedDate = value;
+		this.selectedRangeStart = null;
+		this.selectedRangeEnd = null;
 		this.visibleMonth = value.slice(0, 7);
+		this.loadDashboard();
+	}
+
+	onCalendarDateClick(arg: DateClickArg): void {
+		this.selectedDate = this.toDateKey(arg.date);
+		this.selectedRangeStart = this.selectedDate;
+		this.selectedRangeEnd = this.selectedDate;
+		this.visibleMonth = this.selectedDate.slice(0, 7);
+		this.loadDashboard();
+	}
+
+	onCalendarRangeSelect(arg: DateSelectArg): void {
+		this.selectedRangeStart = arg.startStr;
+		this.selectedRangeEnd = this.getInclusiveRangeEnd(arg.endStr);
+		this.selectedDate = this.selectedRangeStart;
+		this.visibleMonth = this.selectedDate.slice(0, 7);
+		this.loadDashboard();
+	}
+
+	onCalendarDatesSet(arg: DatesSetArg): void {
+		const month = this.toMonthKey(arg.start);
+
+		if (month === this.visibleMonth) {
+			return;
+		}
+
+		this.visibleMonth = month;
 		this.loadDashboard();
 	}
 
@@ -112,6 +179,24 @@ export class ResultsAdminComponent implements OnInit {
 	onCloseDetail(): void {
 		this.selectedResultDetail = null;
 		this.detailError = '';
+	}
+
+	onDownloadPdf(appointmentId: string): void {
+		this.labsDashboardService.downloadResultPdf(appointmentId).subscribe({
+			next: (blob) => {
+				const fileName = `resultado-laboratorio-${appointmentId}.pdf`;
+				const url = URL.createObjectURL(blob);
+				const anchor = document.createElement('a');
+				anchor.href = url;
+				anchor.download = fileName;
+				anchor.click();
+				URL.revokeObjectURL(url);
+			},
+			error: () => {
+				this.errorMessage =
+					'No fue posible descargar el PDF del resultado en este momento.';
+			},
+		});
 	}
 
 	onPublishResult(row: ResultAdminRow): void {
@@ -169,21 +254,29 @@ export class ResultsAdminComponent implements OnInit {
 		this.loading = true;
 		this.errorMessage = '';
 
-		this.labsDashboardService
-			.getAdminResultsDashboard({
-				search: this.searchTerm.trim() || undefined,
-				status: this.statusFilter === 'ALL' ? undefined : this.statusFilter,
-				date: this.selectedDate,
-				month: this.visibleMonth,
-			})
-			.subscribe({
-				next: (response) => {
-					this.dashboard = response;
-					this.selectedDate = response.date;
-					this.visibleMonth = response.month;
-					this.loading = false;
-				},
-				error: () => {
+		if (this.selectedRangeStart && this.selectedRangeEnd) {
+			this.loadDashboardByRange(this.selectedRangeStart, this.selectedRangeEnd);
+			return;
+		}
+
+		const filteredRequest = this.labsDashboardService.getAdminResultsDashboard({
+			search: this.searchTerm.trim() || undefined,
+			status: this.statusFilter === 'ALL' ? undefined : this.statusFilter,
+			date: this.selectedDate,
+			month: this.visibleMonth,
+		});
+
+		const calendarRequest = this.labsDashboardService.getProviderDashboard({
+			date: this.selectedDate,
+			month: this.visibleMonth,
+		});
+
+		forkJoin({
+			filtered: filteredRequest.pipe(catchError(() => of(null))),
+			calendar: calendarRequest.pipe(catchError(() => of(null))),
+		}).subscribe({
+			next: ({ filtered, calendar }) => {
+				if (!filtered) {
 					this.errorMessage =
 						'No fue posible cargar los resultados en este momento.';
 					this.dashboard = {
@@ -196,9 +289,118 @@ export class ResultsAdminComponent implements OnInit {
 							published: 0,
 						},
 					};
+				} else {
+					this.dashboard = filtered;
+					this.selectedDate = filtered.date;
+					this.visibleMonth = filtered.month;
+				}
+
+				this.updateCalendarMarkers(calendar?.calendarDays ?? []);
+				this.loading = false;
+			},
+			error: () => {
+				this.errorMessage =
+					'No fue posible cargar los resultados en este momento.';
+				this.updateCalendarMarkers([]);
+				this.loading = false;
+			},
+		});
+	}
+
+	private loadDashboardByRange(rangeStart: string, rangeEnd: string): void {
+		const dateKeys = this.buildDateRange(rangeStart, rangeEnd);
+		const filteredRequests = dateKeys.map((dateKey) =>
+			this.labsDashboardService
+				.getAdminResultsDashboard({
+					search: this.searchTerm.trim() || undefined,
+					status: this.statusFilter === 'ALL' ? undefined : this.statusFilter,
+					date: dateKey,
+					month: dateKey.slice(0, 7),
+				})
+				.pipe(catchError(() => of(null))),
+		);
+
+		const calendarRequest = this.labsDashboardService
+			.getProviderDashboard({
+				date: this.selectedDate,
+				month: this.visibleMonth,
+			})
+			.pipe(catchError(() => of(null)));
+
+		forkJoin({
+			filteredRange: forkJoin(filteredRequests),
+			calendar: calendarRequest,
+		}).subscribe({
+			next: ({ filteredRange, calendar }) => {
+				const validResponses = filteredRange.filter(
+					(response): response is GetAdminLabResultsDashboardResponse => !!response,
+				);
+
+				if (!validResponses.length) {
+					this.errorMessage =
+						'No fue posible cargar los resultados en este momento.';
+					this.dashboard = {
+						date: rangeStart,
+						month: this.visibleMonth,
+						rows: [],
+						stats: {
+							pendingValidation: 0,
+							inRevision: 0,
+							published: 0,
+						},
+					};
+					this.updateCalendarMarkers(calendar?.calendarDays ?? []);
 					this.loading = false;
-				},
-			});
+					return;
+				}
+
+				const mergedRows = this.uniqueRowsByAppointment(
+					validResponses.flatMap((response) => response.rows),
+				).sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate));
+
+				this.dashboard = {
+					date: rangeStart,
+					month: this.visibleMonth,
+					rows: mergedRows,
+					stats: {
+						pendingValidation: mergedRows.filter(
+							(row) => row.resultStatus === 'PENDING_VALIDATION',
+						).length,
+						inRevision: mergedRows.filter((row) => row.resultStatus === 'DRAFT')
+							.length,
+						published: mergedRows.filter(
+							(row) => row.resultStatus === 'PUBLISHED',
+						).length,
+					},
+				};
+
+				this.selectedDate = rangeStart;
+				this.visibleMonth = rangeStart.slice(0, 7);
+				this.updateCalendarMarkers(calendar?.calendarDays ?? []);
+				this.loading = false;
+			},
+			error: () => {
+				this.errorMessage =
+					'No fue posible cargar los resultados en este momento.';
+				this.updateCalendarMarkers([]);
+				this.loading = false;
+			},
+		});
+	}
+
+	private updateCalendarMarkers(days: ProviderLabDashboardCalendarDay[]): void {
+		const events: EventInput[] = days.map((day) => ({
+			id: day.date,
+			date: day.date,
+			title: `${day.appointments}`,
+			allDay: true,
+			classNames: ['provider-day-event'],
+		}));
+
+		this.calendarOptions = {
+			...this.calendarOptions,
+			events,
+		};
 	}
 
 	private mapRows(rows: AdminLabResultDashboardRow[]): ResultAdminRow[] {
@@ -218,7 +420,9 @@ export class ResultsAdminComponent implements OnInit {
 			}));
 	}
 
-	private mapResultStatus(status: ResultAdminRow['resultStatus']): ResultStatus {
+	private mapResultStatus(
+		status: ResultAdminRow['resultStatus'],
+	): ResultStatus {
 		if (status === 'PUBLISHED') {
 			return 'PUBLICADO';
 		}
@@ -231,23 +435,47 @@ export class ResultsAdminComponent implements OnInit {
 	}
 
 	private formatDate(rawDate: string): string {
-		const parsed = new Date(`${rawDate}T00:00:00`);
-		if (Number.isNaN(parsed.getTime())) {
-			return '--';
-		}
-
-		return parsed.toLocaleDateString('es-CO', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric',
-		});
+		return formatColombiaDate(`${rawDate}T00:00:00`);
 	}
 
 	private toDateKey(date: Date): string {
-		return date.toISOString().slice(0, 10);
+		return toColombiaDateKey(date);
 	}
 
 	private toMonthKey(date: Date): string {
-		return date.toISOString().slice(0, 7);
+		return toColombiaMonthKey(date);
+	}
+
+	private buildDateRange(start: string, end: string): string[] {
+		const startDate = new Date(`${start}T00:00:00`);
+		const endDate = new Date(`${end}T00:00:00`);
+		const range: string[] = [];
+
+		for (
+			let cursor = new Date(startDate);
+			cursor <= endDate;
+			cursor.setDate(cursor.getDate() + 1)
+		) {
+			range.push(this.toDateKey(cursor));
+		}
+
+		return range;
+	}
+
+	private getInclusiveRangeEnd(exclusiveEnd: string): string {
+		const endDate = new Date(`${exclusiveEnd}T00:00:00`);
+		endDate.setDate(endDate.getDate() - 1);
+		return this.toDateKey(endDate);
+	}
+
+	private uniqueRowsByAppointment(
+		rows: AdminLabResultDashboardRow[],
+	): AdminLabResultDashboardRow[] {
+		const map = new Map<string, AdminLabResultDashboardRow>();
+		for (const row of rows) {
+			map.set(row.appointmentId, row);
+		}
+
+		return [...map.values()];
 	}
 }

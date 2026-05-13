@@ -1,0 +1,206 @@
+<section class="w-full h-full overflow-y-auto overflow-x-hidden pb-6">
+	<header
+		class="bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl p-4 sm:px-6 sm:py-4 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+	>
+		<div>
+			<div class="flex items-center gap-2 text-slate-500 text-sm mb-1">
+				<span class="hover:text-primary transition-colors">Citas</span>
+				<span class="material-symbols-outlined text-xs">chevron_right</span>
+				<span class="text-slate-800 font-semibold">Pago de Servicio</span>
+			</div>
+			<h2 class="text-2xl font-bold text-slate-800">Finalizar Pago</h2>
+		</div>
+		<div
+			class="hidden sm:flex items-center gap-2 rounded-full bg-white/70 border border-white/80 px-4 py-2"
+		>
+			<span class="material-symbols-outlined text-primary text-base">lock</span>
+			<span class="text-xs font-bold tracking-wide text-slate-600 uppercase"
+				>Pago Seguro</span
+			>
+		</div>
+	</header>
+
+	<div class="grid grid-cols-1 xl:grid-cols-12 gap-8 flex-1">
+		<div class="xl:col-span-5 flex flex-col gap-6">
+			<div class="glass-card p-8 flex-1 relative overflow-hidden">
+				<div class="absolute top-0 right-0 p-8">
+					<span class="material-symbols-outlined text-6xl text-primary/10"
+						>receipt_long</span
+					>
+				</div>
+				<h3
+					class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-2"
+				>
+					<span class="material-symbols-outlined text-primary"
+						>shopping_cart</span
+					>
+					Resumen de Compra
+				</h3>
+				<div class="space-y-6">
+					<div class="flex flex-col gap-1">
+						<span class="summary-label">Servicio</span>
+						<p class="text-lg font-bold text-slate-800">{{ serviceName }}</p>
+					</div>
+					<div class="flex flex-col gap-1">
+						<span class="summary-label">Médico Especialista</span>
+						<div class="flex items-center gap-2">
+							<span class="material-symbols-outlined text-primary text-sm"
+								>verified_user</span
+							>
+							<p class="font-semibold text-slate-700">{{ providerName }}</p>
+						</div>
+					</div>
+					<div class="flex flex-col gap-1">
+						<span class="summary-label">Fecha Programada</span>
+						<div class="flex items-center gap-2 text-slate-700">
+							<span class="material-symbols-outlined text-sm"
+								>calendar_today</span
+							>
+							<p class="font-medium">{{ scheduledDateLabel }}</p>
+						</div>
+					</div>
+					<div class="h-px bg-slate-200/60 my-6"></div>
+					<div class="flex justify-between items-end gap-3 flex-wrap">
+						<div>
+							<p class="text-sm font-medium text-slate-500">Total a pagar</p>
+							<p class="text-4xl font-extrabold text-primary">
+								{{ totalAmount }}
+								<span class="text-lg font-bold text-primary/60">COP</span>
+							</p>
+						</div>
+						<div
+							class="bg-green-50 text-green-600 px-3 py-1 rounded-full text-xs font-bold border border-green-100 flex items-center gap-1"
+						>
+							<span class="material-symbols-outlined text-xs">shield</span>
+							IVA Incluido
+						</div>
+					</div>
+				</div>
+				<div
+					class="mt-10 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50"
+				>
+					<div class="flex gap-3">
+						<span class="material-symbols-outlined text-primary">info</span>
+						<p class="text-xs text-blue-700 leading-relaxed">
+							Al proceder con el pago, usted acepta nuestros términos de
+							servicio y políticas de cancelación institucional.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="xl:col-span-7">
+			<div class="glass-card p-8 h-full">
+				<h3
+					class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-2"
+				>
+					<span class="material-symbols-outlined text-primary">payments</span>
+					Método de Pago
+				</h3>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+					<div class="payment-option active">
+						<div
+							class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center"
+						>
+							<div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+						</div>
+						<div class="flex-1">
+							<p class="font-bold text-sm">Tarjeta Crédito / Débito</p>
+							<div class="flex gap-2 mt-1 opacity-60">
+								<span class="chip">VISA</span>
+								<span class="chip">MASTER</span>
+							</div>
+						</div>
+					</div>
+					<div class="payment-option">
+						<div class="w-6 h-6 rounded-full border-2 border-slate-300"></div>
+						<div class="flex-1">
+							<p class="font-bold text-sm text-slate-600">
+								PSE / Débito Bancario
+							</p>
+							<p class="text-[10px] text-slate-400">
+								Pago seguro desde tu banco
+							</p>
+						</div>
+					</div>
+				</div>
+				<form class="space-y-5" (submit)="$event.preventDefault()">
+					<div>
+						<label class="block text-sm font-bold text-slate-700 mb-2"
+							>Número de Tarjeta</label
+						>
+						<div class="relative">
+							<input
+								class="form-input pl-12"
+								placeholder="0000 0000 0000 0000"
+								type="text"
+							/>
+							<span
+								class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+								>credit_card</span
+							>
+						</div>
+					</div>
+					<div>
+						<label class="block text-sm font-bold text-slate-700 mb-2"
+							>Nombre del Titular</label
+						>
+						<input
+							class="form-input"
+							placeholder="Como aparece en la tarjeta"
+							type="text"
+						/>
+					</div>
+					<div class="grid grid-cols-2 gap-4">
+						<div>
+							<label class="block text-sm font-bold text-slate-700 mb-2"
+								>Fecha Expiración</label
+							>
+							<input class="form-input" placeholder="MM / AA" type="text" />
+						</div>
+						<div>
+							<label class="block text-sm font-bold text-slate-700 mb-2"
+								>CVV</label
+							>
+							<div class="relative">
+								<input class="form-input" placeholder="123" type="password" />
+								<span
+									class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 cursor-help"
+									title="Código de seguridad de 3 dígitos"
+									>help_outline</span
+								>
+							</div>
+						</div>
+					</div>
+					<div
+						class="pt-6 border-t border-slate-200/50 flex flex-col sm:flex-row gap-4"
+					>
+						<button type="button" class="flex-1 btn-primary text-lg">
+							<span class="material-symbols-outlined">lock</span>
+							Realizar Pago Seguro
+						</button>
+						<button type="button" class="btn-ghost">Cancelar y volver</button>
+					</div>
+				</form>
+				<div
+					class="mt-8 flex flex-wrap items-center justify-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-all duration-300"
+				>
+					<div class="flex items-center gap-1 font-bold text-xs">
+						<span class="material-symbols-outlined text-sm">lock_person</span>
+						SSL SECURE
+					</div>
+					<div class="h-4 w-px bg-slate-400"></div>
+					<span class="font-black italic text-lg tracking-tighter">VISA</span>
+					<span class="font-black italic text-lg tracking-tighter"
+						>mastercard</span
+					>
+					<div class="h-4 w-px bg-slate-400"></div>
+					<div class="flex items-center gap-1 font-bold text-xs uppercase">
+						Protección al paciente
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

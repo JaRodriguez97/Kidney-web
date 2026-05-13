@@ -25,19 +25,6 @@
 					<option value="REVISION">En Revision</option>
 					<option value="PUBLICADO">Publicado</option>
 				</select>
-				<div
-					class="flex items-center gap-2 bg-white/40 rounded-xl px-2 border border-white/60 h-[42px]"
-				>
-					<span class="material-symbols-outlined text-slate-400 pl-2 text-xl"
-						>event</span
-					>
-					<input
-						[ngModel]="selectedDate"
-						(ngModelChange)="onDateChange($event)"
-						class="bg-transparent border-none text-sm outline-none py-2 px-1 focus:ring-0 text-slate-600 w-28"
-						type="date"
-					/>
-				</div>
 			</div>
 
 			@if (errorMessage) {
@@ -129,12 +116,22 @@
 												<button
 													type="button"
 													class="px-2.5 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-													[class]="canPublish(row) ? 'px-2.5 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'px-2.5 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'"
-													[disabled]="!canPublish(row) || isPublishing(row.appointmentId)"
+													[class]="
+														canPublish(row)
+															? 'px-2.5 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+															: 'px-2.5 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 text-slate-400 border-slate-200'
+													"
+													[disabled]="
+														!canPublish(row) || isPublishing(row.appointmentId)
+													"
 													(click)="onPublishResult(row)"
 													title="Publicar"
 												>
-													{{ isPublishing(row.appointmentId) ? 'Publicando...' : 'Publicar' }}
+													{{
+														isPublishing(row.appointmentId)
+															? "Publicando..."
+															: "Publicar"
+													}}
 												</button>
 											</div>
 										</td>
@@ -180,10 +177,9 @@
 					selectedDate
 				}}</span>
 			</div>
-			<p class="text-xs text-slate-500 leading-relaxed">
-				Los datos se alimentan de laboratorios y se muestran para operación
-				administrativa.
-			</p>
+			<div class="glass-card admin-calendar mt-4">
+				<full-calendar [options]="calendarOptions"></full-calendar>
+			</div>
 		</div>
 		<div class="space-y-4">
 			<h3 class="font-bold text-slate-800 flex items-center gap-2">
@@ -242,12 +238,20 @@
 </section>
 
 @if (selectedResultDetail || detailLoading || detailError) {
-	<div class="fixed inset-0 z-[120] flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm">
-		<div class="w-full max-w-4xl rounded-2xl border border-white/50 bg-white/95 shadow-2xl overflow-hidden">
-			<div class="px-6 py-4 border-b border-slate-200/70 flex items-start justify-between gap-4">
+	<div
+		class="fixed inset-0 z-[120] flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm"
+	>
+		<div
+			class="w-full max-w-4xl rounded-2xl border border-white/50 bg-white/95 shadow-2xl overflow-hidden"
+		>
+			<div
+				class="px-6 py-4 border-b border-slate-200/70 flex items-start justify-between gap-4"
+			>
 				<div>
 					<h4 class="text-lg font-bold text-slate-800">Detalle de Resultado</h4>
-					<p class="text-sm text-slate-500">Resultado registrado por laboratorio</p>
+					<p class="text-sm text-slate-500">
+						Resultado registrado por laboratorio
+					</p>
 				</div>
 				<button
 					type="button"
@@ -262,18 +266,28 @@
 				@if (detailLoading) {
 					<p class="text-sm text-slate-500">Cargando detalle...</p>
 				} @else if (detailError) {
-					<div class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium">
+					<div
+						class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+					>
 						{{ detailError }}
 					</div>
 				} @else if (selectedResultDetail) {
 					<div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 						<div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
-							<p class="text-xs text-slate-500 uppercase font-semibold">Paciente</p>
-							<p class="font-semibold text-slate-800">{{ selectedResultDetail.patientName }}</p>
+							<p class="text-xs text-slate-500 uppercase font-semibold">
+								Paciente
+							</p>
+							<p class="font-semibold text-slate-800">
+								{{ selectedResultDetail.patientName }}
+							</p>
 						</div>
 						<div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
-							<p class="text-xs text-slate-500 uppercase font-semibold">Servicio</p>
-							<p class="font-semibold text-slate-800">{{ selectedResultDetail.serviceName }}</p>
+							<p class="text-xs text-slate-500 uppercase font-semibold">
+								Servicio
+							</p>
+							<p class="font-semibold text-slate-800">
+								{{ selectedResultDetail.serviceName }}
+							</p>
 						</div>
 					</div>
 
@@ -289,13 +303,16 @@
 								</tr>
 							</thead>
 							<tbody>
-								@for (value of selectedResultDetail.resultValues; track $index) {
+								@for (
+									value of selectedResultDetail.resultValues;
+									track $index
+								) {
 									<tr class="border-t border-slate-100">
 										<td class="px-3 py-2">{{ value.fieldName }}</td>
 										<td class="px-3 py-2 font-semibold">{{ value.value }}</td>
-										<td class="px-3 py-2">{{ value.unit || '-' }}</td>
-										<td class="px-3 py-2">{{ value.referenceRange || '-' }}</td>
-										<td class="px-3 py-2">{{ value.flag || '-' }}</td>
+										<td class="px-3 py-2">{{ value.unit || "-" }}</td>
+										<td class="px-3 py-2">{{ value.referenceRange || "-" }}</td>
+										<td class="px-3 py-2">{{ value.flag || "-" }}</td>
 									</tr>
 								}
 							</tbody>
@@ -303,12 +320,36 @@
 					</div>
 
 					@if (selectedResultDetail.notes) {
-						<div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
-							<p class="text-xs text-slate-500 uppercase font-semibold mb-1">Notas</p>
+						<div
+							class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700"
+						>
+							<p class="text-xs text-slate-500 uppercase font-semibold mb-1">
+								Notas
+							</p>
 							{{ selectedResultDetail.notes }}
 						</div>
 					}
 				}
+			</div>
+			<div
+				class="px-6 py-4 border-t border-slate-200/70 flex justify-end gap-2 bg-slate-50/60"
+			>
+				@if (selectedResultDetail?.resultStatus === "PUBLISHED") {
+					<button
+						type="button"
+						class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700"
+						(click)="onDownloadPdf(selectedResultDetail!.appointmentId)"
+					>
+						Descargar PDF
+					</button>
+				}
+				<button
+					type="button"
+					class="px-4 py-2 rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+					(click)="onCloseDetail()"
+				>
+					Cerrar
+				</button>
 			</div>
 		</div>
 	</div>

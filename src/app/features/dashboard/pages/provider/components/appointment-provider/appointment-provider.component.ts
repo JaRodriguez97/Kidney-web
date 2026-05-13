@@ -3,7 +3,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, DatesSetArg, EventInput } from '@fullcalendar/core';
+import {
+	CalendarOptions,
+	DatesSetArg,
+	DateSelectArg,
+	EventInput,
+} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
@@ -15,6 +20,12 @@ import {
 	ProviderAgendaItem,
 	ProviderAppointmentStatusAction,
 } from '@app/core/services/appointment.service';
+import {
+	formatColombiaTime,
+	toColombiaDateKey,
+	toColombiaMonthKey,
+} from '@app/shared/utils/colombia-date.utils';
+import { forkJoin } from 'rxjs';
 
 @Component({
 	selector: 'app-appointment-provider',
@@ -30,6 +41,8 @@ export class AppointmentProviderComponent implements OnInit {
 	loading = false;
 	errorMessage = '';
 	selectedDate = this.toDateKey(new Date());
+	selectedRangeStart: string | null = null;
+	selectedRangeEnd: string | null = null;
 	visibleMonth = this.toMonthKey(new Date());
 	openMenuAppointmentId: string | null = null;
 	actionLoadingAppointmentId: string | null = null;
@@ -71,8 +84,9 @@ export class AppointmentProviderComponent implements OnInit {
 		fixedWeekCount: false,
 		showNonCurrentDates: true,
 		editable: false,
-		selectable: false,
+		selectable: true,
 		events: [],
+		select: (arg) => this.onCalendarRangeSelect(arg),
 		dateClick: (arg) => this.onCalendarDateClick(arg),
 		datesSet: (arg) => this.onCalendarDatesSet(arg),
 	};
@@ -104,6 +118,7 @@ export class AppointmentProviderComponent implements OnInit {
 			day: 'numeric',
 			month: 'long',
 			year: 'numeric',
+			timeZone: 'America/Bogota',
 		});
 	}
 
@@ -112,16 +127,8 @@ export class AppointmentProviderComponent implements OnInit {
 	}
 
 	formatTime(dateIso: string): string {
-		const parsed = new Date(dateIso);
-		if (Number.isNaN(parsed.getTime())) {
-			return '--:--';
-		}
-
-		return parsed.toLocaleTimeString('es-CO', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false,
-		});
+		const formatted = formatColombiaTime(dateIso);
+		return formatted === '-' ? '--:--' : formatted;
 	}
 
 	getMeridiem(dateIso: string): string {
@@ -130,7 +137,15 @@ export class AppointmentProviderComponent implements OnInit {
 			return '';
 		}
 
-		return parsed.getHours() >= 12 ? 'PM' : 'AM';
+		const hour = Number(
+			new Intl.DateTimeFormat('en-US', {
+				hour: '2-digit',
+				hour12: false,
+				timeZone: 'America/Bogota',
+			}).format(parsed),
+		);
+
+		return hour >= 12 ? 'PM' : 'AM';
 	}
 
 	getAppointmentRowClasses(status: ProviderAgendaItem['status']): string {
@@ -417,6 +432,19 @@ export class AppointmentProviderComponent implements OnInit {
 
 	private onCalendarDateClick(arg: DateClickArg): void {
 		this.selectedDate = arg.dateStr;
+		this.selectedRangeStart = this.selectedDate;
+		this.selectedRangeEnd = this.selectedDate;
+		this.openMenuAppointmentId = null;
+		if (this.rescheduleAppointment) {
+			this.closeReschedulePanel();
+		}
+		this.loadAgenda();
+	}
+
+	private onCalendarRangeSelect(arg: DateSelectArg): void {
+		this.selectedRangeStart = arg.startStr;
+		this.selectedRangeEnd = this.getInclusiveRangeEnd(arg.endStr);
+		this.selectedDate = this.selectedRangeStart;
 		this.openMenuAppointmentId = null;
 		if (this.rescheduleAppointment) {
 			this.closeReschedulePanel();
@@ -474,6 +502,11 @@ export class AppointmentProviderComponent implements OnInit {
 		this.loading = true;
 		this.errorMessage = '';
 
+		if (this.selectedRangeStart && this.selectedRangeEnd) {
+			this.loadAgendaByRange(this.selectedRangeStart, this.selectedRangeEnd);
+			return;
+		}
+
 		this.appointmentService
 			.getProviderAgenda(this.selectedDate, undefined, this.visibleMonth)
 			.subscribe({
@@ -509,6 +542,66 @@ export class AppointmentProviderComponent implements OnInit {
 			});
 	}
 
+	private loadAgendaByRange(rangeStart: string, rangeEnd: string): void {
+		const dateKeys = this.buildDateRange(rangeStart, rangeEnd);
+		const requests = dateKeys.map((dateKey) =>
+			this.appointmentService.getProviderAgenda(
+				dateKey,
+				undefined,
+				dateKey.slice(0, 7),
+			),
+		);
+
+		forkJoin(requests).subscribe({
+			next: (responses) => {
+				const primaryResponse = responses[0];
+				const mergedAppointments = responses
+					.flatMap((response) => response.appointments)
+					.sort((a, b) => {
+						const dateCmp = a.scheduledDate.localeCompare(b.scheduledDate);
+						if (dateCmp !== 0) {
+							return dateCmp;
+						}
+
+						return a.startTime.localeCompare(b.startTime);
+					});
+
+				this.agenda = {
+					...primaryResponse,
+					date: rangeStart,
+					month: rangeStart.slice(0, 7),
+					appointments: this.uniqueById(mergedAppointments),
+				};
+				this.selectedDate = rangeStart;
+				this.visibleMonth = rangeStart.slice(0, 7);
+				this.updateCalendarMarkers(primaryResponse.calendarDays);
+				this.loading = false;
+			},
+			error: () => {
+				this.agenda = {
+					date: this.selectedDate,
+					month: this.visibleMonth,
+					scope: 'SELF',
+					selectedProviderId: null,
+					appointments: [],
+					calendarDays: [],
+					stats: {
+						totalMonthAppointments: 0,
+						confirmedCount: 0,
+						inProgressCount: 0,
+						cancelledCount: 0,
+						pendingCount: 0,
+					},
+					alerts: [],
+				};
+				this.updateCalendarMarkers([]);
+				this.errorMessage =
+					'No fue posible cargar la agenda medica del rango seleccionado en este momento.';
+				this.loading = false;
+			},
+		});
+	}
+
 	private updateCalendarMarkers(
 		days: { date: string; appointments: number }[],
 	): void {
@@ -527,10 +620,41 @@ export class AppointmentProviderComponent implements OnInit {
 	}
 
 	private toDateKey(date: Date): string {
-		return date.toISOString().slice(0, 10);
+		return toColombiaDateKey(date);
 	}
 
 	private toMonthKey(date: Date): string {
-		return date.toISOString().slice(0, 7);
+		return toColombiaMonthKey(date);
+	}
+
+	private buildDateRange(start: string, end: string): string[] {
+		const startDate = new Date(`${start}T00:00:00`);
+		const endDate = new Date(`${end}T00:00:00`);
+		const range: string[] = [];
+
+		for (
+			let cursor = new Date(startDate);
+			cursor <= endDate;
+			cursor.setDate(cursor.getDate() + 1)
+		) {
+			range.push(this.toDateKey(cursor));
+		}
+
+		return range;
+	}
+
+	private getInclusiveRangeEnd(exclusiveEnd: string): string {
+		const endDate = new Date(`${exclusiveEnd}T00:00:00`);
+		endDate.setDate(endDate.getDate() - 1);
+		return this.toDateKey(endDate);
+	}
+
+	private uniqueById(rows: ProviderAgendaItem[]): ProviderAgendaItem[] {
+		const map = new Map<string, ProviderAgendaItem>();
+		for (const row of rows) {
+			map.set(row.id, row);
+		}
+
+		return [...map.values()];
 	}
 }

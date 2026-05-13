@@ -60,7 +60,7 @@
 				<div *ngIf="!loading && view === 'upcoming'">
 					<!-- Empty State -->
 					<div
-						*ngIf="upcomingAppointments.length === 0"
+						*ngIf="filteredUpcomingAppointments.length === 0"
 						class="flex flex-col items-center justify-center py-16 text-center"
 					>
 						<div
@@ -87,9 +87,9 @@
 					</div>
 
 					<!-- Lista de citas próximas -->
-					<div *ngIf="upcomingAppointments.length > 0" class="space-y-4">
+					<div *ngIf="filteredUpcomingAppointments.length > 0" class="space-y-4">
 						<div
-							*ngFor="let appointment of upcomingAppointments"
+							*ngFor="let appointment of filteredUpcomingAppointments"
 							class="bg-white/50 border border-white/60 rounded-2xl p-5 hover:shadow-md transition-all group relative overflow-hidden"
 						>
 							<div
@@ -173,7 +173,7 @@
 				<div *ngIf="!loading && view === 'past'">
 					<!-- Empty State -->
 					<div
-						*ngIf="pastAppointments.length === 0"
+						*ngIf="filteredPastAppointments.length === 0"
 						class="flex flex-col items-center justify-center py-16 text-center"
 					>
 						<div
@@ -193,9 +193,9 @@
 					</div>
 
 					<!-- Lista de citas pasadas -->
-					<div *ngIf="pastAppointments.length > 0" class="space-y-4">
+					<div *ngIf="filteredPastAppointments.length > 0" class="space-y-4">
 						<div
-							*ngFor="let appointment of pastAppointments"
+							*ngFor="let appointment of filteredPastAppointments"
 							class="bg-white/50 border border-white/60 rounded-2xl p-5 hover:shadow-md transition-all group relative overflow-hidden"
 						>
 							<div

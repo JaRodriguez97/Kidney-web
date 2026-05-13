@@ -17,7 +17,7 @@
 	<main
 		class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden p-4 lg:p-8 flex flex-col"
 	>
-		<app-top-patient></app-top-patient>
+		<app-top-patient (helpClicked)="onHelpClicked()"></app-top-patient>
 
 		<router-outlet />
 	</main>

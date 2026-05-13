@@ -6,6 +6,7 @@ import {
 	PatientLabResultRow,
 	LabsDashboardService,
 } from '@app/core/services/labs-dashboard.service';
+import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
   selector: 'app-results-patient',
@@ -60,6 +61,24 @@ export class ResultsPatientComponent implements OnInit {
     });
   }
 
+  onDownloadPdf(appointmentId: string): void {
+    this.labsDashboardService.downloadResultPdf(appointmentId).subscribe({
+      next: (blob) => {
+        const fileName = `resultado-laboratorio-${appointmentId}.pdf`;
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.errorMessage =
+          'No fue posible descargar el PDF del resultado en este momento.';
+      },
+    });
+  }
+
   getStatusClass(row: PatientLabResultRow): string {
     if (row.resultStatus === 'PUBLISHED') {
       return 'px-2.5 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-lg border border-green-100';
@@ -73,16 +92,7 @@ export class ResultsPatientComponent implements OnInit {
   }
 
   formatDate(rawDate: string): string {
-    const date = new Date(`${rawDate}T00:00:00`);
-    if (Number.isNaN(date.getTime())) {
-      return '--';
-    }
-
-    return date.toLocaleDateString('es-CO', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
+    return formatColombiaDate(`${rawDate}T00:00:00`);
   }
 
   private loadRows(): void {

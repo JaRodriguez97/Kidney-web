@@ -11,6 +11,7 @@ import { ScheduleAppointmentComponent } from '../components/appointment-patient/
 import { SelectProviderComponent } from '../components/appointment-patient/select-provider/select-provider.component';
 import { SelectDatetimeComponent } from '../components/appointment-patient/select-datetime/select-datetime.component';
 import { ConfirmAppointmentComponent } from '../components/appointment-patient/confirm-appointment/confirm-appointment.component';
+import { PaymentGatewayComponent } from '../components/appointment-patient/payment-gateway/payment-gateway.component';
 
 export const PATIENT_DASHBOARD_ROUTES: Routes = [
 	{
@@ -35,6 +36,10 @@ export const PATIENT_DASHBOARD_ROUTES: Routes = [
 			{
 				path: 'appointments/schedule/confirm-appointment',
 				component: ConfirmAppointmentComponent,
+			},
+			{
+				path: 'appointments/schedule/payment-gateway',
+				component: PaymentGatewayComponent,
 			},
 			{ path: 'clinical-record', component: ClinicalRecordPatientComponent },
 			{ path: 'documents', component: DocumentsPatientComponent },

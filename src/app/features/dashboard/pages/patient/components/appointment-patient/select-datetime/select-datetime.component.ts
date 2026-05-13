@@ -4,7 +4,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
@@ -13,6 +13,10 @@ import {
 	AppointmentService,
 } from '@app/core/services/appointment.service';
 import { AppointmentBookingStateService } from '@app/core/services/appointment-booking-state.service';
+import {
+	formatColombiaTime,
+	toColombiaDateKey,
+} from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-select-datetime',
@@ -121,6 +125,7 @@ export class SelectDatetimeComponent implements OnInit {
 			weekday: 'long',
 			day: 'numeric',
 			month: 'long',
+			timeZone: 'America/Bogota',
 		});
 
 		return formatted.charAt(0).toUpperCase() + formatted.slice(1);
@@ -153,6 +158,15 @@ export class SelectDatetimeComponent implements OnInit {
 		}
 
 		this.onDateChange(arg.dateStr);
+		this.initializeCalendar();
+	}
+
+	onCalendarRangeSelect(arg: DateSelectArg): void {
+		if (arg.startStr < this.minDate) {
+			return;
+		}
+
+		this.onDateChange(arg.startStr);
 		this.initializeCalendar();
 	}
 
@@ -238,13 +252,9 @@ export class SelectDatetimeComponent implements OnInit {
 			return dateTime.slice(0, 5);
 		}
 
-		const parsedDate = new Date(dateTime);
-		if (!Number.isNaN(parsedDate.getTime())) {
-			return parsedDate.toLocaleTimeString('es-CO', {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false,
-			});
+		const formatted = formatColombiaTime(dateTime);
+		if (formatted !== '-') {
+			return formatted;
 		}
 
 		return '--:--';
@@ -306,12 +316,14 @@ export class SelectDatetimeComponent implements OnInit {
 			height: 'auto',
 			fixedWeekCount: false,
 			showNonCurrentDates: true,
-			selectable: false,
+			selectable: true,
+			select: (arg) => this.onCalendarRangeSelect(arg),
 			eventDisplay: 'none',
 			dateClick: (arg) => this.onCalendarDateClick(arg),
+			selectAllow: (arg) => arg.startStr >= this.minDate,
 			dayCellClassNames: (arg) => {
 				const classes: string[] = [];
-				const day = arg.date.toISOString().slice(0, 10);
+				const day = toColombiaDateKey(arg.date);
 
 				if (day < this.minDate) {
 					classes.push('fc-day-disabled-custom');
@@ -337,7 +349,13 @@ export class SelectDatetimeComponent implements OnInit {
 
 		const parsed = new Date(dateTime);
 		if (!Number.isNaN(parsed.getTime())) {
-			return parsed.getHours();
+			return Number(
+				new Intl.DateTimeFormat('en-US', {
+					hour: '2-digit',
+					hour12: false,
+					timeZone: 'America/Bogota',
+				}).format(parsed),
+			);
 		}
 
 		return 0;

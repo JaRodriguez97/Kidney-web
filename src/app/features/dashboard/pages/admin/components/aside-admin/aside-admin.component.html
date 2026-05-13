@@ -1,4 +1,5 @@
 <aside
+	id="tour-aside-admin"
 	[ngClass]="{
 		'w-64 opacity-100 translate-x-0 border-r': isSidebarVisible$ | async,
 		'w-0 opacity-0 -translate-x-full border-r-0': !(isSidebarVisible$ | async),
@@ -17,6 +18,7 @@
 	</div>
 	<nav class="space-y-1.5 flex-1 overflow-y-auto pr-2">
 		<a
+			id="tour-nav-home-admin"
 			(click)="setActive(0)"
 			[class.active]="activeIndex === 0"
 			class="sidebar-item cursor-pointer"
@@ -25,6 +27,7 @@
 			Dashboard
 		</a>
 		<a
+			id="tour-nav-services"
 			(click)="setActive(1)"
 			[class.active]="activeIndex === 1"
 			class="sidebar-item cursor-pointer"
@@ -33,6 +36,7 @@
 			Servicios
 		</a>
 		<a
+			id="tour-nav-users"
 			(click)="setActive(2)"
 			[class.active]="activeIndex === 2"
 			class="sidebar-item cursor-pointer"
@@ -41,6 +45,7 @@
 			Usuarios
 		</a>
 		<a
+			id="tour-nav-education"
 			(click)="setActive(3)"
 			[class.active]="activeIndex === 3"
 			class="sidebar-item cursor-pointer"
@@ -49,6 +54,7 @@
 			Educación
 		</a>
 		<a
+			id="tour-nav-appointments-admin"
 			(click)="setActive(4)"
 			[class.active]="activeIndex === 4"
 			class="sidebar-item cursor-pointer"
@@ -57,6 +63,7 @@
 			Citas
 		</a>
 		<a
+			id="tour-nav-labs-admin"
 			(click)="setActive(5)"
 			[class.active]="activeIndex === 5"
 			class="sidebar-item cursor-pointer"
@@ -65,6 +72,7 @@
 			Laboratorios
 		</a>
 		<a
+			id="tour-nav-results-admin"
 			(click)="setActive(6)"
 			[class.active]="activeIndex === 6"
 			class="sidebar-item cursor-pointer"
@@ -73,6 +81,7 @@
 			Resultados
 		</a>
 		<a
+			id="tour-nav-forms"
 			(click)="setActive(7)"
 			[class.active]="activeIndex === 7"
 			class="sidebar-item cursor-pointer"
@@ -81,6 +90,7 @@
 			Formularios
 		</a>
 		<a
+			id="tour-nav-settings"
 			(click)="setActive(8)"
 			[class.active]="activeIndex === 8"
 			class="sidebar-item cursor-pointer"
@@ -91,6 +101,7 @@
 	</nav>
 	<div class="mt-auto pt-6 border-t border-slate-200/50">
 		<a
+			id="tour-nav-support-admin"
 			(click)="setActive(9)"
 			[class.active]="activeIndex === 9"
 			class="sidebar-item cursor-pointer"

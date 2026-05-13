@@ -33,19 +33,6 @@
 					<option value="PREELIMINAR">PREELIMINAR</option>
 					<option value="CANCELADO">CANCELADO</option>
 				</select>
-				<div
-					class="flex items-center gap-2 bg-white/40 rounded-xl px-3 border border-white/60 h-[42px] flex-1 min-w-[180px]"
-				>
-					<span class="material-symbols-outlined text-slate-400 text-xl"
-						>event</span
-					>
-					<input
-						[ngModel]="selectedDate"
-						(ngModelChange)="onDateInputChange($event)"
-						class="bg-transparent border-none text-sm outline-none py-2 focus:ring-0 text-slate-600 w-full"
-						type="date"
-					/>
-				</div>
 			</div>
 
 			@if (errorMessage) {
@@ -65,6 +52,7 @@
 							>
 								<th class="py-4 pl-6 pr-4 font-semibold">Paciente</th>
 								<th class="py-4 px-4 font-semibold">Servicio</th>
+								<th class="py-4 px-4 font-semibold">Ordenado Por</th>
 								<th class="py-4 px-4 font-semibold">Técnico Asignado</th>
 								<th class="py-4 px-4 font-semibold">Fecha/Hora</th>
 								<th class="py-4 px-4 font-semibold text-center">Estado</th>
@@ -74,13 +62,13 @@
 						<tbody class="text-sm divide-y divide-slate-100">
 							@if (loading) {
 								<tr>
-									<td class="py-10 px-6 text-center text-slate-500" colspan="6">
+									<td class="py-10 px-6 text-center text-slate-500" colspan="7">
 										Cargando laboratorios del día...
 									</td>
 								</tr>
 							} @else if (rows.length === 0) {
 								<tr>
-									<td class="py-10 px-6 text-center text-slate-500" colspan="6">
+									<td class="py-10 px-6 text-center text-slate-500" colspan="7">
 										No hay laboratorios para mostrar con los filtros actuales.
 									</td>
 								</tr>
@@ -112,6 +100,11 @@
 										</td>
 										<td class="py-4 px-4">
 											<span class="text-slate-700">{{
+												row.originProviderName ?? "No aplica"
+											}}</span>
+										</td>
+										<td class="py-4 px-4">
+											<span class="text-slate-700">{{
 												row.technicianName ?? "No asignado"
 											}}</span>
 										</td>
@@ -134,12 +127,24 @@
 											<div class="flex items-center justify-end gap-1">
 												<button
 													type="button"
-													[class]="'px-3 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ' + getPrimaryActionClass(row.status)"
+													[class]="
+														'px-3 py-2 rounded-lg text-xs font-bold border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ' +
+														getPrimaryActionClass(row)
+													"
 													[disabled]="isActionDisabled(row)"
 													(click)="onPrimaryAction(row)"
 												>
-													{{ getPrimaryActionLabel(row.status) }}
+													{{ getPrimaryActionLabel(row) }}
 												</button>
+												@if (canDownloadPdf(row)) {
+													<button
+														type="button"
+														class="px-3 py-2 rounded-lg text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+														(click)="onDownloadPdf(row.appointmentId)"
+													>
+														PDF
+													</button>
+												}
 											</div>
 										</td>
 									</tr>
@@ -270,10 +275,16 @@
 		<div
 			class="fixed inset-0 z-[130] flex items-center justify-center px-4 bg-slate-900/50 backdrop-blur-sm"
 		>
-			<div class="w-full max-w-5xl rounded-2xl border border-white/50 bg-white/95 shadow-2xl overflow-hidden">
-				<div class="px-6 py-4 border-b border-slate-200/70 flex items-start justify-between gap-4">
+			<div
+				class="w-full max-w-5xl rounded-2xl border border-white/50 bg-white/95 shadow-2xl overflow-hidden"
+			>
+				<div
+					class="px-6 py-4 border-b border-slate-200/70 flex items-start justify-between gap-4"
+				>
 					<div>
-						<h4 class="text-lg font-bold text-slate-800">Registrar Resultado</h4>
+						<h4 class="text-lg font-bold text-slate-800">
+							Registrar Resultado
+						</h4>
 						<p class="text-sm text-slate-500">
 							{{ registerResultRow.serviceName }}
 						</p>
@@ -290,13 +301,17 @@
 
 				<div class="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
 					@if (registerErrorMessage) {
-						<div class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium">
+						<div
+							class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+						>
 							{{ registerErrorMessage }}
 						</div>
 					}
 
 					<div class="flex justify-between items-center">
-						<p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+						<p
+							class="text-xs font-semibold text-slate-500 uppercase tracking-wide"
+						>
 							Valores del resultado
 						</p>
 						<button
@@ -311,7 +326,9 @@
 
 					<div class="space-y-3">
 						@for (row of registerRows; track $index) {
-							<div class="grid grid-cols-1 md:grid-cols-12 gap-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+							<div
+								class="grid grid-cols-1 md:grid-cols-12 gap-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3"
+							>
 								<input
 									class="md:col-span-3 px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm"
 									placeholder="Campo (Ej: Creatinina)"
@@ -354,7 +371,9 @@
 										(click)="removeRegisterRow($index)"
 										[disabled]="registerSaving"
 									>
-										<span class="material-symbols-outlined text-lg">delete</span>
+										<span class="material-symbols-outlined text-lg"
+											>delete</span
+										>
 									</button>
 								</div>
 							</div>
@@ -362,7 +381,9 @@
 					</div>
 
 					<div>
-						<p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+						<p
+							class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2"
+						>
 							Notas
 						</p>
 						<textarea
@@ -375,7 +396,9 @@
 					</div>
 				</div>
 
-				<div class="px-6 py-4 border-t border-slate-200/70 flex justify-end gap-2 bg-slate-50/60">
+				<div
+					class="px-6 py-4 border-t border-slate-200/70 flex justify-end gap-2 bg-slate-50/60"
+				>
 					<button
 						type="button"
 						class="px-4 py-2 rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-100"
@@ -390,7 +413,94 @@
 						(click)="saveRegisterResult()"
 						[disabled]="registerSaving"
 					>
-						{{ registerSaving ? 'Guardando...' : 'Guardar Resultado' }}
+						{{ registerSaving ? "Guardando..." : "Guardar Resultado" }}
+					</button>
+				</div>
+			</div>
+		</div>
+	}
+
+	@if (resultDetail || resultDetailLoading || resultDetailError) {
+		<div
+			class="fixed inset-0 z-[140] flex items-center justify-center px-4 bg-slate-900/50 backdrop-blur-sm"
+		>
+			<div
+				class="w-full max-w-4xl rounded-2xl border border-white/50 bg-white/95 shadow-2xl overflow-hidden"
+			>
+				<div
+					class="px-6 py-4 border-b border-slate-200/70 flex items-start justify-between gap-4"
+				>
+					<div>
+						<h4 class="text-lg font-bold text-slate-800">
+							Detalle de Resultado
+						</h4>
+					</div>
+					<button
+						type="button"
+						class="p-2 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+						(click)="closeResultDetail()"
+					>
+						<span class="material-symbols-outlined">close</span>
+					</button>
+				</div>
+
+				<div class="px-6 py-5 max-h-[60vh] overflow-y-auto">
+					@if (resultDetailLoading) {
+						<p class="text-sm text-slate-500">Cargando detalle...</p>
+					} @else if (resultDetailError) {
+						<div
+							class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+						>
+							{{ resultDetailError }}
+						</div>
+					} @else if (resultDetail) {
+						<div class="overflow-x-auto rounded-xl border border-slate-200">
+							<table class="w-full text-sm">
+								<thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+									<tr>
+										<th class="text-left px-3 py-2">Campo</th>
+										<th class="text-left px-3 py-2">Valor</th>
+										<th class="text-left px-3 py-2">Unidad</th>
+										<th class="text-left px-3 py-2">Rango</th>
+										<th class="text-left px-3 py-2">Flag</th>
+									</tr>
+								</thead>
+								<tbody>
+									@for (value of resultDetail.resultValues; track $index) {
+										<tr class="border-t border-slate-100">
+											<td class="px-3 py-2">{{ value.fieldName }}</td>
+											<td class="px-3 py-2 font-semibold">{{ value.value }}</td>
+											<td class="px-3 py-2">{{ value.unit || "-" }}</td>
+											<td class="px-3 py-2">
+												{{ value.referenceRange || "-" }}
+											</td>
+											<td class="px-3 py-2">{{ value.flag || "-" }}</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+				</div>
+
+				<div
+					class="px-6 py-4 border-t border-slate-200/70 flex justify-end gap-2 bg-slate-50/60"
+				>
+					@if (resultDetail?.resultStatus === "PUBLISHED") {
+						<button
+							type="button"
+							class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700"
+							(click)="onDownloadPdf(resultDetail!.appointmentId)"
+						>
+							Descargar PDF
+						</button>
+					}
+					<button
+						type="button"
+						class="px-4 py-2 rounded-lg border border-slate-200 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+						(click)="closeResultDetail()"
+					>
+						Cerrar
 					</button>
 				</div>
 			</div>

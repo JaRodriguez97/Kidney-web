@@ -31,6 +31,11 @@ export interface RegisterLabResultResponse {
 	appointmentId: string;
 }
 
+export interface SubmitLabResultForValidationResponse {
+	appointmentId: string;
+	resultStatus: 'PENDING_VALIDATION';
+}
+
 export interface PublishLabResultResponse {
 	appointmentId: string;
 	resultStatus: 'PUBLISHED';
@@ -106,10 +111,12 @@ export interface ProviderLabDashboardRow {
 	patientDocumentNumber: string | null;
 	serviceName: string;
 	technicianName: string | null;
+	originProviderName: string | null;
 	scheduledDate: string;
 	startTime: string;
 	endTime: string;
 	status: ProviderLabStatus;
+	resultStatus: LabResultStatus | null;
 }
 
 export interface ProviderLabDashboardCalendarDay {
@@ -224,10 +231,25 @@ export class LabsDashboardService {
 		);
 	}
 
+	submitResultForValidation(
+		appointmentId: string,
+	): Observable<SubmitLabResultForValidationResponse> {
+		return this.http.patch<SubmitLabResultForValidationResponse>(
+			`${this.apiUrl}/${appointmentId}/results/submit-validation`,
+			{},
+		);
+	}
+
 	getResultDetail(appointmentId: string): Observable<LabResultDetailResponse> {
 		return this.http.get<LabResultDetailResponse>(
 			`${this.apiUrl}/${appointmentId}/result`,
 		);
+	}
+
+	downloadResultPdf(appointmentId: string): Observable<Blob> {
+		return this.http.get(`${this.apiUrl}/${appointmentId}/result/pdf`, {
+			responseType: 'blob',
+		});
 	}
 
 	getMyResults(params?: {

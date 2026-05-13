@@ -2,12 +2,18 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, DatesSetArg, EventInput } from '@fullcalendar/core';
+import {
+  CalendarOptions,
+  DatesSetArg,
+  DateSelectArg,
+  EventInput,
+} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
 import {
   GetProviderLabsDashboardResponse,
+  LabResultDetailResponse,
   LabResultValueFlag,
   LabsDashboardService,
   ProviderLabDashboardRow,
@@ -19,6 +25,13 @@ import {
   ProviderAppointmentStatusAction,
 } from '@app/core/services/appointment.service';
 import { ProgramLabProviderComponent } from '../program-lab-provider/program-lab-provider.component';
+import {
+  formatColombiaDate,
+  formatColombiaTime,
+  toColombiaDateKey,
+  toColombiaMonthKey,
+} from '@app/shared/utils/colombia-date.utils';
+import { catchError, forkJoin, of } from 'rxjs';
 
 interface EditableResultValue {
   fieldName: string;
@@ -51,6 +64,8 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   searchTerm = '';
   statusFilter: 'ALL' | ProviderLabStatus = 'ALL';
   selectedDate = this.toDateKey(new Date());
+  selectedRangeStart: string | null = null;
+  selectedRangeEnd: string | null = null;
   visibleMonth = this.toMonthKey(new Date());
   isProgramModalOpen = false;
   registerResultRow: ProviderLabDashboardRow | null = null;
@@ -59,6 +74,9 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   registerNotes = '';
   registerSaving = false;
   registerErrorMessage = '';
+  resultDetail: LabResultDetailResponse | null = null;
+  resultDetailLoading = false;
+  resultDetailError = '';
 
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -90,8 +108,9 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
     fixedWeekCount: false,
     showNonCurrentDates: true,
     editable: false,
-    selectable: false,
+    selectable: true,
     events: [],
+    select: (arg) => this.onCalendarRangeSelect(arg),
     dateClick: (arg) => this.onCalendarDateClick(arg),
     datesSet: (arg) => this.onCalendarDatesSet(arg),
   };
@@ -119,29 +138,12 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   }
 
   formatDate(dateIso: string): string {
-    const date = new Date(`${dateIso}T00:00:00`);
-    if (Number.isNaN(date.getTime())) {
-      return '-';
-    }
-
-    return date.toLocaleDateString('es-CO', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
+    return formatColombiaDate(`${dateIso}T00:00:00`);
   }
 
   formatTime(dateIso: string): string {
-    const date = new Date(dateIso);
-    if (Number.isNaN(date.getTime())) {
-      return '--:--';
-    }
-
-    return date.toLocaleTimeString('es-CO', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
+    const formatted = formatColombiaTime(dateIso);
+    return formatted === '-' ? '--:--' : formatted;
   }
 
   getInitials(name: string): string {
@@ -197,6 +199,8 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
 
   onDateInputChange(value: string): void {
     this.selectedDate = value;
+    this.selectedRangeStart = null;
+    this.selectedRangeEnd = null;
     this.loadDashboard();
   }
 
@@ -289,8 +293,8 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
       });
   }
 
-  getPrimaryActionLabel(status: ProviderLabStatus): string {
-    switch (status) {
+  getPrimaryActionLabel(row: ProviderLabDashboardRow): string {
+    switch (row.status) {
       case 'SIN_VALIDAR':
         return 'Llamar';
       case 'TOMA':
@@ -298,14 +302,16 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
       case 'PROCESADO':
         return 'Registrar Resultado';
       case 'PREELIMINAR':
-        return 'Ver Resultado';
+        return row.resultStatus === 'DRAFT'
+          ? 'Enviar a Validación'
+          : 'Ver Resultado';
       default:
         return 'Sin acción';
     }
   }
 
-  getPrimaryActionClass(status: ProviderLabStatus): string {
-    switch (status) {
+  getPrimaryActionClass(row: ProviderLabDashboardRow): string {
+    switch (row.status) {
       case 'SIN_VALIDAR':
         return 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100';
       case 'TOMA':
@@ -313,7 +319,9 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
       case 'PROCESADO':
         return 'bg-primary text-white border-primary hover:bg-primary/90';
       case 'PREELIMINAR':
-        return 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100';
+        return row.resultStatus === 'DRAFT'
+          ? 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
+          : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100';
       default:
         return 'bg-slate-100 text-slate-500 border-slate-200';
     }
@@ -334,9 +342,79 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (row.status === 'PROCESADO' || row.status === 'PREELIMINAR') {
+    if (row.status === 'PROCESADO') {
       this.openRegisterResultModal(row);
+      return;
     }
+
+    if (row.status === 'PREELIMINAR') {
+      if (row.resultStatus === 'DRAFT') {
+        this.submitForValidation(row.appointmentId);
+        return;
+      }
+
+      this.openResultDetail(row.appointmentId);
+    }
+  }
+
+  canDownloadPdf(row: ProviderLabDashboardRow): boolean {
+    return row.resultStatus === 'PUBLISHED';
+  }
+
+  onDownloadPdf(appointmentId: string): void {
+    this.labsDashboardService.downloadResultPdf(appointmentId).subscribe({
+      next: (blob) => {
+        const fileName = `resultado-laboratorio-${appointmentId}.pdf`;
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.errorMessage =
+          'No fue posible descargar el PDF del resultado en este momento.';
+      },
+    });
+  }
+
+  closeResultDetail(): void {
+    this.resultDetail = null;
+    this.resultDetailError = '';
+  }
+
+  private openResultDetail(appointmentId: string): void {
+    this.resultDetailLoading = true;
+    this.resultDetailError = '';
+    this.resultDetail = null;
+
+    this.labsDashboardService.getResultDetail(appointmentId).subscribe({
+      next: (detail) => {
+        this.resultDetail = detail;
+        this.resultDetailLoading = false;
+      },
+      error: () => {
+        this.resultDetailError =
+          'No fue posible cargar el detalle del resultado en este momento.';
+        this.resultDetailLoading = false;
+      },
+    });
+  }
+
+  private submitForValidation(appointmentId: string): void {
+    this.updatingRows.add(appointmentId);
+    this.labsDashboardService.submitResultForValidation(appointmentId).subscribe({
+      next: () => {
+        this.updatingRows.delete(appointmentId);
+        this.loadDashboard();
+      },
+      error: () => {
+        this.updatingRows.delete(appointmentId);
+        this.errorMessage =
+          'No fue posible enviar el resultado a validación en este momento.';
+      },
+    });
   }
 
   private advanceLabStatus(
@@ -362,6 +440,15 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
 
   private onCalendarDateClick(arg: DateClickArg): void {
     this.selectedDate = arg.dateStr;
+    this.selectedRangeStart = this.selectedDate;
+    this.selectedRangeEnd = this.selectedDate;
+    this.loadDashboard();
+  }
+
+  private onCalendarRangeSelect(arg: DateSelectArg): void {
+    this.selectedRangeStart = arg.startStr;
+    this.selectedRangeEnd = this.getInclusiveRangeEnd(arg.endStr);
+    this.selectedDate = this.selectedRangeStart;
     this.loadDashboard();
   }
 
@@ -378,6 +465,11 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   private loadDashboard(): void {
     this.loading = true;
     this.errorMessage = '';
+
+    if (this.selectedRangeStart && this.selectedRangeEnd) {
+      this.loadDashboardByRange(this.selectedRangeStart, this.selectedRangeEnd);
+      return;
+    }
 
     this.labsDashboardService
       .getProviderDashboard({
@@ -417,6 +509,117 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadDashboardByRange(rangeStart: string, rangeEnd: string): void {
+    const dateKeys = this.buildDateRange(rangeStart, rangeEnd);
+    const rangeRequests = dateKeys.map((dateKey) =>
+      this.labsDashboardService
+        .getProviderDashboard({
+          date: dateKey,
+          month: dateKey.slice(0, 7),
+          search: this.searchTerm.trim() || undefined,
+          status: this.statusFilter === 'ALL' ? undefined : this.statusFilter,
+        })
+        .pipe(catchError(() => of(null))),
+    );
+
+    const calendarRequest = this.labsDashboardService
+      .getProviderDashboard({
+        date: this.selectedDate,
+        month: this.visibleMonth,
+      })
+      .pipe(catchError(() => of(null)));
+
+    forkJoin({
+      filteredRange: forkJoin(rangeRequests),
+      calendar: calendarRequest,
+    }).subscribe({
+      next: ({ filteredRange, calendar }) => {
+        const validResponses = filteredRange.filter(
+          (response): response is GetProviderLabsDashboardResponse => !!response,
+        );
+
+        if (!validResponses.length) {
+          this.dashboard = {
+            date: rangeStart,
+            month: this.visibleMonth,
+            scope: 'SELF',
+            selectedProviderId: null,
+            rows: [],
+            calendarDays: [],
+            stats: {
+              labsScheduled: 0,
+              samplesInTake: 0,
+              withoutValidation: 0,
+              totalMonthAppointments: 0,
+            },
+          };
+          this.updateCalendarMarkers(calendar?.calendarDays ?? []);
+          this.errorMessage =
+            'No fue posible cargar la informacion de laboratorios en este momento.';
+          this.loading = false;
+          return;
+        }
+
+        const mergedRows = this.uniqueRowsByAppointment(
+          validResponses.flatMap((response) => response.rows),
+        ).sort((a, b) => {
+          const dateCmp = a.scheduledDate.localeCompare(b.scheduledDate);
+          if (dateCmp !== 0) {
+            return dateCmp;
+          }
+
+          return a.startTime.localeCompare(b.startTime);
+        });
+
+        this.dashboard = {
+          date: rangeStart,
+          month: rangeStart.slice(0, 7),
+          scope: validResponses[0].scope,
+          selectedProviderId: validResponses[0].selectedProviderId,
+          rows: mergedRows,
+          calendarDays: calendar?.calendarDays ?? [],
+          stats: {
+            labsScheduled: mergedRows.filter((row) => row.status !== 'CANCELADO')
+              .length,
+            samplesInTake: mergedRows.filter((row) => row.status === 'TOMA')
+              .length,
+            withoutValidation: mergedRows.filter(
+              (row) => row.status === 'SIN_VALIDAR',
+            ).length,
+            totalMonthAppointments:
+              calendar?.stats.totalMonthAppointments ??
+              validResponses[0].stats.totalMonthAppointments,
+          },
+        };
+
+        this.selectedDate = rangeStart;
+        this.visibleMonth = rangeStart.slice(0, 7);
+        this.updateCalendarMarkers(calendar?.calendarDays ?? []);
+        this.loading = false;
+      },
+      error: () => {
+        this.dashboard = {
+          date: this.selectedDate,
+          month: this.visibleMonth,
+          scope: 'SELF',
+          selectedProviderId: null,
+          rows: [],
+          calendarDays: [],
+          stats: {
+            labsScheduled: 0,
+            samplesInTake: 0,
+            withoutValidation: 0,
+            totalMonthAppointments: 0,
+          },
+        };
+        this.updateCalendarMarkers([]);
+        this.errorMessage =
+          'No fue posible cargar la informacion de laboratorios en este momento.';
+        this.loading = false;
+      },
+    });
+  }
+
   private updateCalendarMarkers(days: { date: string; appointments: number }[]): void {
     const events: EventInput[] = days.map((day) => ({
       id: day.date,
@@ -433,11 +636,44 @@ export class LabsProviderComponent implements OnInit, OnDestroy {
   }
 
   private toDateKey(date: Date): string {
-    return date.toISOString().slice(0, 10);
+    return toColombiaDateKey(date);
   }
 
   private toMonthKey(date: Date): string {
-    return date.toISOString().slice(0, 7);
+    return toColombiaMonthKey(date);
+  }
+
+  private buildDateRange(start: string, end: string): string[] {
+    const startDate = new Date(`${start}T00:00:00`);
+    const endDate = new Date(`${end}T00:00:00`);
+    const range: string[] = [];
+
+    for (
+      let cursor = new Date(startDate);
+      cursor <= endDate;
+      cursor.setDate(cursor.getDate() + 1)
+    ) {
+      range.push(this.toDateKey(cursor));
+    }
+
+    return range;
+  }
+
+  private getInclusiveRangeEnd(exclusiveEnd: string): string {
+    const endDate = new Date(`${exclusiveEnd}T00:00:00`);
+    endDate.setDate(endDate.getDate() - 1);
+    return this.toDateKey(endDate);
+  }
+
+  private uniqueRowsByAppointment(
+    rows: ProviderLabDashboardRow[],
+  ): ProviderLabDashboardRow[] {
+    const map = new Map<string, ProviderLabDashboardRow>();
+    for (const row of rows) {
+      map.set(row.appointmentId, row);
+    }
+
+    return [...map.values()];
   }
 
   private createResultRow(): EditableResultValue {

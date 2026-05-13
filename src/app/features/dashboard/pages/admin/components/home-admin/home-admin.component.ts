@@ -19,6 +19,11 @@ import {
 	ProviderLabDashboardRow,
 } from '@app/core/services/labs-dashboard.service';
 import { catchError, forkJoin, of } from 'rxjs';
+import {
+	formatColombiaTime,
+	toColombiaDateKey,
+	toColombiaMonthKey,
+} from '@app/shared/utils/colombia-date.utils';
 
 interface HomeAppointmentRow {
 	id: string;
@@ -77,8 +82,8 @@ export class HomeAdminComponent implements OnInit {
 
 	ngOnInit(): void {
 		const now = new Date();
-		const todayDate = now.toISOString().slice(0, 10);
-		const month = now.toISOString().slice(0, 7);
+		const todayDate = toColombiaDateKey(now);
+		const month = toColombiaMonthKey(now);
 
 		forkJoin({
 			users: this.userService.getUsers().pipe(catchError(() => of([]))),
@@ -293,17 +298,8 @@ export class HomeAdminComponent implements OnInit {
 	}
 
 	private formatTime(isoDate: string): string {
-		const parsed = new Date(isoDate);
-
-		if (Number.isNaN(parsed.getTime())) {
-			return '--:--';
-		}
-
-		return parsed.toLocaleTimeString('es-CO', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: true,
-		});
+		const formatted = formatColombiaTime(isoDate);
+		return formatted === '-' ? '--:--' : formatted;
 	}
 
 	private getRelativeTime(isoDate: string): string {

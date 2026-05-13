@@ -6,6 +6,7 @@ import {
 	EducationAdminService,
 	GetAdminEducationDashboardResponse,
 } from '@app/core/services/education-admin.service';
+import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-articles-admin',
@@ -77,16 +78,7 @@ export class ArticlesAdminComponent implements OnInit {
 
 	getDateLabel(row: AdminEducationRecentArticle): string {
 		const sourceDate = row.publishedAt ?? row.createdAt;
-		const parsed = new Date(sourceDate);
-		if (Number.isNaN(parsed.getTime())) {
-			return '--';
-		}
-
-		return parsed.toLocaleDateString('es-CO', {
-			day: '2-digit',
-			month: 'short',
-			year: 'numeric',
-		});
+		return formatColombiaDate(sourceDate);
 	}
 
 	getStatusLabel(status: AdminEducationRecentArticle['status']): string {

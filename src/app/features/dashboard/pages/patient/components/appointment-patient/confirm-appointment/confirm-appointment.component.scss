@@ -1,15 +1,48 @@
-.summary-item {
-	@apply bg-white/50 border border-white/60 rounded-2xl p-4;
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 shadow-sm rounded-3xl transition-all duration-200;
+}
+
+.glass-card-intense {
+	@apply bg-white/80 backdrop-blur-xl border border-white/70 shadow-xl rounded-3xl;
+}
+
+.btn-primary {
+	@apply bg-primary text-white px-6 py-4 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary/20 transition-all active:scale-95 text-center flex items-center justify-center gap-2 text-lg;
+}
+
+.btn-secondary {
+	@apply bg-white text-slate-600 border border-slate-200 px-6 py-4 rounded-xl font-bold hover:bg-slate-50 hover:text-primary hover:border-primary/30 transition-all active:scale-95 text-center flex items-center justify-center gap-2 text-lg;
+}
+
+.step-indicator {
+	@apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all;
+}
+
+.step-line {
+	@apply h-1 flex-1 rounded-full transition-all;
+}
+
+.step-caption {
+	@apply text-xs font-bold hidden sm:block;
 }
 
 .summary-label {
-	@apply text-[11px] uppercase tracking-wide font-bold text-slate-400;
+	@apply text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1;
 }
 
-.summary-value {
-	@apply text-base font-bold text-slate-800 mt-1;
+.summary-value-lg {
+	@apply font-bold text-slate-800 text-lg;
 }
 
-.summary-hint {
-	@apply text-xs text-slate-500 mt-1;
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgba(156, 163, 175, 0.5);
+	border-radius: 20px;
 }

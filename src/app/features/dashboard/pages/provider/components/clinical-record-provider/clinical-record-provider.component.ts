@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -7,6 +7,7 @@ import {
 	ProviderClinicalRecordItem,
 	ProviderClinicalRecordStats,
 } from '@app/core/services/clinical-record.service';
+import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-clinical-record-provider',
@@ -14,11 +15,9 @@ import {
 	imports: [CommonModule, FormsModule],
 	templateUrl: './clinical-record-provider.component.html',
 	styleUrl: './clinical-record-provider.component.scss',
-	providers: [DatePipe],
 })
 export class ClinicalRecordProviderComponent implements OnInit {
 	private readonly clinicalRecordService = inject(ClinicalRecordService);
-	private readonly datePipe = inject(DatePipe);
 
 	records: ProviderClinicalRecordItem[] = [];
 	filteredRecords: ProviderClinicalRecordItem[] = [];
@@ -125,7 +124,7 @@ export class ClinicalRecordProviderComponent implements OnInit {
 			return 'Sin consultas registradas';
 		}
 
-		return this.datePipe.transform(date, 'dd MMM yyyy') ?? 'Sin fecha';
+		return formatColombiaDate(date);
 	}
 
 	getRiskLabel(risk: ClinicalRecordRisk): string {

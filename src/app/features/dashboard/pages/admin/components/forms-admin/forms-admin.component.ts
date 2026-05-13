@@ -36,6 +36,7 @@ import {
 	CreateVersionModalComponent,
 	CreateVersionModalSubmit,
 } from './components/create-version-modal/create-version-modal.component';
+import { formatColombiaDateTime } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
 	selector: 'app-forms-admin',
@@ -769,8 +770,9 @@ export class FormsAdminComponent implements OnInit {
 			);
 
 			this.versionModalPreSelectedBlockIds =
-				(activeBlocks && activeBlocks.length > 0 ? activeBlocks : fallbackBlocks) ??
-				[];
+				(activeBlocks && activeBlocks.length > 0
+					? activeBlocks
+					: fallbackBlocks) ?? [];
 			this.versionModalVisible = true;
 		};
 
@@ -799,7 +801,7 @@ export class FormsAdminComponent implements OnInit {
 			.createVersion(this.selectedTemplateDetail.id, {
 				releaseNotes:
 					payload.releaseNotes ??
-					`Versión creada desde panel admin (${new Date().toISOString()})`,
+					`Versión creada desde panel admin (${formatColombiaDateTime(new Date())})`,
 				blockIds: payload.blockIds,
 			})
 			.subscribe({

@@ -61,6 +61,14 @@
 						<span [class]="getStatusClass(row)">
 							{{ row.resultStatus === 'PUBLISHED' ? 'Disponible' : row.resultStatus === 'PENDING_VALIDATION' ? 'Pendiente Validación' : 'En Revisión' }}
 						</span>
+						@if (row.resultStatus === 'PUBLISHED') {
+							<button
+								class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-all"
+								(click)="onDownloadPdf(row.appointmentId)"
+							>
+								Descargar PDF
+							</button>
+						}
 						<button
 							class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-all"
 							(click)="onSelectRow(row)"
@@ -119,6 +127,16 @@
 						</tbody>
 					</table>
 				</div>
+				@if (selectedDetail.resultStatus === 'PUBLISHED') {
+					<div class="mt-4 flex justify-end">
+						<button
+							class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-all"
+							(click)="onDownloadPdf(selectedDetail.appointmentId)"
+						>
+							Descargar PDF
+						</button>
+					</div>
+				}
 			}
 		</div>
 	}

@@ -24,11 +24,13 @@ import { finalize } from 'rxjs';
 })
 export class ServicesAdminComponent implements OnInit {
 	private readonly serviceCatalogService = inject(ServiceCatalogService);
+	private readonly pageSize = 20;
 
 	modelEditHidden: boolean = true;
 	isUploading = false;
 	uploadError: string | null = null;
 	uploadResult: ImportCupsResult | null = null;
+	currentPage = 1;
 
 	services: Service[] = [
 		{
@@ -73,6 +75,39 @@ export class ServicesAdminComponent implements OnInit {
 	sortColumn: string = '';
 	sortAscending: boolean = true;
 
+	get paginatedServices(): Service[] {
+		const start = (this.currentPage - 1) * this.pageSize;
+		return this.services.slice(start, start + this.pageSize);
+	}
+
+	get totalServices(): number {
+		return this.services.length;
+	}
+
+	get totalPages(): number {
+		return Math.max(1, Math.ceil(this.totalServices / this.pageSize));
+	}
+
+	get startItem(): number {
+		if (!this.totalServices) {
+			return 0;
+		}
+
+		return (this.currentPage - 1) * this.pageSize + 1;
+	}
+
+	get endItem(): number {
+		return Math.min(this.currentPage * this.pageSize, this.totalServices);
+	}
+
+	get isFirstPage(): boolean {
+		return this.currentPage <= 1;
+	}
+
+	get isLastPage(): boolean {
+		return this.currentPage >= this.totalPages;
+	}
+
 	ngOnInit(): void {
 		this.loadServices();
 	}
@@ -91,11 +126,24 @@ export class ServicesAdminComponent implements OnInit {
 					isActive: item.is_active,
 					status: item.is_active ? 'Activo' : 'Inactivo',
 				}));
+				this.currentPage = 1;
 			},
 			error: (error) => {
 				console.error('Error cargando servicios', error);
 			},
 		});
+	}
+
+	goToPreviousPage(): void {
+		if (!this.isFirstPage) {
+			this.currentPage -= 1;
+		}
+	}
+
+	goToNextPage(): void {
+		if (!this.isLastPage) {
+			this.currentPage += 1;
+		}
 	}
 
 	onCupsFileSelected(event: Event): void {
@@ -156,5 +204,7 @@ export class ServicesAdminComponent implements OnInit {
 		if (!this.sortAscending) {
 			this.services.reverse();
 		}
+
+		this.currentPage = 1;
 	}
 }
