@@ -62,14 +62,35 @@
       <div>
         <label
           class="block text-[11px] font-bold text-slate-400 mb-1.5 ml-1 uppercase"
-          >CÉDULA DE CIUDADANÍA*</label
+          >TIPO Y NÚMERO DE DOCUMENTO*</label
         >
-        <input
-          class="glass-input-mandatory w-full"
-          placeholder="Número de identificación"
-          type="number"
-          formControlName="documentNumber"
-        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <select
+            class="glass-input-mandatory w-full appearance-none"
+            formControlName="documentType"
+          >
+            <option value="CC">Cédula de Ciudadanía</option>
+            <option value="CE">Cédula de Extranjería</option>
+            <option value="TI">Tarjeta de Identidad</option>
+            <option value="RC">Registro Civil</option>
+            <option value="NUIP">NUIP</option>
+            <option value="NIT">NIT</option>
+            <option value="PASSPORT">Pasaporte</option>
+            <option value="PPT">Permiso por Protección Temporal</option>
+            <option value="PEP">Permiso Especial de Permanencia</option>
+            <option value="CDI">Carné Diplomático</option>
+            <option value="SC">Salvoconducto</option>
+            <option value="AS">Adulto sin Identificación</option>
+            <option value="MS">Menor sin Identificación</option>
+            <option value="CN">Certificado de Nacido Vivo</option>
+          </select>
+          <input
+            class="glass-input-mandatory w-full"
+            placeholder="Número de identificación"
+            type="text"
+            formControlName="documentNumber"
+          />
+        </div>
       </div>
     </div>
   </section>

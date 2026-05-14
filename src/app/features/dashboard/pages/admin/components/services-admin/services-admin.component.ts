@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InputTextComponent } from '@app/shared/components/form/input-text/input-text.component';
 import { ServiceEditModalComponent } from './components/service-edit-modal/service-edit-modal.component';
 import { ServiceProviderTypesComponent } from './components/service-provider-types/service-provider-types.component';
+import { PackagesAdminComponent } from './components/packages-admin/packages-admin.component';
 import { Service } from '@app/domains/service-catalog/service.entity';
 import {
 	ImportCupsResult,
@@ -18,6 +19,7 @@ import { finalize } from 'rxjs';
 		InputTextComponent,
 		ServiceEditModalComponent,
 		ServiceProviderTypesComponent,
+		PackagesAdminComponent,
 	],
 	templateUrl: './services-admin.component.html',
 	styleUrl: './services-admin.component.scss',
@@ -31,6 +33,7 @@ export class ServicesAdminComponent implements OnInit {
 	uploadError: string | null = null;
 	uploadResult: ImportCupsResult | null = null;
 	currentPage = 1;
+	activeTab: 'services' | 'packages' = 'services';
 
 	services: Service[] = [
 		{
@@ -121,7 +124,7 @@ export class ServicesAdminComponent implements OnInit {
 					subtitle: item.description || undefined,
 					code: item.code,
 					serviceType: item.service_type,
-					price: 0,
+					price: Number(item.service_price?.[0]?.amount || 0),
 					description: item.description || undefined,
 					isActive: item.is_active,
 					status: item.is_active ? 'Activo' : 'Inactivo',
@@ -132,6 +135,10 @@ export class ServicesAdminComponent implements OnInit {
 				console.error('Error cargando servicios', error);
 			},
 		});
+	}
+
+	setActiveTab(tab: 'services' | 'packages'): void {
+		this.activeTab = tab;
 	}
 
 	goToPreviousPage(): void {

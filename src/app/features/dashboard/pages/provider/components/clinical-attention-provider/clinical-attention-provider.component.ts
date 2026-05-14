@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import {
 	FormBuilder,
 	FormControl,
@@ -20,6 +20,10 @@ import {
 	LabsDashboardService,
 	PatientLabResultRow,
 } from '@app/core/services/labs-dashboard.service';
+import {
+	ClinicalRecordService,
+	PatientRecentHistoryItem,
+} from '@app/core/services/clinical-record.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { DynamicEngineFieldComponent } from './components/dynamic-engine-field/dynamic-engine-field.component';
 
@@ -49,6 +53,7 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 	private readonly fb = inject(FormBuilder);
 	private readonly engineFormService = inject(EngineFormService);
 	private readonly labsDashboardService = inject(LabsDashboardService);
+	private readonly clinicalRecordService = inject(ClinicalRecordService);
 
 	appointmentId = '';
 	patientId = '';
@@ -69,12 +74,15 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 	loadingForm = false;
 	loadError = '';
 	loadingPatientLabHistory = false;
+	loadingRecentHistory = false;
+	recentHistory: PatientRecentHistoryItem[] = [];
 	attentionForm: FormGroup = this.fb.group({});
 	patientLabHistory: PatientLabResultRow[] = [];
 
 	dynamicBlocks: EngineFormRenderableBlock[] = [];
 	private instanceId = '';
 	private instanceBlockIdsByBlockId: Record<string, string> = {};
+	private primaryDiagnosisFieldId: string | null = null;
 
 	private attentionStartedAt = new Date();
 	private timerHandle: ReturnType<typeof setInterval> | null = null;
@@ -84,6 +92,7 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.hydrateContext();
 		void this.loadActiveFormSession();
+		void this.loadRecentHistory();
 	}
 
 	ngOnDestroy(): void {
@@ -101,10 +110,6 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 			subscription.unsubscribe();
 		}
 		this.bmiSubscriptions = [];
-	}
-
-	goBackToAgenda(): void {
-		this.router.navigate(['/dashboard/provider/appointments']);
 	}
 
 	saveDraft(): void {
@@ -145,6 +150,60 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 			(accumulator, block) => accumulator + block.fields.length,
 			0,
 		);
+	}
+
+	get hasPrimaryDiagnosis(): boolean {
+		if (!this.primaryDiagnosisFieldId) return false;
+		const controlName = this.getControlName(this.primaryDiagnosisFieldId);
+		const value = this.attentionForm.get(controlName)?.value;
+		return typeof value === 'string' ? value.trim().length > 0 : Boolean(value);
+	}
+
+	openOrder(type: 'formula' | 'labs' | 'referral' | 'incapacity'): void {
+		if (!this.hasPrimaryDiagnosis) return;
+		const primaryDiagnosisValue = (() => {
+			if (!this.primaryDiagnosisFieldId) return '';
+			return (
+				(this.attentionForm.get(this.getControlName(this.primaryDiagnosisFieldId))
+					?.value as string) ?? ''
+			);
+		})();
+
+		void this.router.navigate(
+			['/dashboard/provider/medical-order', type],
+			{
+				queryParams: {
+					appointmentId: this.appointmentId,
+					patientId: this.patientId,
+					serviceId: this.serviceId,
+					serviceName: this.serviceName,
+					patientName: this.patientName,
+					primaryDiagnosis: primaryDiagnosisValue,
+				},
+			},
+		);
+	}
+
+	openClinicalRecord(): void {
+		const url =
+			'/dashboard/provider/clinical-record?patientName=' +
+			encodeURIComponent(this.patientName);
+		window.open(url, '_blank');
+	}
+
+	private async loadRecentHistory(): Promise<void> {
+		if (!this.patientId) return;
+		this.loadingRecentHistory = true;
+		try {
+			const items = await firstValueFrom(
+				this.clinicalRecordService.getPatientRecentHistory(this.patientId, 5),
+			);
+			this.recentHistory = items;
+		} catch {
+			// Silenciamos el error — la tarjeta mostrará el estado vacío
+		} finally {
+			this.loadingRecentHistory = false;
+		}
 	}
 
 	get patientIdentityLabel(): string {
@@ -190,6 +249,7 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 		this.appointmentId = queryMap.get('appointmentId') ?? '';
 		this.patientId = queryMap.get('patientId') ?? '';
 		this.serviceId = queryMap.get('serviceId') ?? '';
+		this.serviceName = queryMap.get('serviceName') ?? this.serviceName;
 
 		const currentNavigationState = (this.router.getCurrentNavigation()?.extras
 			.state ?? {}) as ClinicalAttentionNavigationState;
@@ -356,6 +416,15 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 		}
 
 		this.attentionForm = new FormGroup(controls);
+
+		// Detectar el fieldId del diagnóstico principal para habilitar órdenes médicas
+		for (const block of blocks) {
+			const diagField = block.fields.find((f) => f.code === 'PRIMARY_DIAGNOSIS');
+			if (diagField) {
+				this.primaryDiagnosisFieldId = diagField.id;
+				break;
+			}
+		}
 	}
 
 	isLabResultsHistoryVisualBlock(block: EngineFormRenderableBlock): boolean {

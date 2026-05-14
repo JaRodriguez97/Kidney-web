@@ -32,7 +32,9 @@
 		{{ successMessage }}
 	</div>
 
-	<div class="mb-4 inline-flex rounded-xl border border-slate-200 p-1 bg-white/70">
+	<div
+		class="mb-4 inline-flex rounded-xl border border-slate-200 p-1 bg-white/70"
+	>
 		<button
 			type="button"
 			(click)="setActiveTab('templates')"
@@ -71,7 +73,10 @@
 		</button>
 	</div>
 
-	<div *ngIf="activeTab === 'templates'" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+	<div
+		*ngIf="activeTab === 'templates'"
+		class="grid grid-cols-1 lg:grid-cols-12 gap-6"
+	>
 		<div
 			class="lg:col-span-4 glass-panel p-4 flex flex-col gap-4 min-h-[640px]"
 		>
@@ -276,6 +281,14 @@
 								>
 									Publicar
 								</button>
+								<button
+									type="button"
+									(click)="deleteVersion(version); $event.stopPropagation()"
+									[disabled]="saving"
+									class="px-2.5 py-1 rounded-md text-xs border border-secondary text-secondary hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed"
+								>
+									Eliminar
+								</button>
 							</div>
 						</div>
 					</div>
@@ -346,6 +359,14 @@
 									class="px-2.5 py-1 rounded-md text-xs border border-slate-200 text-slate-700 hover:bg-white"
 								>
 									Editar bloque
+								</button>
+								<button
+									type="button"
+									(click)="deleteBlock(block)"
+									[disabled]="saving"
+									class="px-2.5 py-1 rounded-md text-xs border border-secondary text-secondary hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed"
+								>
+									Eliminar bloque
 								</button>
 								<button
 									type="button"
@@ -450,6 +471,14 @@
 											>
 												Editar
 											</button>
+											<button
+												type="button"
+												(click)="deleteField(field)"
+												[disabled]="saving"
+												class="px-2.5 py-1 rounded-md text-xs border border-secondary text-secondary hover:bg-red-50 ml-2 disabled:opacity-60 disabled:cursor-not-allowed"
+											>
+												Eliminar
+											</button>
 										</td>
 									</tr>
 									<tr *ngIf="block.fields.length === 0">
@@ -491,14 +520,22 @@
 			</span>
 		</div>
 
-		<div *ngIf="loadingBlockCatalog" class="text-sm text-slate-500 py-8 text-center">
+		<div
+			*ngIf="loadingBlockCatalog"
+			class="text-sm text-slate-500 py-8 text-center"
+		>
 			Cargando bloques...
 		</div>
 
-		<div *ngIf="!loadingBlockCatalog" class="overflow-x-auto rounded-xl border border-slate-200">
+		<div
+			*ngIf="!loadingBlockCatalog"
+			class="overflow-x-auto rounded-xl border border-slate-200"
+		>
 			<table class="w-full text-left border-collapse">
 				<thead>
-					<tr class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider">
+					<tr
+						class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+					>
 						<th class="py-3 pl-4 pr-2 font-semibold">Bloque</th>
 						<th class="py-3 px-2 font-semibold">Template dueño</th>
 						<th class="py-3 px-2 font-semibold">Campos</th>
@@ -507,12 +544,17 @@
 				</thead>
 				<tbody class="divide-y divide-slate-100 text-sm">
 					<tr
-						*ngFor="let block of filteredBlockCatalog; trackBy: trackByBlockCatalog"
+						*ngFor="
+							let block of filteredBlockCatalog;
+							trackBy: trackByBlockCatalog
+						"
 						class="hover:bg-white/60"
 					>
 						<td class="py-3 pl-4 pr-2">
 							<div class="font-medium text-slate-800">{{ block.name }}</div>
-							<div class="text-xs text-slate-500 font-mono">{{ block.code || 'SIN_CODIGO' }}</div>
+							<div class="text-xs text-slate-500 font-mono">
+								{{ block.code || "SIN_CODIGO" }}
+							</div>
 						</td>
 						<td class="py-3 px-2 text-slate-600">{{ block.templateName }}</td>
 						<td class="py-3 px-2 text-slate-600">{{ block.fieldsCount }}</td>
@@ -525,7 +567,7 @@
 										: 'bg-slate-100 text-slate-600 border-slate-200'
 								"
 							>
-								{{ block.status === 'ACTIVE' ? 'Habilitado' : 'Deshabilitado' }}
+								{{ block.status === "ACTIVE" ? "Habilitado" : "Deshabilitado" }}
 							</span>
 						</td>
 					</tr>
@@ -547,14 +589,22 @@
 			</span>
 		</div>
 
-		<div *ngIf="loadingFieldCatalog" class="text-sm text-slate-500 py-8 text-center">
+		<div
+			*ngIf="loadingFieldCatalog"
+			class="text-sm text-slate-500 py-8 text-center"
+		>
 			Cargando campos...
 		</div>
 
-		<div *ngIf="!loadingFieldCatalog" class="overflow-x-auto rounded-xl border border-slate-200">
+		<div
+			*ngIf="!loadingFieldCatalog"
+			class="overflow-x-auto rounded-xl border border-slate-200"
+		>
 			<table class="w-full text-left border-collapse">
 				<thead>
-					<tr class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider">
+					<tr
+						class="text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+					>
 						<th class="py-3 px-2 font-semibold">Campo</th>
 						<th class="py-3 px-2 font-semibold">Tipo</th>
 						<th class="py-3 px-2 font-semibold">Bloque</th>
@@ -564,15 +614,23 @@
 				</thead>
 				<tbody class="divide-y divide-slate-100 text-sm">
 					<tr
-						*ngFor="let field of filteredFieldCatalog; trackBy: trackByFieldCatalog"
+						*ngFor="
+							let field of filteredFieldCatalog;
+							trackBy: trackByFieldCatalog
+						"
 						class="hover:bg-white/60"
 					>
 						<td class="py-3 pl-4 pr-2">
 							<div class="font-medium text-slate-800">{{ field.label }}</div>
-							<div class="text-xs text-slate-500 font-mono">{{ field.code || 'SIN_CODIGO' }}</div>
+							<div class="text-xs text-slate-500 font-mono">
+								{{ field.code || "SIN_CODIGO" }}
+							</div>
 						</td>
 						<td class="py-3 px-2">
-							<span class="px-2 py-0.5 rounded-md text-xs border" [class]="getFieldTypeClass(field.fieldType)">
+							<span
+								class="px-2 py-0.5 rounded-md text-xs border"
+								[class]="getFieldTypeClass(field.fieldType)"
+							>
 								{{ field.fieldType }}
 							</span>
 						</td>
@@ -587,7 +645,7 @@
 										: 'bg-slate-100 text-slate-600 border-slate-200'
 								"
 							>
-								{{ field.status === 'ACTIVE' ? 'Habilitado' : 'Deshabilitado' }}
+								{{ field.status === "ACTIVE" ? "Habilitado" : "Deshabilitado" }}
 							</span>
 						</td>
 					</tr>

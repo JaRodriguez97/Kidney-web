@@ -1,0 +1,15 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+}
+
+.badge {
+	@apply inline-flex px-2.5 py-1 rounded-md text-xs font-semibold border;
+}
+
+.action-btn {
+	@apply px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200;
+}
+
+.action-btn-danger {
+	@apply bg-red-50 text-red-700 hover:bg-red-100;
+}

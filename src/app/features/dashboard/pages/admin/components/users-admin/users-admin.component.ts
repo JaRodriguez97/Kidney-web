@@ -174,7 +174,6 @@ export class UsersAdminComponent implements OnInit {
 					patient: {
 						...this.rolPatientComponent.getFormData(),
 						roleNames: ['PATIENT'],
-						documentType: 'CC',
 					},
 				};
 			}
@@ -203,7 +202,6 @@ export class UsersAdminComponent implements OnInit {
 					admin: {
 						...this.rolAdminComponent.getFormData(),
 						roleNames: ['ADMIN'],
-						documentType: 'CC',
 					},
 				};
 			}

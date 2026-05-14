@@ -2,13 +2,29 @@ export interface RegisterPatientRequestDto {
   email: string;
   password: string;
   firstName: string;
-  secondName?: string;
+  middleName?: string;
   lastName: string;
   secondLastName?: string;
-  number_document?: string;
+  documentType?:
+    | 'CC'
+    | 'CE'
+    | 'TI'
+    | 'RC'
+    | 'NUIP'
+    | 'NIT'
+    | 'PASSPORT'
+    | 'PPT'
+    | 'PEP'
+    | 'CDI'
+    | 'SC'
+    | 'AS'
+    | 'MS'
+    | 'CN';
+  documentNumber?: string;
   phone?: string;
   address?: string;
-  barrio?: string;
-  comuna?: number;
-  city: string;
+  neighborhood?: string;
+  commune?: number;
+  city?: string;
+  department?: string;
 }

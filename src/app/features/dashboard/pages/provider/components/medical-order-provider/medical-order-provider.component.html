@@ -1,0 +1,126 @@
+<section class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col pb-20 gap-6">
+
+	<!-- Contexto del paciente y diagnóstico -->
+	<div class="glass-panel p-4 mb-2 border-l-4 border-l-primary flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+		<div class="flex items-center gap-3">
+			<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+				<span class="material-symbols-outlined text-2xl">account_circle</span>
+			</div>
+			<div>
+				<p class="text-sm font-bold text-slate-800">{{ patientName || 'Paciente' }}</p>
+				<p class="text-xs text-slate-500">{{ serviceName }}</p>
+			</div>
+		</div>
+		@if (primaryDiagnosis) {
+			<div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 max-w-full">
+				<span class="material-symbols-outlined text-blue-500 text-base flex-shrink-0">diagnosis</span>
+				<div class="min-w-0">
+					<p class="text-xs font-bold text-blue-600 uppercase tracking-wide">Diagnóstico Principal</p>
+					<p class="text-sm text-blue-800 font-semibold truncate">{{ primaryDiagnosis }}</p>
+				</div>
+			</div>
+		}
+	</div>
+
+	<!-- Estado: cargando -->
+	@if (loading) {
+		<div class="glass-panel p-10 text-center text-slate-600">
+			<span class="material-symbols-outlined text-4xl animate-pulse mb-3 block">hourglass_top</span>
+			<p class="font-semibold">Cargando formulario de {{ orderTitle }}...</p>
+		</div>
+	} @else if (loadError) {<!-- Estado: error de carga -->
+		<div class="glass-panel p-6 border border-red-200 bg-red-50/70 text-red-700">
+			<p class="font-bold mb-1 flex items-center gap-2">
+				<span class="material-symbols-outlined">error</span>
+				No fue posible cargar la orden
+			</p>
+			<p class="text-sm">{{ loadError }}</p>
+			<button
+				class="mt-4 btn-secondary px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2"
+				type="button"
+				(click)="goBack()"
+			>
+				<span class="material-symbols-outlined text-base">arrow_back</span>
+				Volver a la consulta
+			</button>
+		</div>
+	} @else if (!loading && dynamicBlocks.length > 0) {<!-- Formulario de orden -->
+		@if (saved) {
+			<div class="glass-panel p-6 border border-green-200 bg-green-50/70 text-green-700 flex flex-col items-center gap-4 text-center">
+				<span class="material-symbols-outlined text-5xl">check_circle</span>
+				<p class="text-lg font-bold">{{ orderTitle }} guardada correctamente</p>
+				<p class="text-sm text-green-600">La orden ha sido registrada en el sistema.</p>
+				<button
+					class="btn-secondary px-6 py-2.5 rounded-xl font-bold flex items-center gap-2"
+					type="button"
+					(click)="goBack()"
+				>
+					<span class="material-symbols-outlined">arrow_back</span>
+					Volver a la consulta
+				</button>
+			</div>
+		} @else {
+			<form [formGroup]="orderForm" class="flex flex-col gap-6">
+				@for (block of dynamicBlocks; track block.id) {
+					<section class="glass-panel p-6">
+						<h3 class="text-lg font-bold text-primary mb-1 flex items-center gap-2">
+							<span class="material-symbols-outlined">description</span>
+							{{ block.name }}
+						</h3>
+						@if (block.description) {
+							<p class="text-xs text-slate-500 mb-4">{{ block.description }}</p>
+						}
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							@for (field of block.fields; track field.id) {
+								<div [ngClass]="{ 'md:col-span-2': isWideField(field.fieldType) }">
+									<app-dynamic-engine-field
+										[field]="field"
+										[control]="getFieldControl(field.id)"
+									></app-dynamic-engine-field>
+								</div>
+							}
+						</div>
+					</section>
+				}
+
+				@if (saveError) {
+					<div class="px-4 py-3 rounded-xl border border-red-200 bg-red-50 text-red-700 text-sm font-semibold flex items-center gap-2">
+						<span class="material-symbols-outlined text-base">error</span>
+						{{ saveError }}
+					</div>
+				}
+			</form>
+		}
+	}
+
+	<!-- Barra inferior -->
+	@if (!saved && !loading && !loadError) {
+		<div class="fixed bottom-0 left-0 right-0 lg:left-64 p-4 bg-white/30 backdrop-blur-md border-t border-white/90 flex justify-between items-center gap-4 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+			<button
+				class="btn-secondary px-6 py-3 rounded-xl font-bold flex items-center gap-2"
+				type="button"
+				(click)="goBack()"
+			>
+				<span class="material-symbols-outlined">arrow_back</span>
+				Volver a la consulta
+			</button>
+
+			<button
+				class="btn-primary px-8 py-3 rounded-xl font-bold flex items-center gap-2 text-base"
+				type="button"
+				[disabled]="saving"
+				[class.opacity-60]="saving"
+				(click)="saveOrder()"
+			>
+				@if (saving) {
+					<span class="material-symbols-outlined animate-spin text-base">progress_activity</span>
+					Guardando...
+				} @else {
+					<span class="material-symbols-outlined">save</span>
+					Guardar {{ orderTitle }}
+				}
+			</button>
+		</div>
+	}
+
+</section>

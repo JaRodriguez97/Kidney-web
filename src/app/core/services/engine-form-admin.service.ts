@@ -225,6 +225,10 @@ export class EngineFormAdminService {
 		return this.http.put(`${this.apiUrl}/blocks/${blockId}`, payload);
 	}
 
+	deleteBlock(blockId: string): Observable<unknown> {
+		return this.http.delete(`${this.apiUrl}/blocks/${blockId}`);
+	}
+
 	createField(
 		blockId: string,
 		payload: CreateFieldPayload,
@@ -252,6 +256,10 @@ export class EngineFormAdminService {
 		return this.http.put(`${this.apiUrl}/fields/${fieldId}`, payload);
 	}
 
+	deleteField(fieldId: string): Observable<unknown> {
+		return this.http.delete(`${this.apiUrl}/fields/${fieldId}`);
+	}
+
 	createVersion(
 		templateId: string,
 		payload: { releaseNotes?: string; blockIds?: string[] },
@@ -264,5 +272,9 @@ export class EngineFormAdminService {
 
 	publishVersion(versionId: string): Observable<unknown> {
 		return this.http.post(`${this.apiUrl}/versions/${versionId}/publish`, {});
+	}
+
+	deleteVersion(versionId: string): Observable<unknown> {
+		return this.http.delete(`${this.apiUrl}/versions/${versionId}`);
 	}
 }

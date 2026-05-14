@@ -7,6 +7,7 @@ import { ClinicalAttentionProviderComponent } from '../components/clinical-atten
 import { LabsProviderComponent } from '../components/labs-provider/labs-provider.component';
 import { PatientProviderComponent } from '../components/patient-provider/patient-provider.component';
 import { SupportProviderComponent } from '../components/support-provider/support-provider.component';
+import { MedicalOrderProviderComponent } from '../components/medical-order-provider/medical-order-provider.component';
 
 export const PROVIDER_DASHBOARD_ROUTES: Routes = [
 	{
@@ -24,6 +25,10 @@ export const PROVIDER_DASHBOARD_ROUTES: Routes = [
 			{ path: 'labs', component: LabsProviderComponent },
 			{ path: 'patients', component: PatientProviderComponent },
 			{ path: 'support', component: SupportProviderComponent },
+			{
+				path: 'medical-order/:orderType',
+				component: MedicalOrderProviderComponent,
+			},
 		],
 	},
 ];

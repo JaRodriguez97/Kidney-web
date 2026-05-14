@@ -39,7 +39,16 @@ export class RolAdminComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      documentNumber: [null, [Validators.required, Validators.minLength(5)]],
+      documentType: ['CC', [Validators.required]],
+      documentNumber: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(50),
+          Validators.pattern(/^[A-Za-z0-9-]+$/),
+        ],
+      ],
 
       // Datos opcionales
       middleName: [''],
@@ -72,7 +81,7 @@ export class RolAdminComponent implements OnInit {
       roleNames: ['ADMIN'],
       firstName: formData.firstName,
       lastName: formData.lastName,
-      documentType: 'CC',
+      documentType: formData.documentType,
       documentNumber: formData.documentNumber || undefined,
     };
     // Campos opcionales
@@ -100,7 +109,7 @@ export class RolAdminComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.adminForm.reset();
+    this.adminForm.reset({ documentType: 'CC' });
     this.successMessage = '';
     this.errorMessage = '';
     this.showPassword = false;

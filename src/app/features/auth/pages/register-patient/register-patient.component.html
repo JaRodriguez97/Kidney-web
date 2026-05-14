@@ -120,7 +120,7 @@
                 </div>
 
                 <app-input-text
-                  formControlName="secondName"
+                  formControlName="middleName"
                   label="Segundo Nombre (Opcional)"
                   placeholder="Ej. David"
                 />
@@ -144,14 +144,20 @@
                   placeholder="Ej. Rodríguez"
                 />
 
-                <app-input-number
-                  formControlName="number_document"
-                  label="Número de Cédula (Opcional)"
+                <app-select
+                  formControlName="documentType"
+                  label="Tipo de Documento"
+                  [options]="documentTypeOptions"
+                />
+
+                <app-input-text
+                  formControlName="documentNumber"
+                  label="Documento de Identidad (Opcional)"
                   icon="fingerprint"
                   placeholder="Ej. 1234567890"
                 />
 
-                <app-input-number
+                <app-input-text
                   formControlName="phone"
                   label="Teléfono Celular (Opcional)"
                   icon="phone_iphone"
@@ -178,25 +184,33 @@
                   />
                 </div>
                 <div>
-                  <app-input-text
-                    formControlName="barrio"
-                    label="Barrio"
-                    placeholder="Ej. El Ingenio"
-                  />
-                </div>
-                <div>
                   <app-select
-                    formControlName="comuna"
-                    label="Comuna"
-                    [options]="options"
+                    formControlName="department"
+                    label="Departamento"
+                    [options]="departmentOptions"
                   ></app-select>
                 </div>
                 <div>
-                  <app-input-text
+                  <app-select
                     formControlName="city"
                     label="Ciudad"
-                    value="Cali, Valle"
-                  />
+                    [options]="cityOptions"
+                  ></app-select>
+                </div>
+                <div>
+                  <app-select
+                    formControlName="neighborhood"
+                    label="Barrio"
+                    [options]="neighborhoodOptions"
+                  ></app-select>
+                </div>
+                <div>
+                  <app-select
+                    formControlName="commune"
+                    label="Comuna (Automática y Opcional)"
+                    [options]="communeOptions"
+                    [disabled]="true"
+                  ></app-select>
                 </div>
               </div>
             </div>

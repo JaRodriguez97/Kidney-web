@@ -417,6 +417,7 @@ export class AppointmentProviderComponent implements OnInit {
 				appointmentId: appointment.id,
 				patientId: appointment.patientId,
 				serviceId: appointment.serviceId,
+				serviceName: appointment.serviceName,
 			},
 			state: {
 				appointmentId: appointment.id,

@@ -3,8 +3,24 @@
 	class="flex justify-between items-center mb-8 glass-panel px-6 py-4"
 >
 	<div>
-		<h2 class="text-2xl font-bold text-primary">{{ sectionTitle }}</h2>
+		<div class="flex items-center gap-2">
+			@if (isClinicalAttentionSection) {
+				<button
+					class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500"
+					type="button"
+					(click)="goBack()"
+					aria-label="Volver a agenda"
+					title="Volver a agenda"
+				>
+					<span class="material-symbols-outlined">arrow_back</span>
+				</button>
+			}
+			<h2 class="text-2xl font-bold text-primary">{{ sectionTitle }}</h2>
+		</div>
 		<p class="text-slate-500 text-sm">{{ sectionSubtitle }}</p>
+		@if (attentionContextLabel) {
+			<p class="text-slate-500 text-sm">{{ attentionContextLabel }}</p>
+		}
 	</div>
 	<div class="flex items-center gap-4">
 		<button

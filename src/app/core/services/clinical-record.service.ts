@@ -34,6 +34,13 @@ export interface ProviderClinicalRecordsResponse {
 	patients: ProviderClinicalRecordItem[];
 }
 
+export interface PatientRecentHistoryItem {
+	date: string;
+	serviceName: string;
+	summary: string | null;
+	primaryDiagnosis: string | null;
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -74,6 +81,17 @@ export class ClinicalRecordService {
 		return this.http.get<ProviderClinicalRecordsResponse>(
 			`${this.apiUrl}/provider-dashboard`,
 			{ params: httpParams },
+		);
+	}
+
+	getPatientRecentHistory(
+		patientId: string,
+		limit = 5,
+	): Observable<PatientRecentHistoryItem[]> {
+		const params = new HttpParams().set('limit', String(limit));
+		return this.http.get<PatientRecentHistoryItem[]>(
+			`${this.apiUrl}/patient/${patientId}/recent`,
+			{ params },
 		);
 	}
 }

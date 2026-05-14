@@ -38,7 +38,16 @@ export class RolPatientComponent implements OnInit {
 					Validators.pattern(/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/),
 				],
 			],
-			documentNumber: [null, [Validators.required, Validators.min(10000)]],
+			documentType: ['CC', [Validators.required]],
+			documentNumber: [
+				'',
+				[
+					Validators.required,
+					Validators.minLength(3),
+					Validators.maxLength(50),
+					Validators.pattern(/^[A-Za-z0-9-]+$/),
+				],
+			],
 
 			// Datos opcionales
 			middleName: [''],

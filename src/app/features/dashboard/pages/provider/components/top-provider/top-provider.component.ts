@@ -32,6 +32,10 @@ export class TopProviderComponent implements OnInit, OnDestroy {
 	initials = '';
 	sectionTitle = 'Panel del Proveedor';
 	sectionSubtitle = 'Seguimiento de atencion y agenda medica';
+	attentionContextLabel = '';
+	isClinicalAttentionSection = false;
+	isMedicalOrderSection = false;
+	private clinicalAttentionQueryParams: Record<string, string> = {};
 
 	ngOnInit(): void {
 		this.updateSectionByUrl(this.router.url);
@@ -101,15 +105,66 @@ export class TopProviderComponent implements OnInit, OnDestroy {
 		return first + last || 'P';
 	}
 
+	goBack(): void {
+		if (this.isMedicalOrderSection && Object.keys(this.clinicalAttentionQueryParams).length) {
+			void this.router.navigate(['/dashboard/provider/clinical-attention'], {
+				queryParams: this.clinicalAttentionQueryParams,
+			});
+		} else {
+			void this.router.navigate(['/dashboard/provider/appointments']);
+		}
+	}
+
 	private applyUser(user: User): void {
 		this.user = user;
 		this.initials = this.getInitials(user.firstName, user.lastName);
 	}
 
 	private updateSectionByUrl(url: string): void {
+		const urlTree = this.router.parseUrl(url);
+		const queryParams = urlTree.queryParams;
+		const historyState =
+			typeof history !== 'undefined'
+				? (history.state as { serviceName?: string } | null)
+				: null;
+
 		const section = this.getSectionDefinition(url);
 		this.sectionTitle = section.title;
 		this.sectionSubtitle = section.subtitle;
+		this.isMedicalOrderSection = url.includes('/medical-order/');
+		this.isClinicalAttentionSection =
+			url.includes('/clinical-attention') || this.isMedicalOrderSection;
+
+		if (!this.isClinicalAttentionSection) {
+			this.attentionContextLabel = '';
+			return;
+		}
+
+		const serviceNameFromQuery =
+			typeof queryParams['serviceName'] === 'string'
+				? queryParams['serviceName']
+				: '';
+		const serviceName = serviceNameFromQuery || historyState?.serviceName || '';
+		const appointmentId =
+			typeof queryParams['appointmentId'] === 'string'
+				? queryParams['appointmentId']
+				: '';
+
+		if (this.isMedicalOrderSection) {
+			// Guardar los queryParams para poder navegar de vuelta a clinical-attention
+			this.clinicalAttentionQueryParams = {};
+			for (const key of ['appointmentId', 'patientId', 'serviceId', 'serviceName']) {
+				if (typeof queryParams[key] === 'string' && queryParams[key]) {
+					this.clinicalAttentionQueryParams[key] = queryParams[key] as string;
+				}
+			}
+		}
+
+		const formattedAppointmentId = appointmentId
+			? ` • Cita ${appointmentId.slice(0, 8)}`
+			: '';
+
+		this.attentionContextLabel = `${serviceName || 'Servicio no disponible'}${formattedAppointmentId}`;
 	}
 
 	private getSectionDefinition(url: string): {
@@ -120,6 +175,21 @@ export class TopProviderComponent implements OnInit, OnDestroy {
 			return {
 				title: 'Agenda de Citas',
 				subtitle: 'Gestion de turnos y disponibilidad diaria',
+			};
+		}
+
+		if (url.includes('/medical-order/')) {
+			const orderTitleMap: Record<string, string> = {
+				formula: 'Fórmula de Medicamentos',
+				labs: 'Solicitud de Laboratorios',
+				referral: 'Remisión e Interconsulta',
+				incapacity: 'Certificado de Incapacidad',
+			};
+			const match = /\/medical-order\/([^/?]+)/.exec(url);
+			const orderType = match ? match[1] : '';
+			return {
+				title: orderTitleMap[orderType] ?? 'Orden Médica',
+				subtitle: 'Registro de orden médica para la consulta en curso',
 			};
 		}
 

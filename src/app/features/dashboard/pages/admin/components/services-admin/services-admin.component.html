@@ -1,7 +1,29 @@
 <main
 	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
 >
-	<!-- <header class="flex justify-between items-center mb-8 glass-panel px-6 py-4">
+	<div class="tabs-row mb-4">
+		<button
+			type="button"
+			class="tab-btn"
+			[ngClass]="{ 'tab-btn-active': activeTab === 'services' }"
+			(click)="setActiveTab('services')"
+		>
+			Servicios
+		</button>
+		<button
+			type="button"
+			class="tab-btn"
+			[ngClass]="{ 'tab-btn-active': activeTab === 'packages' }"
+			(click)="setActiveTab('packages')"
+		>
+			Paquetes
+		</button>
+	</div>
+
+	<app-packages-admin *ngIf="activeTab === 'packages'"></app-packages-admin>
+
+	<div *ngIf="activeTab === 'services'">
+		<!-- <header class="flex justify-between items-center mb-8 glass-panel px-6 py-4">
     <div>
       <h2 class="text-2xl font-bold text-primary">Gestión de Catálogo</h2>
       <p class="text-slate-500 text-sm">
@@ -26,251 +48,252 @@
       </div>
     </div>
   </header> -->
-	<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
-		<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
-			<input
-				#cupsFileInput
-				type="file"
-				class="hidden"
-				accept=".xlsx,.xls,.xlsm"
-				(change)="onCupsFileSelected($event)"
-			/>
-			<div
-				class="relative glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
-			>
-				<app-input-text
-					icon="search"
-					placeholder="Buscar servicio por nombre..."
-					label=""
-				></app-input-text>
-				<select class="glass-input cursor-pointer bg-white/40">
-					<option>Tipos de Proveedor</option>
-					<option>Medicina General</option>
-					<option>Laboratorio Clínico</option>
-					<option>Cardiología</option>
-					<option>Nutrición</option>
-					<option>Pediatría</option>
-				</select>
-				<select class="glass-input cursor-pointer bg-white/40">
-					<option>Estado: Todos</option>
-					<option>Activos</option>
-					<option>Inactivos</option>
-				</select>
-				<button
-					type="button"
-					(click)="cupsFileInput.click()"
-					[disabled]="isUploading"
-					class="bg-secondary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-secondary/90 transition-colors shadow-lg shadow-secondary/20 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
-				>
-					<span class="material-symbols-outlined text-sm">upload_file</span>
-					{{ isUploading ? "Importando..." : "Importar CUPS" }}
-				</button>
-				<button
-					class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
-				>
-					<span class="material-symbols-outlined text-sm">add</span>
-					Nuevo Servicio
-				</button>
-			</div>
-
-			<div
-				*ngIf="uploadError"
-				class="glass-panel p-3 border border-red-200 text-red-700"
-			>
-				{{ uploadError }}
-			</div>
-
-			<div
-				*ngIf="uploadResult"
-				class="glass-panel p-3 border border-emerald-200 text-emerald-800 text-sm"
-			>
-				<div class="font-semibold mb-1">Carga CUPS completada</div>
-				<div>
-					Total: {{ uploadResult.totalRows }} | Válidas:
-					{{ uploadResult.validRows }} | Procedimientos importados:
-					{{ uploadResult.importedProcedures }}
-				</div>
-				<div>
-					Servicios creados: {{ uploadResult.createdServices }} | Servicios
-					actualizados: {{ uploadResult.updatedServices }} | Omitidas:
-					{{ uploadResult.skippedRows }}
-				</div>
-			</div>
-
-			<div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
-				<div class="overflow-x-auto">
-					<table class="w-full text-left border-collapse">
-						<thead>
-							<tr
-								class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
-							>
-								<th
-									(click)="sort('name')"
-									class="cursor-pointer py-4 pl-6 font-semibold"
-								>
-									Nombre del Servicio
-									<span
-										*ngIf="sortColumn === 'name'"
-										class="material-symbols-outlined text-[14px] align-middle"
-									>
-										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-									</span>
-								</th>
-								<th
-									(click)="sort('code')"
-									class="cursor-pointer py-4 px-4 font-semibold"
-								>
-									Código
-									<span
-										*ngIf="sortColumn === 'code'"
-										class="material-symbols-outlined text-[14px] align-middle"
-									>
-										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-									</span>
-								</th>
-								<th
-									(click)="sort('serviceType')"
-									class="cursor-pointer py-4 px-4 font-semibold"
-								>
-									Tipo de Servicio
-									<span
-										*ngIf="sortColumn === 'serviceType'"
-										class="material-symbols-outlined text-[14px] align-middle"
-									>
-										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-									</span>
-								</th>
-								<th
-									(click)="sort('price')"
-									class="cursor-pointer py-4 px-4 font-semibold"
-								>
-									Precio
-									<span
-										*ngIf="sortColumn === 'price'"
-										class="material-symbols-outlined text-[14px] align-middle"
-									>
-										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-									</span>
-								</th>
-								<th
-									(click)="sort('status')"
-									class="cursor-pointer py-4 px-4 font-semibold text-center"
-								>
-									Estado
-									<span
-										*ngIf="sortColumn === 'status'"
-										class="material-symbols-outlined text-[14px] align-middle"
-									>
-										{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
-									</span>
-								</th>
-								<th class="py-4 pr-6 font-semibold text-right">Acciones</th>
-							</tr>
-						</thead>
-						<tbody class="text-sm divide-y divide-slate-100">
-							<tr
-								*ngFor="let svc of paginatedServices"
-								class="group hover:bg-white/60 transition-colors"
-							>
-								<td class="py-4 pl-6 font-medium text-slate-800">
-									<div class="flex flex-col">
-										<span>{{ svc.name }}</span>
-										<span
-											*ngIf="svc.subtitle"
-											class="text-[10px] text-slate-400 font-normal"
-										>
-											{{ svc.subtitle }}
-										</span>
-									</div>
-								</td>
-								<td class="py-4 px-4 text-slate-500 font-mono">
-									{{ svc.code }}
-								</td>
-								<td class="py-4 px-4">
-									<span
-										class="badge"
-										[ngClass]="{
-											'bg-blue-50 text-blue-700 border-blue-100':
-												svc.serviceType === 'MEDICAL_CONSULTATION',
-											'bg-amber-50 text-amber-700 border-amber-100':
-												svc.serviceType.includes('LABORATORY'),
-											'bg-secondary/10 text-secondary border-secondary/20':
-												svc.serviceType === 'IMAGING',
-										}"
-									>
-										{{ svc.serviceType }}
-									</span>
-								</td>
-								<td class="py-4 px-4 font-bold text-slate-700">
-									${{ svc.price ?? 0 | number: "1.0-0" }}
-								</td>
-								<td class="py-4 px-4 text-center">
-									<span
-										class="badge flex justify-center w-20 mx-auto"
-										[ngClass]="{
-											'bg-green-50 text-green-700 border-green-100':
-												svc.status === 'Activo',
-											'bg-slate-100 text-slate-500 border-slate-200':
-												svc.status === 'Inactivo',
-										}"
-									>
-										{{ svc.status }}
-									</span>
-								</td>
-								<td class="py-4 pr-6 text-right">
-									<div
-										class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-									>
-										<!-- boton para activar modal de editar servicio -->
-										<button
-											class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-											(click)="modelEditHidden = false"
-										>
-											<span class="material-symbols-outlined text-lg"
-												>edit</span
-											>
-										</button>
-										<button
-											class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
-										>
-											<span class="material-symbols-outlined text-lg"
-												>delete</span
-											>
-										</button>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
+			<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+				<input
+					#cupsFileInput
+					type="file"
+					class="hidden"
+					accept=".xlsx,.xls,.xlsm"
+					(change)="onCupsFileSelected($event)"
+				/>
 				<div
-					class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+					class="relative glass-panel p-4 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
 				>
-					<span
-						>Mostrando {{ startItem }} - {{ endItem }} de
-						{{ totalServices }} servicios</span
+					<app-input-text
+						icon="search"
+						placeholder="Buscar servicio por nombre..."
+						label=""
+					></app-input-text>
+					<select class="glass-input cursor-pointer bg-white/40">
+						<option>Tipos de Proveedor</option>
+						<option>Medicina General</option>
+						<option>Laboratorio Clínico</option>
+						<option>Cardiología</option>
+						<option>Nutrición</option>
+						<option>Pediatría</option>
+					</select>
+					<select class="glass-input cursor-pointer bg-white/40">
+						<option>Estado: Todos</option>
+						<option>Activos</option>
+						<option>Inactivos</option>
+					</select>
+					<button
+						type="button"
+						(click)="cupsFileInput.click()"
+						[disabled]="isUploading"
+						class="bg-secondary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-secondary/90 transition-colors shadow-lg shadow-secondary/20 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
 					>
-					<div class="flex gap-2">
-						<button
-							(click)="goToPreviousPage()"
-							[disabled]="isFirstPage"
-							class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+						<span class="material-symbols-outlined text-sm">upload_file</span>
+						{{ isUploading ? "Importando..." : "Importar CUPS" }}
+					</button>
+					<button
+						class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+					>
+						<span class="material-symbols-outlined text-sm">add</span>
+						Nuevo Servicio
+					</button>
+				</div>
+
+				<div
+					*ngIf="uploadError"
+					class="glass-panel p-3 border border-red-200 text-red-700"
+				>
+					{{ uploadError }}
+				</div>
+
+				<div
+					*ngIf="uploadResult"
+					class="glass-panel p-3 border border-emerald-200 text-emerald-800 text-sm"
+				>
+					<div class="font-semibold mb-1">Carga CUPS completada</div>
+					<div>
+						Total: {{ uploadResult.totalRows }} | Válidas:
+						{{ uploadResult.validRows }} | Procedimientos importados:
+						{{ uploadResult.importedProcedures }}
+					</div>
+					<div>
+						Servicios creados: {{ uploadResult.createdServices }} | Servicios
+						actualizados: {{ uploadResult.updatedServices }} | Omitidas:
+						{{ uploadResult.skippedRows }}
+					</div>
+				</div>
+
+				<div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
+					<div class="overflow-x-auto">
+						<table class="w-full text-left border-collapse">
+							<thead>
+								<tr
+									class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+								>
+									<th
+										(click)="sort('name')"
+										class="cursor-pointer py-4 pl-6 font-semibold"
+									>
+										Nombre del Servicio
+										<span
+											*ngIf="sortColumn === 'name'"
+											class="material-symbols-outlined text-[14px] align-middle"
+										>
+											{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+										</span>
+									</th>
+									<th
+										(click)="sort('code')"
+										class="cursor-pointer py-4 px-4 font-semibold"
+									>
+										Código
+										<span
+											*ngIf="sortColumn === 'code'"
+											class="material-symbols-outlined text-[14px] align-middle"
+										>
+											{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+										</span>
+									</th>
+									<th
+										(click)="sort('serviceType')"
+										class="cursor-pointer py-4 px-4 font-semibold"
+									>
+										Tipo de Servicio
+										<span
+											*ngIf="sortColumn === 'serviceType'"
+											class="material-symbols-outlined text-[14px] align-middle"
+										>
+											{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+										</span>
+									</th>
+									<th
+										(click)="sort('price')"
+										class="cursor-pointer py-4 px-4 font-semibold"
+									>
+										Precio
+										<span
+											*ngIf="sortColumn === 'price'"
+											class="material-symbols-outlined text-[14px] align-middle"
+										>
+											{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+										</span>
+									</th>
+									<th
+										(click)="sort('status')"
+										class="cursor-pointer py-4 px-4 font-semibold text-center"
+									>
+										Estado
+										<span
+											*ngIf="sortColumn === 'status'"
+											class="material-symbols-outlined text-[14px] align-middle"
+										>
+											{{ sortAscending ? "arrow_upward" : "arrow_downward" }}
+										</span>
+									</th>
+									<th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+								</tr>
+							</thead>
+							<tbody class="text-sm divide-y divide-slate-100">
+								<tr
+									*ngFor="let svc of paginatedServices"
+									class="group hover:bg-white/60 transition-colors"
+								>
+									<td class="py-4 pl-6 font-medium text-slate-800">
+										<div class="flex flex-col">
+											<span>{{ svc.name }}</span>
+											<span
+												*ngIf="svc.subtitle"
+												class="text-[10px] text-slate-400 font-normal"
+											>
+												{{ svc.subtitle }}
+											</span>
+										</div>
+									</td>
+									<td class="py-4 px-4 text-slate-500 font-mono">
+										{{ svc.code }}
+									</td>
+									<td class="py-4 px-4">
+										<span
+											class="badge"
+											[ngClass]="{
+												'bg-blue-50 text-blue-700 border-blue-100':
+													svc.serviceType === 'MEDICAL_CONSULTATION',
+												'bg-amber-50 text-amber-700 border-amber-100':
+													svc.serviceType.includes('LABORATORY'),
+												'bg-secondary/10 text-secondary border-secondary/20':
+													svc.serviceType === 'IMAGING',
+											}"
+										>
+											{{ svc.serviceType }}
+										</span>
+									</td>
+									<td class="py-4 px-4 font-bold text-slate-700">
+										${{ svc.price ?? 0 | number: "1.0-0" }}
+									</td>
+									<td class="py-4 px-4 text-center">
+										<span
+											class="badge flex justify-center w-20 mx-auto"
+											[ngClass]="{
+												'bg-green-50 text-green-700 border-green-100':
+													svc.status === 'Activo',
+												'bg-slate-100 text-slate-500 border-slate-200':
+													svc.status === 'Inactivo',
+											}"
+										>
+											{{ svc.status }}
+										</span>
+									</td>
+									<td class="py-4 pr-6 text-right">
+										<div
+											class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+										>
+											<!-- boton para activar modal de editar servicio -->
+											<button
+												class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+												(click)="modelEditHidden = false"
+											>
+												<span class="material-symbols-outlined text-lg"
+													>edit</span
+												>
+											</button>
+											<button
+												class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-secondary"
+											>
+												<span class="material-symbols-outlined text-lg"
+													>delete</span
+												>
+											</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div
+						class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+					>
+						<span
+							>Mostrando {{ startItem }} - {{ endItem }} de
+							{{ totalServices }} servicios</span
 						>
-							Anterior
-						</button>
-						<button
-							(click)="goToNextPage()"
-							[disabled]="isLastPage"
-							class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50"
-						>
-							Siguiente
-						</button>
+						<div class="flex gap-2">
+							<button
+								(click)="goToPreviousPage()"
+								[disabled]="isFirstPage"
+								class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+							>
+								Anterior
+							</button>
+							<button
+								(click)="goToNextPage()"
+								[disabled]="isLastPage"
+								class="px-3 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50"
+							>
+								Siguiente
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
-			<app-service-provider-types></app-service-provider-types>
+			<div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+				<app-service-provider-types></app-service-provider-types>
+			</div>
 		</div>
 	</div>
 </main>

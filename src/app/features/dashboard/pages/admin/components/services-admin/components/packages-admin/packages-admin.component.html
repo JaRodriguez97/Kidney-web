@@ -1,0 +1,93 @@
+<section class="glass-panel p-4 sm:p-5">
+	<div class="flex items-center justify-between mb-4">
+		<div>
+			<h3 class="text-lg font-bold text-primary">Paquetes de servicios</h3>
+			<p class="text-sm text-slate-500">
+				Crea combinaciones de servicios y define precio final editable.
+			</p>
+		</div>
+		<button
+			type="button"
+			class="bg-primary text-white px-4 py-2 rounded-xl font-semibold hover:bg-primary/90"
+			(click)="openCreateModal()"
+		>
+			Nuevo paquete
+		</button>
+	</div>
+
+	<div
+		*ngIf="loadError"
+		class="mb-4 p-3 rounded-xl border border-red-200 text-red-700 bg-red-50"
+	>
+		{{ loadError }}
+	</div>
+
+	<div *ngIf="isLoading" class="p-6 text-center text-slate-500">
+		Cargando paquetes...
+	</div>
+
+	<div *ngIf="!isLoading" class="overflow-x-auto">
+		<table class="w-full text-left border-collapse">
+			<thead>
+				<tr
+					class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+				>
+					<th class="py-3 px-4 font-semibold">Nombre</th>
+					<th class="py-3 px-4 font-semibold">Código</th>
+					<th class="py-3 px-4 font-semibold text-center">Servicios</th>
+					<th class="py-3 px-4 font-semibold">Precio final</th>
+					<th class="py-3 px-4 font-semibold text-center">Estado</th>
+					<th class="py-3 px-4 font-semibold text-right">Acciones</th>
+				</tr>
+			</thead>
+			<tbody class="text-sm divide-y divide-slate-100">
+				<tr *ngFor="let pkg of packages" class="hover:bg-white/60">
+					<td class="py-3 px-4 font-semibold text-slate-800">{{ pkg.name }}</td>
+					<td class="py-3 px-4 text-slate-500 font-mono">{{ pkg.code }}</td>
+					<td class="py-3 px-4 text-center">{{ getItemsCount(pkg) }}</td>
+					<td class="py-3 px-4 font-bold">
+						${{ getDefaultPrice(pkg) | number: "1.0-0" }}
+					</td>
+					<td class="py-3 px-4 text-center">
+						<span
+							class="badge"
+							[ngClass]="{
+								'bg-green-50 text-green-700 border-green-100':
+									pkg.status === 'ACTIVE',
+								'bg-amber-50 text-amber-700 border-amber-100':
+									pkg.status === 'DRAFT',
+								'bg-slate-100 text-slate-500 border-slate-200':
+									pkg.status === 'INACTIVE',
+							}"
+						>
+							{{ pkg.status }}
+						</span>
+					</td>
+					<td class="py-3 px-4">
+						<div class="flex items-center justify-end gap-1">
+							<button class="action-btn" (click)="openEditModal(pkg)">
+								Editar
+							</button>
+							<button class="action-btn" (click)="toggleStatus(pkg)">
+								{{ pkg.status === "ACTIVE" ? "Desactivar" : "Activar" }}
+							</button>
+							<button
+								class="action-btn action-btn-danger"
+								(click)="softDelete(pkg)"
+							>
+								Eliminar
+							</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</section>
+
+<app-create-package-modal
+	[visible]="isModalVisible"
+	[packageId]="editingPackageId"
+	(close)="onModalClose()"
+	(saved)="onSaved()"
+></app-create-package-modal>

@@ -427,6 +427,36 @@ export class FormsAdminComponent implements OnInit {
 			});
 	}
 
+	deleteBlock(block: EngineFormAdminBlock): void {
+		const confirmed = window.confirm(
+			`Se eliminará el bloque "${block.name}" y todos sus campos. Esta acción no se puede deshacer.`,
+		);
+
+		if (!confirmed) {
+			return;
+		}
+
+		this.errorMessage = '';
+		this.successMessage = '';
+		this.saving = true;
+
+		this.engineFormAdminService.deleteBlock(block.id).subscribe({
+			next: () => {
+				this.saving = false;
+				this.successMessage = 'Bloque eliminado correctamente.';
+				this.loadBlockCatalog();
+				this.loadFieldCatalog();
+				if (this.selectedTemplateId) {
+					this.loadTemplateDetail(this.selectedTemplateId);
+				}
+			},
+			error: (error: unknown) => {
+				this.saving = false;
+				this.errorMessage = this.extractErrorMessage(error);
+			},
+		});
+	}
+
 	onBlockModalClose(): void {
 		this.blockModalVisible = false;
 	}
@@ -639,6 +669,36 @@ export class FormsAdminComponent implements OnInit {
 			});
 	}
 
+	deleteField(field: EngineFormAdminField): void {
+		const confirmed = window.confirm(
+			`Se eliminará el campo "${field.label}". Esta acción no se puede deshacer.`,
+		);
+
+		if (!confirmed) {
+			return;
+		}
+
+		this.errorMessage = '';
+		this.successMessage = '';
+		this.saving = true;
+
+		this.engineFormAdminService.deleteField(field.id).subscribe({
+			next: () => {
+				this.saving = false;
+				this.successMessage = 'Campo eliminado correctamente.';
+				this.loadFieldCatalog();
+				this.loadBlockCatalog();
+				if (this.selectedTemplateId) {
+					this.loadTemplateDetail(this.selectedTemplateId);
+				}
+			},
+			error: (error: unknown) => {
+				this.saving = false;
+				this.errorMessage = this.extractErrorMessage(error);
+			},
+		});
+	}
+
 	onFieldModalClose(): void {
 		this.fieldModalVisible = false;
 	}
@@ -839,6 +899,43 @@ export class FormsAdminComponent implements OnInit {
 			next: () => {
 				this.successMessage = 'Versión publicada correctamente.';
 				this.saving = false;
+				if (this.selectedTemplateId) {
+					this.loadTemplateDetail(this.selectedTemplateId);
+					this.loadTemplates(this.selectedTemplateId);
+				}
+			},
+			error: (error: unknown) => {
+				this.saving = false;
+				this.errorMessage = this.extractErrorMessage(error);
+			},
+		});
+	}
+
+	deleteVersion(
+		version: EngineFormAdminTemplateDetail['versions'][number],
+	): void {
+		const activeLabel = version.isActive ? ' publicada' : '';
+		const confirmed = window.confirm(
+			`Se eliminará la versión v${version.versionNumber}${activeLabel}. Esta acción no se puede deshacer.`,
+		);
+
+		if (!confirmed) {
+			return;
+		}
+
+		this.errorMessage = '';
+		this.successMessage = '';
+		this.saving = true;
+
+		this.engineFormAdminService.deleteVersion(version.id).subscribe({
+			next: () => {
+				if (this.selectedVersionId === version.id) {
+					this.selectedVersionId = null;
+					this.versionBlocks = [];
+				}
+
+				this.saving = false;
+				this.successMessage = 'Versión eliminada correctamente.';
 				if (this.selectedTemplateId) {
 					this.loadTemplateDetail(this.selectedTemplateId);
 					this.loadTemplates(this.selectedTemplateId);

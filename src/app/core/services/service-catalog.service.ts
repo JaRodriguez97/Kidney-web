@@ -22,6 +22,10 @@ export interface BackendServiceItem {
 		| 'IMAGING'
 		| 'OTHER';
 	is_active: boolean;
+	service_price?: Array<{
+		amount: number | string;
+		currency: string;
+	}>;
 	created_at: string;
 }
 

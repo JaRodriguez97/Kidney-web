@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
 	ClinicalRecordRisk,
 	ClinicalRecordService,
@@ -18,6 +19,7 @@ import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 })
 export class ClinicalRecordProviderComponent implements OnInit {
 	private readonly clinicalRecordService = inject(ClinicalRecordService);
+	private readonly route = inject(ActivatedRoute);
 
 	records: ProviderClinicalRecordItem[] = [];
 	filteredRecords: ProviderClinicalRecordItem[] = [];
@@ -38,6 +40,10 @@ export class ClinicalRecordProviderComponent implements OnInit {
 	};
 
 	ngOnInit(): void {
+		const patientNameParam = this.route.snapshot.queryParamMap.get('patientName');
+		if (patientNameParam) {
+			this.searchTerm = patientNameParam;
+		}
 		this.loadRecords();
 	}
 
