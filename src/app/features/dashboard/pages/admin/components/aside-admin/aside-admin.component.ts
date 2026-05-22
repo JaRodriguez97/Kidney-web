@@ -30,6 +30,7 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 		'appointments',
 		'labs',
 		'results',
+		'billing',
 		'forms',
 		'settings',
 		'support',

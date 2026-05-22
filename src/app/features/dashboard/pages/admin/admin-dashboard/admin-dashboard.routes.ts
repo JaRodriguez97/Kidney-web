@@ -10,6 +10,7 @@ import { ResultsAdminComponent } from '../components/results-admin/results-admin
 import { SettingsAdminComponent } from '../components/settings-admin/settings-admin.component';
 import { SupportAdminComponent } from '../components/support-admin/support-admin.component';
 import { FormsAdminComponent } from '../components/forms-admin/forms-admin.component';
+import { BillingAdminComponent } from '../components/billing-admin/billing-admin.component';
 
 export const ADMIN_DASHBOARD_ROUTES: Routes = [
 	{
@@ -24,6 +25,7 @@ export const ADMIN_DASHBOARD_ROUTES: Routes = [
 			{ path: 'services', component: ServicesAdminComponent },
 			{ path: 'labs', component: LabsAdminComponent },
 			{ path: 'results', component: ResultsAdminComponent },
+			{ path: 'billing', component: BillingAdminComponent },
 			{ path: 'forms', component: FormsAdminComponent },
 			{ path: 'settings', component: SettingsAdminComponent },
 			{ path: 'support', component: SupportAdminComponent },

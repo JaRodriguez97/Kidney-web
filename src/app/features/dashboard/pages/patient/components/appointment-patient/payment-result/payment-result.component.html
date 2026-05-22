@@ -1,0 +1,17 @@
+<section class="w-full h-full overflow-y-auto pb-6">
+	<div class="glass-card p-8 max-w-2xl mx-auto mt-6 text-center">
+		<h2 class="text-2xl font-bold text-slate-800 mb-2">Resultado del pago</h2>
+		<p class="text-slate-600 mb-6">
+			Estado actual: <strong>{{ status }}</strong>
+		</p>
+		<p *ngIf="reference" class="text-sm text-slate-500 mb-6">
+			Referencia: {{ reference }}
+		</p>
+
+		<div class="flex justify-center">
+			<button type="button" class="btn-primary" (click)="goToAppointments()">
+				Ir a mis citas
+			</button>
+		</div>
+	</div>
+</section>

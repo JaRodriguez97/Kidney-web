@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 export type ClinicalRecordRisk = 'HIGH' | 'MODERATE' | 'LOW' | 'UNCLASSIFIED';
 
 export interface ProviderClinicalRecordItem {
+	latestCareId: string | null;
 	patientId: string;
 	fullName: string;
 	documentType: string | null;
@@ -35,6 +36,7 @@ export interface ProviderClinicalRecordsResponse {
 }
 
 export interface PatientRecentHistoryItem {
+	careId: string;
 	date: string;
 	serviceName: string;
 	summary: string | null;
@@ -93,5 +95,27 @@ export class ClinicalRecordService {
 			`${this.apiUrl}/patient/${patientId}/recent`,
 			{ params },
 		);
+	}
+
+	getMyRecentHistory(limit = 5): Observable<PatientRecentHistoryItem[]> {
+		const params = new HttpParams().set('limit', String(limit));
+		return this.http.get<PatientRecentHistoryItem[]>(
+			`${this.apiUrl}/my/recent`,
+			{
+				params,
+			},
+		);
+	}
+
+	downloadDigitalAttentionSummary(careId: string): Observable<Blob> {
+		return this.http.get(`${this.apiUrl}/${careId}/pdf`, {
+			responseType: 'blob',
+		});
+	}
+
+	downloadTemplatePreviewPdf(): Observable<Blob> {
+		return this.http.get(`${this.apiUrl}/template/preview/pdf`, {
+			responseType: 'blob',
+		});
 	}
 }

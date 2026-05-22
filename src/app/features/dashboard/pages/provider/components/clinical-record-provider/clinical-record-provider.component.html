@@ -9,6 +9,21 @@
 				<div
 					class="p-6 border-b border-white/40 flex flex-col xl:flex-row gap-4 justify-between items-center bg-white/30"
 				>
+					<div class="w-full xl:w-auto flex justify-start">
+						<button
+							class="bg-secondary hover:bg-[#7d1f24] text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-secondary/20 transition-all flex items-center gap-2 disabled:opacity-60"
+							(click)="downloadTemplatePreview()"
+							[disabled]="isPreviewTemplateLoading"
+							type="button"
+						>
+							<span class="material-symbols-outlined text-sm">description</span>
+							{{
+								isPreviewTemplateLoading
+									? "Cargando plantilla..."
+									: "Ver/Descargar plantilla resumen"
+							}}
+						</button>
+					</div>
 					<div class="relative w-full xl:w-80">
 						<span
 							class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -146,15 +161,35 @@
 											</span>
 										</td>
 										<td class="py-4 pr-6 text-right">
-											<button
-												class="bg-primary hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center gap-2 ml-auto"
-												type="button"
-											>
-												<span class="material-symbols-outlined text-sm"
-													>visibility</span
+											<div class="flex items-center gap-2 justify-end">
+												<button
+													class="bg-primary hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+													type="button"
 												>
-												Ver Historia
-											</button>
+													<span class="material-symbols-outlined text-sm"
+														>visibility</span
+													>
+													Ver Historia
+												</button>
+												<button
+													class="bg-slate-700 hover:bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
+													(click)="downloadSummary(record)"
+													[disabled]="
+														!record.latestCareId ||
+														downloadingCareId === record.latestCareId
+													"
+													type="button"
+												>
+													<span class="material-symbols-outlined text-sm"
+														>download</span
+													>
+													{{
+														downloadingCareId === record.latestCareId
+															? "Descargando..."
+															: "Descargar resumen"
+													}}
+												</button>
+											</div>
 										</td>
 									</tr>
 								}

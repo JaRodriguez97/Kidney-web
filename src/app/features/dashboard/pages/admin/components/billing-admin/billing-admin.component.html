@@ -1,0 +1,63 @@
+<section class="w-full h-full overflow-y-auto pb-6">
+	<header class="glass-card p-6 mb-6">
+		<h2 class="text-2xl font-bold text-slate-800">Facturación</h2>
+		<p class="text-sm text-slate-500">Resumen y estado de facturas y pagos.</p>
+	</header>
+
+	<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+		<div class="glass-card p-4">
+			<p class="text-xs text-slate-500">Total facturado</p>
+			<p class="text-xl font-bold text-slate-800">
+				{{ formatMoney(summary.totalInvoiced) }}
+			</p>
+		</div>
+		<div class="glass-card p-4">
+			<p class="text-xs text-slate-500">Total pagado</p>
+			<p class="text-xl font-bold text-green-700">
+				{{ formatMoney(summary.totalPaid) }}
+			</p>
+		</div>
+		<div class="glass-card p-4">
+			<p class="text-xs text-slate-500">Pendiente</p>
+			<p class="text-xl font-bold text-amber-700">
+				{{ formatMoney(summary.totalPending) }}
+			</p>
+		</div>
+		<div class="glass-card p-4">
+			<p class="text-xs text-slate-500">Fallido</p>
+			<p class="text-xl font-bold text-red-700">
+				{{ formatMoney(summary.totalFailed) }}
+			</p>
+		</div>
+	</div>
+
+	<div class="glass-card p-4 overflow-x-auto">
+		<p *ngIf="errorMessage" class="text-sm text-red-600 mb-3">
+			{{ errorMessage }}
+		</p>
+		<p *ngIf="loading" class="text-sm text-slate-500">Cargando...</p>
+
+		<table *ngIf="!loading" class="w-full text-sm">
+			<thead>
+				<tr class="text-left text-slate-500 border-b border-slate-200">
+					<th class="py-2 pr-2">Factura</th>
+					<th class="py-2 pr-2">Paciente</th>
+					<th class="py-2 pr-2">Servicio</th>
+					<th class="py-2 pr-2">Estado factura</th>
+					<th class="py-2 pr-2">Estado pago</th>
+					<th class="py-2 pr-2">Valor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let row of rows" class="border-b border-slate-100">
+					<td class="py-2 pr-2">{{ row.invoiceNumber }}</td>
+					<td class="py-2 pr-2">{{ row.patientName }}</td>
+					<td class="py-2 pr-2">{{ row.serviceName }}</td>
+					<td class="py-2 pr-2">{{ row.invoiceStatus }}</td>
+					<td class="py-2 pr-2">{{ row.paymentStatus }}</td>
+					<td class="py-2 pr-2">{{ formatMoney(row.amount) }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</section>

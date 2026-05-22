@@ -81,9 +81,17 @@
 			Resultados
 		</a>
 		<a
-			id="tour-nav-forms"
 			(click)="setActive(7)"
 			[class.active]="activeIndex === 7"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">receipt_long</span>
+			Facturación
+		</a>
+		<a
+			id="tour-nav-forms"
+			(click)="setActive(8)"
+			[class.active]="activeIndex === 8"
 			class="sidebar-item cursor-pointer"
 		>
 			<span class="material-symbols-outlined">dynamic_form</span>
@@ -91,8 +99,8 @@
 		</a>
 		<a
 			id="tour-nav-settings"
-			(click)="setActive(8)"
-			[class.active]="activeIndex === 8"
+			(click)="setActive(9)"
+			[class.active]="activeIndex === 9"
 			class="sidebar-item cursor-pointer"
 		>
 			<span class="material-symbols-outlined">settings</span>
@@ -102,8 +110,8 @@
 	<div class="mt-auto pt-6 border-t border-slate-200/50">
 		<a
 			id="tour-nav-support-admin"
-			(click)="setActive(9)"
-			[class.active]="activeIndex === 9"
+			(click)="setActive(10)"
+			[class.active]="activeIndex === 10"
 			class="sidebar-item cursor-pointer"
 		>
 			<span class="material-symbols-outlined">headset_mic</span>

@@ -46,17 +46,17 @@ export const routes: Routes = [
 			),
 	},
 	{
-		path: 'blog/:id',
-		loadComponent: () =>
-			import('./features/blog/pages/blog-article/blog-article.component').then(
-				(m) => m.BlogArticleComponent,
-			),
-	},
-	{
 		path: 'blog/test/:id',
 		loadComponent: () =>
 			import('./features/blog/pages/blog-test/blog-test.component').then(
 				(m) => m.BlogTestComponent,
+			),
+	},
+	{
+		path: 'blog/:id',
+		loadComponent: () =>
+			import('./features/blog/pages/blog-article/blog-article.component').then(
+				(m) => m.BlogArticleComponent,
 			),
 	},
 
@@ -91,5 +91,12 @@ export const routes: Routes = [
 		canActivate: [AuthGuard],
 		data: { role: 'PROVIDER' },
 		children: PROVIDER_DASHBOARD_ROUTES,
+	},
+	{
+		path: 'validate/care-summary/:token',
+		loadComponent: () =>
+			import('./features/clinical-record/pages/validate-care-summary/validate-care-summary.component').then(
+				(m) => m.ValidateCareSummaryComponent,
+			),
 	},
 ];

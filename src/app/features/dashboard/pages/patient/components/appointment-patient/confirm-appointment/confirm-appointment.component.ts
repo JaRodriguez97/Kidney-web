@@ -134,13 +134,21 @@ export class ConfirmAppointmentComponent implements OnInit {
 				serviceId: this.serviceId!,
 			})
 			.subscribe({
-				next: () => {
+				next: (response) => {
+					const appointmentId =
+						typeof response === 'object' &&
+						response !== null &&
+						'id' in response
+							? String((response as { id?: unknown }).id ?? '')
+							: '';
+
 					this.isSubmitting = false;
 					this.appointmentBookingState.clear();
 					this.router.navigate(
 						['/dashboard/patient/appointments/schedule/payment-gateway'],
 						{
 							queryParams: {
+								appointmentId: appointmentId || undefined,
 								specialty: this.specialty ?? undefined,
 								serviceId: this.serviceId ?? undefined,
 								serviceCode: this.serviceCode ?? undefined,

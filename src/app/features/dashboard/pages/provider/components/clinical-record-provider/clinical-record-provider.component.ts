@@ -25,6 +25,8 @@ export class ClinicalRecordProviderComponent implements OnInit {
 	filteredRecords: ProviderClinicalRecordItem[] = [];
 
 	loading = false;
+	downloadingCareId: string | null = null;
+	isPreviewTemplateLoading = false;
 	errorMessage = '';
 
 	searchTerm = '';
@@ -40,7 +42,8 @@ export class ClinicalRecordProviderComponent implements OnInit {
 	};
 
 	ngOnInit(): void {
-		const patientNameParam = this.route.snapshot.queryParamMap.get('patientName');
+		const patientNameParam =
+			this.route.snapshot.queryParamMap.get('patientName');
 		if (patientNameParam) {
 			this.searchTerm = patientNameParam;
 		}
@@ -180,6 +183,63 @@ export class ClinicalRecordProviderComponent implements OnInit {
 		// Escala visual: 5 consultas/año representa 100% de la barra.
 		const progress = (this.stats.averageVisitsPerPatient / 5) * 100;
 		return Math.max(0, Math.min(100, Number(progress.toFixed(1))));
+	}
+
+	downloadTemplatePreview(): void {
+		if (this.isPreviewTemplateLoading) {
+			return;
+		}
+
+		this.isPreviewTemplateLoading = true;
+		this.clinicalRecordService.downloadTemplatePreviewPdf().subscribe({
+			next: (blob) => {
+				const objectUrl = window.URL.createObjectURL(blob);
+				window.open(objectUrl, '_blank', 'noopener');
+
+				const link = document.createElement('a');
+				link.href = objectUrl;
+				link.download = 'plantilla-resumen-atencion-clinica.pdf';
+				link.click();
+
+				window.setTimeout(() => {
+					window.URL.revokeObjectURL(objectUrl);
+				}, 2000);
+
+				this.isPreviewTemplateLoading = false;
+			},
+			error: () => {
+				this.errorMessage =
+					'No fue posible abrir la plantilla del resumen de atencion clinica.';
+				this.isPreviewTemplateLoading = false;
+			},
+		});
+	}
+
+	downloadSummary(record: ProviderClinicalRecordItem): void {
+		if (!record.latestCareId || this.downloadingCareId) {
+			return;
+		}
+
+		this.downloadingCareId = record.latestCareId;
+		this.clinicalRecordService
+			.downloadDigitalAttentionSummary(record.latestCareId)
+			.subscribe({
+				next: (blob) => {
+					const fileName = `resumen-digital-atencion-${record.latestCareId}.pdf`;
+					const objectUrl = window.URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = objectUrl;
+					link.download = fileName;
+					link.click();
+					window.URL.revokeObjectURL(objectUrl);
+					this.downloadingCareId = null;
+				},
+				error: () => {
+					this.errorMessage =
+						'No fue posible descargar el resumen digital de atencion.';
+					this.downloadingCareId = null;
+				},
+			});
 	}
 
 	private matchesFromDate(lastAttentionDate: string | null): boolean {
