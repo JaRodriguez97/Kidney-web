@@ -1,335 +1,369 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-start">
-  <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
-    <div
-      class="glass-panel p-3 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
-    >
-      <app-input-text
-        placeholder="Buscar por nombre o correo"
-        icon="search"
-        label=""
-        style="height: 50px"
-        [(ngModel)]="searchQuery"
-        (ngModelChange)="onSearchChange()"
-      ></app-input-text>
-      <select
-        class="glass-input cursor-pointer bg-white/40"
-        [(ngModel)]="selectedRole"
-        (ngModelChange)="onRoleFilterChange()"
-      >
-        <option value="">Rol: Todos</option>
-        <option value="PATIENT">Paciente</option>
-        <option value="PROVIDER">Médico</option>
-        <option value="ADMIN">Administrador</option>
-      </select>
-      <select
-        class="glass-input cursor-pointer bg-white/40"
-        [(ngModel)]="selectedStatus"
-        (ngModelChange)="onStatusFilterChange()"
-      >
-        <option value="">Estado: Todos</option>
-        <option value="active">Activos</option>
-        <option value="inactive">Inactivos</option>
-      </select>
-      <button
-        type="button"
-        (click)="openCreateModal()"
-        class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
-      >
-        <span class="material-symbols-outlined text-sm">add</span>
-        Nuevo Usuario
-      </button>
-    </div>
-    <div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
-      <!-- Estado de carga -->
-      <div *ngIf="isLoading" class="flex items-center justify-center h-96">
-        <div class="text-center">
-          <div class="inline-block animate-spin">
-            <span class="material-symbols-outlined text-4xl text-primary">
-              refresh
-            </span>
-          </div>
-          <p class="text-slate-500 mt-4">Cargando usuarios...</p>
-        </div>
-      </div>
+	<div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6">
+		<div
+			class="glass-panel p-3 flex flex-col sm:flex-row gap-4 justify-between items-center w-full sm:w-auto overflow-x-auto"
+		>
+			<app-input-text
+				placeholder="Buscar por nombre o correo"
+				icon="search"
+				label=""
+				style="height: 50px"
+				[(ngModel)]="searchQuery"
+				(ngModelChange)="onSearchChange()"
+			></app-input-text>
+			<select
+				class="glass-input cursor-pointer bg-white/40"
+				[(ngModel)]="selectedRole"
+				(ngModelChange)="onRoleFilterChange()"
+			>
+				<option value="">Rol: Todos</option>
+				<option value="PATIENT">Paciente</option>
+				<option value="PROVIDER">Médico</option>
+				<option value="ADMIN">Administrador</option>
+			</select>
+			<select
+				class="glass-input cursor-pointer bg-white/40"
+				[(ngModel)]="selectedStatus"
+				(ngModelChange)="onStatusFilterChange()"
+			>
+				<option value="">Estado: Todos</option>
+				<option value="active">Activos</option>
+				<option value="inactive">Inactivos</option>
+			</select>
+			<button
+				type="button"
+				(click)="openCreateModal()"
+				class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 whitespace-nowrap"
+			>
+				<span class="material-symbols-outlined text-sm">add</span>
+				Nuevo Usuario
+			</button>
+		</div>
+		<div class="glass-panel p-0 overflow-hidden flex-1 min-h-[500px]">
+			<!-- Estado de carga -->
+			<div *ngIf="isLoading" class="flex items-center justify-center h-96">
+				<div class="text-center">
+					<div class="inline-block animate-spin">
+						<span class="material-symbols-outlined text-4xl text-primary">
+							refresh
+						</span>
+					</div>
+					<p class="text-slate-500 mt-4">Cargando usuarios...</p>
+				</div>
+			</div>
 
-      <!-- Estado de error -->
-      <div
-        *ngIf="error && !isLoading"
-        class="flex items-center justify-center h-96"
-      >
-        <div class="text-center">
-          <span class="material-symbols-outlined text-4xl text-red-500 mb-4">
-            error
-          </span>
-          <p class="text-slate-500">{{ error }}</p>
-          <button
-            (click)="loadUsers()"
-            class="mt-4 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90"
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
+			<!-- Estado de error -->
+			<div
+				*ngIf="error && !isLoading"
+				class="flex items-center justify-center h-96"
+			>
+				<div class="text-center">
+					<span class="material-symbols-outlined text-4xl text-red-500 mb-4">
+						error
+					</span>
+					<p class="text-slate-500">{{ error }}</p>
+					<button
+						(click)="loadUsers()"
+						class="mt-4 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90"
+					>
+						Reintentar
+					</button>
+				</div>
+			</div>
 
-      <!-- Tabla de usuarios -->
-      <div *ngIf="!isLoading && !error" class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr
-              class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
-            >
-              <th class="py-4 pl-6 font-semibold">Nombre</th>
-              <th class="py-4 px-4 font-semibold">Correo</th>
-              <th class="py-4 px-4 font-semibold">Rol</th>
-              <th class="py-4 px-4 font-semibold text-center">Estado</th>
-              <th class="py-4 px-4 font-semibold text-right">Teléfono</th>
-              <th class="py-4 pr-6 font-semibold text-right">Acciones</th>
-            </tr>
-          </thead>
-          <tbody class="text-sm divide-y divide-slate-100">
-            <tr
-              *ngFor="let user of filteredUsers"
-              class="group hover:bg-white/60 transition-colors"
-            >
-              <td class="py-4 pl-6 font-medium text-slate-800">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-xs text-white"
-                    [style.background-color]="
-                      'hsl(' +
-                      ((user.id.charCodeAt(0) * 7) % 360) +
-                      ', 70%, 60%)'
-                    "
-                  >
-                    {{ getInitials(user) }}
-                  </div>
-                  <div class="flex flex-col">
-                    <span>{{ getFullName(user) }}</span>
-                    <span class="text-[10px] text-slate-400 font-normal"
-                      >ID: {{ user.id.substring(0, 8) }}</span
-                    >
-                  </div>
-                </div>
-              </td>
-              <td class="py-4 px-4 text-slate-500">{{ user.email }}</td>
-              <td class="py-4 px-4">
-                <span
-                  *ngFor="let role of user.roles"
-                  [ngClass]="'badge ' + getRoleBadgeClass(role)"
-                >
-                  {{ getRoleLabel(role) }}
-                </span>
-              </td>
-              <td class="py-4 px-4 text-center">
-                <span
-                  class="badge flex justify-center w-20 mx-auto"
-                  [ngClass]="getStatusBadgeClass(user)"
-                >
-                  {{ getStatusText(user) }}
-                </span>
-              </td>
-              <td class="py-4 px-4 text-slate-500 text-right text-xs">
-                {{ user.phone || "—" }}
-              </td>
-              <td class="py-4 pr-6 text-right">
-                <div
-                  class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                >
-                  <button
-                    (click)="editUser(user)"
-                    class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-                    title="Editar usuario"
-                  >
-                    <span class="material-symbols-outlined text-lg">edit</span>
-                  </button>
-                  <button
-                    (click)="deleteUser(user)"
-                    class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-red-600"
-                    title="Eliminar usuario"
-                  >
-                    <span class="material-symbols-outlined text-lg"
-                      >delete</span
-                    >
-                  </button>
-                </div>
-              </td>
-            </tr>
+			<!-- Tabla de usuarios -->
+			<div *ngIf="!isLoading && !error" class="overflow-x-auto">
+				<table class="w-full text-left border-collapse">
+					<thead>
+						<tr
+							class="bg-slate-50/50 text-xs text-slate-500 border-b border-slate-200 uppercase tracking-wider"
+						>
+							<th class="py-4 pl-6 font-semibold">Nombre</th>
+							<th class="py-4 px-4 font-semibold">Correo</th>
+							<th class="py-4 px-4 font-semibold">Rol</th>
+							<th class="py-4 px-4 font-semibold text-center">Estado</th>
+							<th class="py-4 px-4 font-semibold text-right">Teléfono</th>
+							<th class="py-4 pr-6 font-semibold text-right">Acciones</th>
+						</tr>
+					</thead>
+					<tbody class="text-sm divide-y divide-slate-100">
+						<tr
+							*ngFor="let user of filteredUsers"
+							class="group hover:bg-white/60 transition-colors"
+						>
+							<td class="py-4 pl-6 font-medium text-slate-800">
+								<div class="flex items-center gap-3">
+									<div
+										class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex-shrink-0 flex items-center justify-center font-bold text-xs text-white"
+										[style.background-color]="
+											'hsl(' +
+											((user.id.charCodeAt(0) * 7) % 360) +
+											', 70%, 60%)'
+										"
+									>
+										{{ getInitials(user) }}
+									</div>
+									<div class="flex flex-col">
+										<span>{{ getFullName(user) }}</span>
+										<span class="text-[10px] text-slate-400 font-normal"
+											>ID: {{ user.id.substring(0, 8) }}</span
+										>
+									</div>
+								</div>
+							</td>
+							<td class="py-4 px-4 text-slate-500">{{ user.email }}</td>
+							<td class="py-4 px-4">
+								<span
+									*ngFor="let role of user.roles"
+									[ngClass]="'badge ' + getRoleBadgeClass(role)"
+								>
+									{{ getRoleLabel(role) }}
+								</span>
+							</td>
+							<td class="py-4 px-4 text-center">
+								<span
+									class="badge flex justify-center w-20 mx-auto"
+									[ngClass]="getStatusBadgeClass(user)"
+								>
+									{{ getStatusText(user) }}
+								</span>
+							</td>
+							<td class="py-4 px-4 text-slate-500 text-right text-xs">
+								{{ user.phone || "—" }}
+							</td>
+							<td class="py-4 pr-6 text-right">
+								<div
+									class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
+								>
+									<button
+										(click)="editUser(user)"
+										class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+										title="Editar usuario"
+									>
+										<span class="material-symbols-outlined text-lg">edit</span>
+									</button>
+									<button
+										(click)="deleteUser(user)"
+										class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-red-600"
+										title="Eliminar usuario"
+									>
+										<span class="material-symbols-outlined text-lg"
+											>delete</span
+										>
+									</button>
+								</div>
+							</td>
+						</tr>
 
-            <!-- Sin resultados -->
-            <tr *ngIf="filteredUsers.length === 0 && !isLoading">
-              <td colspan="6" class="py-12 text-center text-slate-400">
-                <span class="material-symbols-outlined text-4xl mb-2">
-                  person_off
-                </span>
-                <p>No se encontraron usuarios</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+						<!-- Sin resultados -->
+						<tr *ngIf="filteredUsers.length === 0 && !isLoading">
+							<td colspan="6" class="py-12 text-center text-slate-400">
+								<span class="material-symbols-outlined text-4xl mb-2">
+									person_off
+								</span>
+								<p>No se encontraron usuarios</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-      <!-- Pie de tabla -->
-      <div
-        *ngIf="!isLoading && !error && users.length > 0"
-        class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
-      >
-        <span
-          >Mostrando {{ filteredUsers.length }} de
-          {{ users.length }} usuarios</span
-        >
-      </div>
-    </div>
-  </div>
-  <div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
-    <div class="glass-panel p-6 h-full">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="font-bold text-slate-800 text-lg">Roles del Sistema</h3>
-        <!-- <button
+			<!-- Pie de tabla -->
+			<div
+				*ngIf="!isLoading && !error && users.length > 0"
+				class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
+			>
+				<span
+					>Mostrando {{ filteredUsers.length }} de
+					{{ users.length }} usuarios</span
+				>
+			</div>
+		</div>
+	</div>
+	<div class="lg:col-span-4 xl:col-span-3 flex flex-col gap-6">
+		<div class="glass-panel p-6 h-full">
+			<div class="flex items-center justify-between mb-6">
+				<h3 class="font-bold text-slate-800 text-lg">Roles del Sistema</h3>
+				<!-- <button
           class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-primary hover:text-white transition-colors text-slate-600"
         >
           <span class="material-symbols-outlined text-lg">add</span>
         </button> -->
-      </div>
-      <div class="space-y-3">
-        <div
-          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-            <span
-              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-              >Pacientes</span
-            >
-          </div>
-          <span
-            class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full"
-            >{{ countPatient }}</span
-          >
-        </div>
-        <div>
-          <div
-            (click)="toggleProviderTypes()"
-            class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-          >
-            <div class="flex items-center gap-3">
-              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span
-                class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-                >Proveedores</span
-              >
-            </div>
-            <div class="flex items-center gap-2">
-              <span
-                class="material-symbols-outlined text-sm text-slate-400 transition-transform"
-                [class.rotate-180]="showProviderTypes"
-                >expand_more</span
-              >  <span
-                class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
-                >{{ countProvider }}</span
-              >
-            
-            </div>
-          </div>
-          <div *ngIf="showProviderTypes" class="mt-2 ml-5 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-500"
-                >Tipos de Proveedores</span
-              >
-              <button
-                (click)="openCreateProviderTypeModal(); $event.stopPropagation()"
-                class="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 hover:bg-primary hover:text-white transition-colors text-blue-600"
-                title="Crear tipo de proveedor"
-              >
-                <span class="material-symbols-outlined text-sm">add</span>
-              </button>
-            </div>
-            <div
-              *ngFor="let pt of providerTypes"
-              class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50/50 border border-blue-100/50 text-xs text-blue-700"
-            >
-              <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
-              <span>{{ pt.name }}</span>
-            </div>
-            <p
-              *ngIf="providerTypes.length === 0 && !isLoadingProviderTypes"
-              class="text-xs text-slate-400 px-3 py-1"
-            >
-              Sin tipos registrados
-            </p>
-            <div
-              *ngIf="isLoadingProviderTypes"
-              class="text-xs text-slate-400 px-3 py-1"
-            >
-              Cargando...
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-amber-500"></div>
-            <span
-              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-              >Aliados</span
-            >
-          </div>
-          <span
-            class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full"
-            >{{ countOrganization }}</span
-          >
-        </div>
-        <div
-          class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-purple-500"></div>
-            <span
-              class="font-medium text-slate-700 group-hover:text-primary transition-colors"
-              >Administración</span
-            >
-          </div>
-          <span
-            class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full"
-            >{{ countAdmin }}</span
-          >
-        </div>
-      </div>
-      <div class="mt-8 pt-6 border-t border-slate-200/50">
-        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-          <h4 class="text-primary font-bold text-sm mb-1">
-            Resumen de Usuarios
-          </h4>
-          <p class="text-slate-500 text-xs mb-3">
-            Estadísticas actuales de la plataforma
-          </p>
-          <div class="flex justify-between items-end">
-            <div>
-              <span class="text-2xl font-bold text-slate-800">{{
-                users.length
-              }}</span>
-              <span class="text-xs text-slate-500 ml-1">Total</span>
-            </div>
-            <div class="text-right">
-              <span class="text-green-600 font-bold text-sm"
-                >{{ userActivates() }} Activos</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+			</div>
+			<div class="space-y-3">
+				<div
+					class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+				>
+					<div class="flex items-center gap-3">
+						<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+						<span
+							class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+							>Pacientes</span
+						>
+					</div>
+					<span
+						class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full"
+						>{{ countPatient }}</span
+					>
+				</div>
+				<div>
+					<div
+						(click)="toggleProviderTypes()"
+						class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+					>
+						<div class="flex items-center gap-3">
+							<div class="w-2 h-2 rounded-full bg-blue-500"></div>
+							<span
+								class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+								>Proveedores</span
+							>
+						</div>
+						<div class="flex items-center gap-2">
+							<span
+								class="material-symbols-outlined text-sm text-slate-400 transition-transform"
+								[class.rotate-180]="showProviderTypes"
+								>expand_more</span
+							>
+							<span
+								class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full"
+								>{{ countProvider }}</span
+							>
+						</div>
+					</div>
+					<div *ngIf="showProviderTypes" class="mt-2 ml-5 space-y-2">
+						<div class="flex items-center justify-between">
+							<span class="text-xs font-semibold text-slate-500"
+								>Tipos de Proveedores</span
+							>
+							<button
+								(click)="
+									openCreateProviderTypeModal(); $event.stopPropagation()
+								"
+								class="w-6 h-6 flex items-center justify-center rounded-md bg-blue-50 hover:bg-primary hover:text-white transition-colors text-blue-600"
+								title="Crear tipo de proveedor"
+							>
+								<span class="material-symbols-outlined text-sm">add</span>
+							</button>
+						</div>
+						<div
+							*ngFor="let pt of providerTypes"
+							class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50/50 border border-blue-100/50 text-xs text-blue-700"
+						>
+							<div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+							<span>{{ pt.name }}</span>
+						</div>
+						<p
+							*ngIf="providerTypes.length === 0 && !isLoadingProviderTypes"
+							class="text-xs text-slate-400 px-3 py-1"
+						>
+							Sin tipos registrados
+						</p>
+						<div
+							*ngIf="isLoadingProviderTypes"
+							class="text-xs text-slate-400 px-3 py-1"
+						>
+							Cargando...
+						</div>
+					</div>
+				</div>
+				<div
+					class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+				>
+					<div class="flex items-center gap-3">
+						<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+						<span
+							class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+							>Aliados</span
+						>
+					</div>
+					<span
+						class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full"
+						>{{ countOrganization }}</span
+					>
+				</div>
+				<div
+					class="flex items-center justify-between p-3 rounded-xl bg-white/50 border border-white/50 hover:border-primary/30 transition-colors group cursor-pointer"
+				>
+					<div class="flex items-center gap-3">
+						<div class="w-2 h-2 rounded-full bg-purple-500"></div>
+						<span
+							class="font-medium text-slate-700 group-hover:text-primary transition-colors"
+							>Administración</span
+						>
+					</div>
+					<span
+						class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full"
+						>{{ countAdmin }}</span
+					>
+				</div>
+			</div>
+			<div class="mt-8 pt-6 border-t border-slate-200/50">
+				<div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+					<h4 class="text-primary font-bold text-sm mb-1">
+						Resumen de Usuarios
+					</h4>
+					<p class="text-slate-500 text-xs mb-3">
+						Estadísticas actuales de la plataforma
+					</p>
+					<div class="flex justify-between items-end">
+						<div>
+							<span class="text-2xl font-bold text-slate-800">{{
+								users.length
+							}}</span>
+							<span class="text-xs text-slate-500 ml-1">Total</span>
+						</div>
+						<div class="text-right">
+							<span class="text-green-600 font-bold text-sm"
+								>{{ userActivates() }} Activos</span
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-6 pt-6 border-t border-slate-200/50">
+				<h4 class="text-sm font-bold text-slate-700 mb-2">
+					Cobertura RDA Seccion A
+				</h4>
+				<p class="text-xs text-slate-500 mb-3">
+					Verifica captura de pais ISO, municipio DIVIPOLA, etnia y ocupacion
+					CIUO en cada registro.
+				</p>
+				<div class="space-y-2 text-xs">
+					<div
+						class="flex items-center justify-between rounded-lg bg-slate-50 p-2 border border-slate-100"
+					>
+						<span class="text-slate-500">Identificacion completa</span>
+						<span class="font-bold text-slate-700">{{
+							filteredUsers.length
+						}}</span>
+					</div>
+					<div
+						class="flex items-center justify-between rounded-lg bg-slate-50 p-2 border border-slate-100"
+					>
+						<span class="text-slate-500">Pacientes con datos de contacto</span>
+						<span class="font-bold text-slate-700">{{ countPatient }}</span>
+					</div>
+					<div
+						class="flex items-center justify-between rounded-lg bg-slate-50 p-2 border border-slate-100"
+					>
+						<span class="text-slate-500">Proveedores con datos RETHUS</span>
+						<span class="font-bold text-slate-700">{{ countProvider }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <div
-  *ngIf="showCreateModal"
-  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm overflow-auto"
+	*ngIf="showCreateModal"
+	class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm overflow-auto"
 >
-  <div
-    class="absolute modal-glass w-full max-w-3/4 max-h-fit flex flex-col top-0"
-  >
-    <div class="px-10 pt-10 pb-6 text-center">
-      <!-- <img
+	<div
+		class="absolute modal-glass w-full max-w-3/4 max-h-fit flex flex-col top-0"
+	>
+		<div class="px-10 pt-10 pb-6 text-center">
+			<!-- <img
         src="assets/img/logo.png"
         srcset="assets/img/logo.png 1x, assets/img/logo.png 2x"
         width="150"
@@ -337,138 +371,138 @@
         alt="Kidney Medicine logo"
         class="rounded-lg object-contain"
       /> -->
-      <h3 class="text-3xl font-extrabold text-primary tracking-tight">
-        Registrar Nuevo Miembro del Sistema
-      </h3>
-      <p class="text-slate-500 text-base mt-6">
-        Gestión centralizada de perfiles y accesos administrativos
-      </p>
-    </div>
-    <div class="flex-1 overflow-y-auto px-10 py-4 space-y-10">
-      <section class="mb-6">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="material-symbols-outlined text-primary text-xl"
-            >badge</span
-          >
-          <label class="block text-primary font-bold text-base"
-            >Rol del Sistema*</label
-          >
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <label class="cursor-pointer group">
-            <input
-              checked=""
-              class="peer hidden"
-              name="role"
-              type="radio"
-              value="paciente"
-              [(ngModel)]="modalRole"
-            />
-            <div
-              class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
-            >
-              <span
-                class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
-                >person</span
-              >
-              <span
-                class="text-xs font-bold text-slate-600 peer-checked:text-primary"
-                >Paciente</span
-              >
-            </div>
-          </label>
-          <label class="cursor-pointer group">
-            <input
-              class="peer hidden"
-              name="role"
-              type="radio"
-              value="proveedor"
-              [(ngModel)]="modalRole"
-            />
-            <div
-              class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
-            >
-              <span
-                class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
-                >medical_services</span
-              >
-              <span
-                class="text-xs font-bold text-slate-600 peer-checked:text-primary"
-                >Proveedor</span
-              >
-            </div>
-          </label>
-          <label class="cursor-pointer group">
-            <input
-              class="peer hidden"
-              name="role"
-              type="radio"
-              value="aliado"
-              [(ngModel)]="modalRole"
-            />
-            <div
-              class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
-            >
-              <span
-                class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
-                >handshake</span
-              >
-              <span
-                class="text-xs font-bold text-slate-600 peer-checked:text-primary"
-                >Aliado</span
-              >
-            </div>
-          </label>
-          <label class="cursor-pointer group">
-            <input
-              class="peer hidden"
-              name="role"
-              type="radio"
-              value="admin"
-              [(ngModel)]="modalRole"
-            />
-            <div
-              class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
-            >
-              <span
-                class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
-                >admin_panel_settings</span
-              >
-              <span
-                class="text-xs font-bold text-slate-600 peer-checked:text-primary"
-                >Admin</span
-              >
-            </div>
-          </label>
-        </div>
-      </section>
-      <app-rol-patient *ngIf="modalRole === 'paciente'" />
-      <app-rol-provider *ngIf="modalRole === 'proveedor'" />
-      <app-rol-organization *ngIf="modalRole === 'aliado'" />
-      <app-rol-admin *ngIf="modalRole === 'admin'" />
-    </div>
-    <div
-      class="p-10 flex justify-end items-center gap-6 bg-white/30 border-t border-white/40"
-    >
-      <button
-        type="button"
-        (click)="closeCreateModal()"
-        class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-secondary transition-colors"
-      >
-        Cancelar Registro
-      </button>
-      <button
-        (click)="createNewMember()"
-        [disabled]="isCreatingUser"
-        class="bg-primary text-white px-10 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ isCreatingUser ? "Creando usuario..." : "Crear Nuevo Miembro" }}
-      </button>
-    </div>
-  </div>
+			<h3 class="text-3xl font-extrabold text-primary tracking-tight">
+				Registrar Nuevo Miembro del Sistema
+			</h3>
+			<p class="text-slate-500 text-base mt-6">
+				Gestión centralizada de perfiles y accesos administrativos
+			</p>
+		</div>
+		<div class="flex-1 overflow-y-auto px-10 py-4 space-y-10">
+			<section class="mb-6">
+				<div class="flex items-center gap-2 mb-4">
+					<span class="material-symbols-outlined text-primary text-xl"
+						>badge</span
+					>
+					<label class="block text-primary font-bold text-base"
+						>Rol del Sistema*</label
+					>
+				</div>
+				<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+					<label class="cursor-pointer group">
+						<input
+							checked=""
+							class="peer hidden"
+							name="role"
+							type="radio"
+							value="paciente"
+							[(ngModel)]="modalRole"
+						/>
+						<div
+							class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
+						>
+							<span
+								class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
+								>person</span
+							>
+							<span
+								class="text-xs font-bold text-slate-600 peer-checked:text-primary"
+								>Paciente</span
+							>
+						</div>
+					</label>
+					<label class="cursor-pointer group">
+						<input
+							class="peer hidden"
+							name="role"
+							type="radio"
+							value="proveedor"
+							[(ngModel)]="modalRole"
+						/>
+						<div
+							class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
+						>
+							<span
+								class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
+								>medical_services</span
+							>
+							<span
+								class="text-xs font-bold text-slate-600 peer-checked:text-primary"
+								>Proveedor</span
+							>
+						</div>
+					</label>
+					<label class="cursor-pointer group">
+						<input
+							class="peer hidden"
+							name="role"
+							type="radio"
+							value="aliado"
+							[(ngModel)]="modalRole"
+						/>
+						<div
+							class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
+						>
+							<span
+								class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
+								>handshake</span
+							>
+							<span
+								class="text-xs font-bold text-slate-600 peer-checked:text-primary"
+								>Aliado</span
+							>
+						</div>
+					</label>
+					<label class="cursor-pointer group">
+						<input
+							class="peer hidden"
+							name="role"
+							type="radio"
+							value="admin"
+							[(ngModel)]="modalRole"
+						/>
+						<div
+							class="px-4 py-4 text-center border-2 border-slate-100 bg-white/50 rounded-2xl group-hover:bg-white transition-all peer-checked:border-primary peer-checked:bg-white peer-checked:shadow-lg peer-checked:shadow-primary/5"
+						>
+							<span
+								class="material-symbols-outlined block text-2xl mb-1 text-slate-400 peer-checked:text-primary"
+								>admin_panel_settings</span
+							>
+							<span
+								class="text-xs font-bold text-slate-600 peer-checked:text-primary"
+								>Admin</span
+							>
+						</div>
+					</label>
+				</div>
+			</section>
+			<app-rol-patient *ngIf="modalRole === 'paciente'" />
+			<app-rol-provider *ngIf="modalRole === 'proveedor'" />
+			<app-rol-organization *ngIf="modalRole === 'aliado'" />
+			<app-rol-admin *ngIf="modalRole === 'admin'" />
+		</div>
+		<div
+			class="p-10 flex justify-end items-center gap-6 bg-white/30 border-t border-white/40"
+		>
+			<button
+				type="button"
+				(click)="closeCreateModal()"
+				class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-secondary transition-colors"
+			>
+				Cancelar Registro
+			</button>
+			<button
+				(click)="createNewMember()"
+				[disabled]="isCreatingUser"
+				class="bg-primary text-white px-10 py-3.5 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				{{ isCreatingUser ? "Creando usuario..." : "Crear Nuevo Miembro" }}
+			</button>
+		</div>
+	</div>
 </div>
 <app-create-provider-type
-  [visible]="showCreateProviderTypeModal"
-  (close)="closeCreateProviderTypeModal()"
-  (created)="onProviderTypeCreated()"
+	[visible]="showCreateProviderTypeModal"
+	(close)="closeCreateProviderTypeModal()"
+	(created)="onProviderTypeCreated()"
 ></app-create-provider-type>

@@ -1,0 +1,112 @@
+<section class="glass-panel p-6 mt-6">
+	<div
+		class="flex flex-col lg:flex-row gap-4 lg:items-end lg:justify-between mb-4"
+	>
+		<div>
+			<h3 class="text-lg font-bold text-slate-800">Visor RDA (FHIR R4)</h3>
+			<p class="text-xs text-slate-500">
+				Consulta por careId, revisa secciones y retransmite a MinSalud.
+			</p>
+		</div>
+
+		<div class="flex gap-2 w-full lg:w-auto">
+			<input
+				class="glass-input flex-1 lg:w-80"
+				type="text"
+				[(ngModel)]="careId"
+				placeholder="Ingrese careId"
+			/>
+			<button
+				class="btn-primary"
+				type="button"
+				(click)="load()"
+				[disabled]="loading"
+			>
+				{{ loading ? "Consultando..." : "Consultar RDA" }}
+			</button>
+			<button
+				class="btn-secondary"
+				type="button"
+				(click)="downloadMockPreview()"
+				[disabled]="downloadingPreview"
+			>
+				{{
+					downloadingPreview
+						? "Generando..."
+						: "Descargar Plantilla PDF (Preview)"
+				}}
+			</button>
+		</div>
+	</div>
+
+	@if (errorMessage) {
+		<div
+			class="rounded-xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm mb-4"
+		>
+			{{ errorMessage }}
+		</div>
+	}
+
+	@if (successMessage) {
+		<div
+			class="rounded-xl border border-green-200 bg-green-50 text-green-700 px-4 py-3 text-sm mb-4"
+		>
+			{{ successMessage }}
+		</div>
+	}
+
+	@if (document) {
+		<div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4">
+			<div class="card-item">
+				<p class="label">Estado</p>
+				<p class="value">{{ document.status }}</p>
+			</div>
+			<div class="card-item">
+				<p class="label">Generado</p>
+				<p class="value">
+					{{ document.generatedAt | date: "dd/MM/yyyy HH:mm" }}
+				</p>
+			</div>
+			<div class="card-item">
+				<p class="label">Enviado</p>
+				<p class="value">
+					{{
+						document.sentAt
+							? (document.sentAt | date: "dd/MM/yyyy HH:mm")
+							: "Pendiente"
+					}}
+				</p>
+			</div>
+		</div>
+
+		<div class="mb-4">
+			<h4 class="font-semibold text-slate-700 mb-2">Secciones del documento</h4>
+			<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+				@for (section of sectionEntries; track section.title) {
+					<div class="rounded-xl border border-slate-200 bg-white/70 p-3">
+						<p class="text-xs text-slate-500">{{ section.title }}</p>
+						<p class="text-sm font-bold text-slate-800">
+							{{ section.count }} recursos
+						</p>
+					</div>
+				}
+			</div>
+		</div>
+
+		<div class="flex justify-end mb-4">
+			<button class="btn-secondary mr-2" type="button" (click)="downloadPdf()">
+				Descargar PDF RDA
+			</button>
+			<button
+				class="btn-secondary"
+				type="button"
+				(click)="retransmit()"
+				[disabled]="transmitting"
+			>
+				{{ transmitting ? "Transmitiendo..." : "Retransmitir a MinSalud" }}
+			</button>
+		</div>
+
+		<pre class="json-viewer">{{ prettyBundle }}</pre>
+	}
+</section>

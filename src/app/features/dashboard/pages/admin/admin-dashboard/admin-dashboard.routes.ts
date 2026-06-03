@@ -11,6 +11,7 @@ import { SettingsAdminComponent } from '../components/settings-admin/settings-ad
 import { SupportAdminComponent } from '../components/support-admin/support-admin.component';
 import { FormsAdminComponent } from '../components/forms-admin/forms-admin.component';
 import { BillingAdminComponent } from '../components/billing-admin/billing-admin.component';
+import { InteroperabilityAdminComponent } from '../components/interoperability-admin/interoperability-admin.component';
 
 export const ADMIN_DASHBOARD_ROUTES: Routes = [
 	{
@@ -28,6 +29,7 @@ export const ADMIN_DASHBOARD_ROUTES: Routes = [
 			{ path: 'billing', component: BillingAdminComponent },
 			{ path: 'forms', component: FormsAdminComponent },
 			{ path: 'settings', component: SettingsAdminComponent },
+			{ path: 'interoperability', component: InteroperabilityAdminComponent },
 			{ path: 'support', component: SupportAdminComponent },
 		],
 	},

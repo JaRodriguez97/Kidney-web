@@ -106,6 +106,14 @@
 			<span class="material-symbols-outlined">settings</span>
 			Configuraciones
 		</a>
+		<a
+			(click)="setActive(11)"
+			[class.active]="activeIndex === 11"
+			class="sidebar-item cursor-pointer"
+		>
+			<span class="material-symbols-outlined">account_tree</span>
+			Interoperabilidad
+		</a>
 	</nav>
 	<div class="mt-auto pt-6 border-t border-slate-200/50">
 		<a

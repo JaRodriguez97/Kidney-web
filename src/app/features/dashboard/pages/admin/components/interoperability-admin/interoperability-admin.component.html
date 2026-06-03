@@ -1,0 +1,86 @@
+<section class="space-y-6">
+	<header class="glass-panel p-6 relative overflow-hidden">
+		<div
+			class="absolute -top-12 -right-10 w-44 h-44 rounded-full bg-primary/10 blur-2xl"
+		></div>
+		<div
+			class="absolute -bottom-14 -left-14 w-56 h-56 rounded-full bg-sky-200/30 blur-2xl"
+		></div>
+		<div
+			class="relative z-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4"
+		>
+			<div>
+				<p
+					class="text-xs font-semibold tracking-wider uppercase text-primary/80"
+				>
+					Panel exclusivo
+				</p>
+				<h2
+					class="text-2xl md:text-3xl font-extrabold text-slate-800 leading-tight"
+				>
+					Interoperabilidad y Reportes Clinicos
+				</h2>
+				<p class="text-sm text-slate-600 mt-2 max-w-2xl">
+					Controla los flujos de RDA, RIPS, RCA y trazabilidad tecnica desde un
+					unico espacio administrativo.
+				</p>
+			</div>
+			<span class="admin-badge">
+				<span class="material-symbols-outlined text-base"
+					>admin_panel_settings</span
+				>
+				Solo Admin
+			</span>
+		</div>
+	</header>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+		@for (module of modules; track module.id) {
+			<button
+				type="button"
+				(click)="selectModule(module.id)"
+				[class.module-card--active]="activeModule === module.id"
+				[class.module-card--disabled]="module.status !== 'ready'"
+				class="module-card"
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div class="icon-pill">
+						<span class="material-symbols-outlined">{{ module.icon }}</span>
+					</div>
+					<span
+						class="text-[11px] font-bold px-2.5 py-1 rounded-full"
+						[class.badge-ready]="module.status === 'ready'"
+						[class.badge-soon]="module.status !== 'ready'"
+					>
+						{{ module.badge }}
+					</span>
+				</div>
+				<h3 class="text-sm font-bold text-slate-800 mt-4 text-left">
+					{{ module.title }}
+				</h3>
+				<p class="text-xs text-slate-500 mt-2 text-left leading-relaxed">
+					{{ module.description }}
+				</p>
+			</button>
+		}
+	</div>
+
+	@if (activeModule === "rda") {
+		<app-rda-viewer></app-rda-viewer>
+	}
+
+	@if (activeModule !== "rda") {
+		<section class="glass-panel p-8 text-center">
+			<div
+				class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 mx-auto flex items-center justify-center mb-4"
+			>
+				<span class="material-symbols-outlined">construction</span>
+			</div>
+			<h3 class="text-lg font-bold text-slate-800">Modulo en preparacion</h3>
+			<p class="text-sm text-slate-500 mt-2">
+				Este espacio quedo reservado para las siguientes fases de
+				interoperabilidad.
+			</p>
+		</section>
+	}
+</section>

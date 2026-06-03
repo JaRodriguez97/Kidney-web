@@ -1,0 +1,31 @@
+.glass-panel {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-2xl;
+}
+
+.admin-badge {
+	@apply inline-flex items-center gap-1.5 bg-primary/10 text-primary border border-primary/20 rounded-xl px-3 py-1.5 text-xs font-semibold;
+}
+
+.module-card {
+	@apply bg-white/70 border border-white/70 rounded-2xl p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+}
+
+.module-card--active {
+	@apply border-primary/50 ring-2 ring-primary/15 shadow-lg;
+}
+
+.module-card--disabled {
+	@apply opacity-80 cursor-not-allowed;
+}
+
+.icon-pill {
+	@apply w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center;
+}
+
+.badge-ready {
+	@apply bg-emerald-100 text-emerald-700 border border-emerald-200;
+}
+
+.badge-soon {
+	@apply bg-slate-100 text-slate-600 border border-slate-200;
+}
