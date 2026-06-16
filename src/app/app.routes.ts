@@ -99,4 +99,11 @@ export const routes: Routes = [
 				(m) => m.ValidateCareSummaryComponent,
 			),
 	},
+	{
+		path: 'test-telemedicina/:sessionId',
+		loadComponent: () =>
+			import('./features/telemedicine/pages/test-video-call/test-video-call.component').then(
+				(m) => m.TestVideoCallComponent,
+			),
+	},
 ];
