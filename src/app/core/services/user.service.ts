@@ -64,15 +64,22 @@ export interface CreateProviderRequest {
 
 export interface OrganizationUserRequest {
 	legal_name: string;
+	document_type: string;
 	document_number: string;
+	city: string;
+	department: string;
 	email: string;
-	password_hash: string;
+	password: string;
 	entity_type: string;
+	trade_name?: string;
 	phone?: string;
 	address?: string;
 	website_url?: string;
+	logo_url?: string;
 	neighborhood?: string;
-	commune?: string;
+	country?: string;
+	level_id?: string;
+	status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 }
 
 @Injectable({

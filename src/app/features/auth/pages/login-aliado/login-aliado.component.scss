@@ -1,0 +1,19 @@
+.glass-container {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-[2rem];
+}
+.glass-form {
+	@apply bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass rounded-[2rem];
+}
+.btn-primary-km {
+	@apply bg-[#0284c7] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary/25 transition-all active:scale-95 flex items-center justify-center gap-2 w-full text-lg;
+}
+.input-field {
+	@apply w-full pr-5 py-4 rounded-xl border border-[#0284c7]/30 bg-white/50 backdrop-blur-sm focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10 outline-none transition-all placeholder:text-slate-400 text-slate-700 shadow-input font-medium;
+}
+
+section {
+	background-image: url("../../../../../assets/img/bg.png");
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+}

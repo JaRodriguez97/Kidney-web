@@ -9,96 +9,99 @@ import { UserRole } from '@app/domains/user/user-role.type';
 import { PlatformService } from '@app/shared/services/platform.service';
 
 export interface LoginResponse {
-  accessToken: string;
-  user: User;
+	accessToken: string;
+	user: User;
 }
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class AuthService {
-  private readonly baseUrl = environment.apiUrl + 'auth/';
-  private currentUserSubject = new BehaviorSubject<User | null>(
-    this.loadUserFromStorage(),
-  );
+	private readonly baseUrl = environment.apiUrl + 'auth/';
+	private currentUserSubject = new BehaviorSubject<User | null>(
+		this.loadUserFromStorage(),
+	);
 
-  public currentUser$ = this.currentUserSubject.asObservable();
+	public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private platformService: PlatformService,
-  ) {}
+	constructor(
+		private http: HttpClient,
+		private platformService: PlatformService,
+	) {}
 
-  registerPatient(payload: RegisterPatientRequestDto): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}register/patient`, payload);
-  }
+	registerPatient(payload: RegisterPatientRequestDto): Observable<void> {
+		return this.http.post<void>(`${this.baseUrl}register/patient`, payload);
+	}
 
-  login(payload: LoginRequestDto): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}login`, payload);
-  }
+	login(payload: LoginRequestDto): Observable<LoginResponse> {
+		return this.http.post<LoginResponse>(`${this.baseUrl}login`, payload);
+	}
 
-  setSession(authResult: LoginResponse) {
-    try {
-      this.platformService.setLocalStorageItem(
-        'accessToken',
-        authResult.accessToken,
-      );
-      this.platformService.setLocalStorageItem(
-        'currentUser',
-        JSON.stringify(authResult.user),
-      );
-      this.currentUserSubject.next(authResult.user);
-    } catch (e) {
-      console.warn('Could not persist session', e);
-    }
-  }
+	loginOrganization(payload: LoginRequestDto): Observable<LoginResponse> {
+		return this.http.post<LoginResponse>(
+			`${this.baseUrl}login/organization`,
+			payload,
+		);
+	}
 
-  clearSession() {
-    this.platformService.removeLocalStorageItem('accessToken');
-    this.platformService.removeLocalStorageItem('currentUser');
-    this.currentUserSubject.next(null);
-  }
+	setSession(authResult: LoginResponse) {
+		try {
+			this.platformService.setLocalStorageItem(
+				'accessToken',
+				authResult.accessToken,
+			);
+			this.platformService.setLocalStorageItem(
+				'currentUser',
+				JSON.stringify(authResult.user),
+			);
+			this.currentUserSubject.next(authResult.user);
+		} catch (e) {
+			console.warn('Could not persist session', e);
+		}
+	}
 
-  isAuthenticated(): boolean {
-    return !!this.platformService.getLocalStorageItem('accessToken');
-  }
+	clearSession() {
+		this.platformService.removeLocalStorageItem('accessToken');
+		this.platformService.removeLocalStorageItem('currentUser');
+		this.currentUserSubject.next(null);
+	}
 
-  get currentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
+	isAuthenticated(): boolean {
+		return !!this.platformService.getLocalStorageItem('accessToken');
+	}
 
-  hasRole(role: UserRole): boolean {
-    const user = this.currentUser;
-    return !!user && user.roles.includes(role);
-  }
+	get currentUser(): User | null {
+		return this.currentUserSubject.value;
+	}
 
-  hasPermission(permission: string): boolean {
-    const permissions = this.currentUser?.permissions ?? [];
-    return permissions.includes(permission);
-  }
+	hasRole(role: UserRole): boolean {
+		const user = this.currentUser;
+		return !!user && user.roles.includes(role);
+	}
 
-  private loadUserFromStorage(): User | null {
-    try {
-      const u = this.platformService.getLocalStorageItem('currentUser');
-      return u ? (JSON.parse(u) as User) : null;
-    } catch (e) {
-      return null;
-    }
-  }
+	hasPermission(permission: string): boolean {
+		const permissions = this.currentUser?.permissions ?? [];
+		return permissions.includes(permission);
+	}
 
-  
-  changePassword(
-    currentPassword: string,
-    newPassword: string,
-    confirmNewPassword: string,
-  ) {
-    return this.http.post<any>(
-      `${this.baseUrl}change-password`,
-      {
-        currentPassword,
-        newPassword,
-        confirmNewPassword,
-      },
-    );
-  }
+	private loadUserFromStorage(): User | null {
+		try {
+			const u = this.platformService.getLocalStorageItem('currentUser');
+			return u ? (JSON.parse(u) as User) : null;
+		} catch (e) {
+			return null;
+		}
+	}
+
+	changePassword(
+		currentPassword: string,
+		newPassword: string,
+		confirmNewPassword: string,
+	) {
+		return this.http.post<any>(`${this.baseUrl}change-password`, {
+			currentPassword,
+			newPassword,
+			confirmNewPassword,
+		});
+	}
 }

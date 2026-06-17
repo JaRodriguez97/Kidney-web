@@ -27,6 +27,7 @@ module.exports = {
 			},
 			boxShadow: {
 				glass: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+				input: "0 2px 10px 0 rgba(2, 132, 199, 0.05)",
 				glow: "0 0 15px rgba(28, 56, 78, 0.15)",
 				"glass-dark": "0 8px 32px 0 rgba(0, 0, 0, 0.3)",
 				"card-hover": "0 10px 40px -10px rgba(2, 132, 199, 0.15)",

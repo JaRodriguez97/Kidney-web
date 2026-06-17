@@ -1,0 +1,48 @@
+.glass-container {
+	@apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-[2rem];
+}
+.glass-card {
+	@apply bg-white/60 backdrop-blur-md border border-white/60 p-6 rounded-3xl shadow-sm transition-all duration-300;
+}
+.glass-sidebar {
+	@apply bg-slate-100/40 backdrop-blur-xl border-r border-white/40;
+}
+.sidebar-item {
+	@apply flex items-center gap-3 px-5 py-3.5 rounded-2xl text-slate-600 hover:bg-white/50 hover:text-primary transition-all font-medium cursor-pointer mb-1;
+}
+.sidebar-item.active {
+	@apply bg-primary text-white shadow-lg shadow-primary/30;
+}
+.metric-card {
+	@apply flex flex-col justify-between h-full p-5 rounded-2xl bg-white/40 border border-white/50;
+}
+.input-search {
+	@apply w-full bg-white/70 border border-slate-200 rounded-xl px-4 py-2.5 pl-10 text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none placeholder:text-slate-400 font-medium;
+}
+.btn-action {
+	@apply bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-50 hover:border-primary/30 hover:text-primary transition-all shadow-sm;
+}
+.btn-primary-km {
+	@apply bg-[#0284c7] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#0274ae] shadow-lg shadow-primary/25 transition-all active:scale-95 flex items-center justify-center gap-2;
+}
+.table-header {
+	@apply text-left text-xs font-bold text-slate-400 uppercase tracking-wider pb-3;
+}
+.table-cell {
+	@apply py-3 text-sm font-medium text-slate-600 border-b border-slate-100/50;
+}
+section {
+	background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCi2bavdH1R1RA62UNvU5eAf89Go3pszC9IaIQXx9Ax0CXMRhN9z09d3lXTI0hMwxTjr41_CnwjHL5rhAUpPNyqMwQk2ocRy0wxIrf8nqHb0NG7OOPiW7obsGIDDw3y5DyiOExBSDZ-UB7ZxFurYIwV9dHAcM5swNAlzofOXfG7YCVRldKGpG9wZmyt1BlUxc6zwWDllSCPxiK3WM8uzSpoGx8Kf6JHM_56iR2Aq23O57rqOqgU4XCZaiTeSsCqsKVQ0yfETaBc97Y");
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+}
+.custom-scrollbar::-webkit-scrollbar {
+	width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	@apply bg-slate-300/50 rounded-full;
+}

@@ -25,6 +25,13 @@ export const routes: Routes = [
 		pathMatch: 'full',
 	},
 	{
+		path: 'login/aliado',
+		loadComponent: () =>
+			import('./features/auth/pages/login-aliado/login-aliado.component').then(
+				(m) => m.LoginAliadoComponent,
+			),
+	},
+	{
 		path: 'login/:context',
 		loadComponent: () =>
 			import('./features/auth/pages/login/login.component').then(
@@ -91,6 +98,15 @@ export const routes: Routes = [
 		canActivate: [AuthGuard],
 		data: { role: 'PROVIDER' },
 		children: PROVIDER_DASHBOARD_ROUTES,
+	},
+	{
+		path: 'dashboard/organization',
+		canActivate: [AuthGuard],
+		data: { role: 'ORGANIZATION' },
+		loadComponent: () =>
+			import('./features/dashboard/pages/organization/organization-dashboard/organization-dashboard.component').then(
+				(m) => m.OrganizationDashboardComponent,
+			),
 	},
 	{
 		path: 'validate/care-summary/:token',

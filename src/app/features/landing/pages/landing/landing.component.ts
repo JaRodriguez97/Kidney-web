@@ -11,6 +11,7 @@ import { CtaSecondaryComponent } from '../../components/cta-secondary/cta-second
 import { FormContactComponent } from '../../components/form-contact/form-contact.component';
 import { FooterComponent } from '../../../../layout/public/footer/footer.component';
 import { AliadosComponent } from '../../components/aliados/aliados.component';
+import { ChatbotComponent } from '../../components/chatbot/chatbot.component';
 
 @Component({
   selector: 'app-landing',
@@ -28,6 +29,7 @@ import { AliadosComponent } from '../../components/aliados/aliados.component';
     FormContactComponent,
     FooterComponent,
     AliadosComponent,
+    ChatbotComponent,
   ],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',

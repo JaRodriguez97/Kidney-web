@@ -102,9 +102,9 @@ export class UsersAdminComponent implements OnInit {
 
 	countUsersType(users: User[]) {
 		this.countAdmin = users.filter((u) => u.roles.includes('ADMIN')).length;
-		// this.countOrganization = users.filter((u) =>
-		//   u.roles.includes('ORGANIZATION'),
-		// ).length;
+		this.countOrganization = users.filter((u) =>
+			u.roles.includes('ORGANIZATION'),
+		).length;
 		this.countPatient = users.filter((u) => u.roles.includes('PATIENT')).length;
 		this.countProvider = users.filter((u) =>
 			u.roles.includes('PROVIDER'),
@@ -187,10 +187,6 @@ export class UsersAdminComponent implements OnInit {
 				userData = {
 					organization: {
 						...this.rolOrganizationComponent.getFormData(),
-						roleNames: ['ORGANIZATION'],
-						document_type: 'NIT',
-						city: 'Cali',
-						department: 'Valle del Cauca',
 					},
 				};
 			}
@@ -323,6 +319,7 @@ export class UsersAdminComponent implements OnInit {
 			ADMIN: 'bg-purple-50 text-purple-700 border-purple-100',
 			PROVIDER: 'bg-blue-50 text-blue-700 border-blue-100',
 			PATIENT: 'bg-green-50 text-green-700 border-green-100',
+			ORGANIZATION: 'bg-amber-50 text-amber-700 border-amber-100',
 		};
 		return roleMap[role] || 'bg-gray-50 text-gray-700 border-gray-100';
 	}
@@ -332,6 +329,7 @@ export class UsersAdminComponent implements OnInit {
 			ADMIN: 'Administrador',
 			PROVIDER: 'Proveedor',
 			PATIENT: 'Paciente',
+			ORGANIZATION: 'Aliado',
 		};
 		return roleMap[role] || role;
 	}
