@@ -171,6 +171,7 @@ export class SelectDatetimeComponent implements OnInit {
 	}
 
 	selectSlot(slot: AvailableSlot): void {
+		console.log('selectSlot called with:', slot);
 		this.selectedSlotId = slot.id;
 		this.appointmentBookingState.setSlotSelection({
 			slotId: slot.id,
@@ -196,12 +197,21 @@ export class SelectDatetimeComponent implements OnInit {
 	}
 
 	goToNextStep(): void {
+		console.log('goToNextStep clicked. State check:', {
+			selectedSlotId: this.selectedSlotId,
+			selectedDate: this.selectedDate,
+			providerId: this.providerId,
+			serviceId: this.serviceId,
+			availableSlots: this.availableSlots
+		});
+
 		if (
 			!this.selectedSlotId ||
 			!this.selectedDate ||
 			!this.providerId ||
 			!this.serviceId
 		) {
+			console.warn('goToNextStep validation failed: missing one of selectedSlotId, selectedDate, providerId, serviceId');
 			return;
 		}
 
@@ -210,8 +220,11 @@ export class SelectDatetimeComponent implements OnInit {
 		);
 
 		if (!selectedSlot) {
+			console.warn('goToNextStep validation failed: selectedSlot not found in availableSlots list');
 			return;
 		}
+
+		console.log('goToNextStep validation passed. Attempting routing to confirm-appointment with slot:', selectedSlot);
 
 		this.appointmentBookingState.setSlotSelection({
 			slotId: selectedSlot.id,
@@ -236,7 +249,11 @@ export class SelectDatetimeComponent implements OnInit {
 					endTime: selectedSlot.endTime,
 				},
 			},
-		);
+		).then(success => {
+			console.log('Router navigation result:', success);
+		}).catch(err => {
+			console.error('Router navigation error:', err);
+		});
 	}
 
 	isSelectedSlot(slot: AvailableSlot): boolean {

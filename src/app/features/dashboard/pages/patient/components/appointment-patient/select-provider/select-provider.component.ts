@@ -111,6 +111,8 @@ export class SelectProviderComponent implements OnInit {
 
 		if (this.selectedCareModalityCode === 'TELEMEDICINA') {
 			filtered = filtered.filter((provider) => provider.isAvailableForTelemedicine);
+		} else if (this.selectedCareModalityCode === 'PRESENCIAL') {
+			filtered = filtered.filter((provider) => !provider.isAvailableForTelemedicine);
 		}
 
 		if (this.experienceFilter !== 'all') {

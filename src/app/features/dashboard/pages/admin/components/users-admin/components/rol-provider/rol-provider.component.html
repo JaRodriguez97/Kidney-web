@@ -247,18 +247,18 @@
 					formControlName="phone"
 				/>
 			</div>
-			<div class="flex items-center gap-3 mt-4 ml-1">
-				<input
-					id="isAvailableForTelemedicine"
-					type="checkbox"
-					class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary cursor-pointer"
-					formControlName="isAvailableForTelemedicine"
-				/>
+			<div>
 				<label
-					for="isAvailableForTelemedicine"
-					class="text-[11px] font-bold text-slate-500 uppercase cursor-pointer select-none"
-					>Disponible para Telemedicina</label
+					class="block text-[11px] font-bold text-slate-500 mb-1.5 ml-1 uppercase"
+					>Modalidad de Atención*</label
 				>
+				<select
+					class="glass-input-mandatory w-full appearance-none"
+					formControlName="isAvailableForTelemedicine"
+				>
+					<option [ngValue]="false">Atención Presencial</option>
+					<option [ngValue]="true">Atención por Telemedicina</option>
+				</select>
 			</div>
 		</div>
 	</section>

@@ -32,6 +32,9 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
   isAudioEnabled = true;
   loading = true;
   errorMessage = '';
+  isDeviceError = false;
+  isRemoteVideoVertical = false;
+  hasAlerted20Minutes = false;
   remoteConnected = false;
   private sessionStarted = false;
 
@@ -64,6 +67,7 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
 
     if (!this.sessionId || !this.accessToken || !this.userId) {
       this.errorMessage = 'Enlace de videollamada inválido.';
+      this.isDeviceError = false;
       this.loading = false;
       return;
     }
@@ -94,8 +98,8 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
             this.appointmentId = access.appointmentId;
           }
 
-          // Start the elapsed call timer
-          this.startStopwatch();
+          // Start the elapsed call timer from actualStartAt if already set
+          this.startStopwatch(access.actualStartAt);
 
           try {
             await firstValueFrom(
@@ -108,46 +112,69 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
             const localStream = await this.webrtcService.startLocalVideo();
             if (localStream) {
               this.localVideo.nativeElement.srcObject = localStream;
-              this.webrtcService.joinSession(
-                this.sessionId,
-                this.userId,
-                this.role,
-              );
-
-              this.webrtcService.onRemoteStream$.subscribe((stream) => {
-                this.remoteConnected = true;
-                if (this.remoteVideo?.nativeElement) {
-                  this.remoteVideo.nativeElement.srcObject = stream;
-                }
-                if (!this.sessionStarted) {
-                  this.sessionStarted = true;
-                  this.telemedicineService
-                    .updateSessionStatus(this.sessionId, 'IN_PROGRESS')
-                    .subscribe();
-                }
-              });
             }
+            this.joinSessionAndSubscribe();
           } catch (err: any) {
-            this.errorMessage =
-              err?.message ??
-              'No fue posible iniciar la videollamada. Verifica permisos de cámara y micrófono.';
+            this.isDeviceError = true;
+            this.errorMessage = this.translateDeviceError(err);
           }
         },
         error: () => {
           this.loading = false;
+          this.isDeviceError = false;
           this.errorMessage =
             'No tienes acceso a esta sala de videollamada o la sesión no está disponible.';
         },
       });
   }
 
+  joinSessionAndSubscribe() {
+    this.webrtcService.joinSession(
+      this.sessionId,
+      this.userId,
+      this.role,
+    );
+
+    this.webrtcService.onRemoteStream$.subscribe((stream) => {
+      this.remoteConnected = true;
+      if (this.remoteVideo?.nativeElement) {
+        this.remoteVideo.nativeElement.srcObject = stream;
+      }
+      if (!this.sessionStarted) {
+        this.sessionStarted = true;
+        this.telemedicineService
+          .updateSessionStatus(this.sessionId, 'IN_PROGRESS')
+          .subscribe((res: any) => {
+            if (res && res.actualStartAt) {
+              this.startStopwatch(res.actualStartAt);
+            }
+          });
+      }
+    });
+  }
+
+  translateDeviceError(err: any): string {
+    const msg = err?.message || '';
+    if (msg.includes('Requested device not found') || msg.includes('NotFoundError') || err?.name === 'NotFoundError') {
+      return 'No se encontró la cámara o el micrófono. Asegúrate de tener una cámara y un micrófono conectados en tu dispositivo.';
+    }
+    if (msg.includes('Permission denied') || msg.includes('NotAllowedError') || err?.name === 'NotAllowedError') {
+      return 'Acceso denegado a la cámara/micrófono. Por favor, concede los permisos de cámara y micrófono en la barra de direcciones de tu navegador e intenta nuevamente.';
+    }
+    if (msg.includes('NotReadableError') || err?.name === 'NotReadableError') {
+      return 'La cámara o el micrófono ya están siendo utilizados por otra aplicación. Por favor, ciérrala y recarga la página.';
+    }
+    return msg || 'No fue posible iniciar la videollamada. Verifica los permisos de tus dispositivos e intenta nuevamente.';
+  }
+
+  dismissError() {
+    this.errorMessage = '';
+    this.isDeviceError = false;
+    this.joinSessionAndSubscribe();
+  }
+
   ngOnDestroy() {
     this.stopStopwatch();
-    if (this.sessionId) {
-      this.telemedicineService
-        .updateSessionStatus(this.sessionId, 'COMPLETED')
-        .subscribe();
-    }
     this.webrtcService.resetConnection();
   }
 
@@ -162,7 +189,11 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
   }
 
   leaveRoom() {
-    if (confirm('¿Estás seguro de que deseas finalizar la sesión de telemedicina?')) {
+    const confirmMessage = this.role === 'PROVIDER'
+      ? '¿Estás seguro de que deseas salir? Esto mantendrá la sesión activa para el paciente hasta que ambos se retiren.'
+      : '¿Estás seguro de que deseas salir de la videollamada?';
+
+    if (confirm(confirmMessage)) {
       const dashboardPath =
         this.role === 'PROVIDER'
           ? '/dashboard/provider/appointments'
@@ -172,16 +203,33 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
   }
 
   // Timer helper methods
-  private startStopwatch() {
+  private startStopwatch(actualStartAt?: string | null) {
     this.stopStopwatch();
-    this.elapsedSeconds = 0;
-    this.elapsedLabel = '00:00:00';
-    this.timerHandle = setInterval(() => {
-      this.elapsedSeconds++;
+
+    const updateTimer = () => {
+      if (actualStartAt) {
+        const startTime = new Date(actualStartAt).getTime();
+        this.elapsedSeconds = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
+      } else {
+        this.elapsedSeconds++;
+      }
+
+      // Alert at 20 minutes (1200 seconds)
+      if (this.elapsedSeconds >= 1200 && !this.hasAlerted20Minutes) {
+        this.hasAlerted20Minutes = true;
+        alert('Información de Consulta: La cita de telemedicina ha alcanzado los 20 minutos de duración.');
+      }
+
       const hours = Math.floor(this.elapsedSeconds / 3600).toString().padStart(2, '0');
       const minutes = Math.floor((this.elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
       const seconds = (this.elapsedSeconds % 60).toString().padStart(2, '0');
       this.elapsedLabel = `${hours}:${minutes}:${seconds}`;
+    };
+
+    updateTimer();
+
+    this.timerHandle = setInterval(() => {
+      updateTimer();
     }, 1000);
   }
 
@@ -227,7 +275,7 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
       x: event.clientX - this.pipPosition.x,
       y: event.clientY - this.pipPosition.y
     };
-    (event.target as HTMLElement).setPointerCapture(event.pointerId);
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
 
   onPointerMove(event: PointerEvent) {
@@ -240,6 +288,15 @@ export class VideoCallRoomComponent implements OnInit, OnDestroy {
 
   onPointerUp(event: PointerEvent) {
     this.isDragging = false;
-    (event.target as HTMLElement).releasePointerCapture(event.pointerId);
+    (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
+  }
+
+  onRemoteVideoLoaded(event: Event) {
+    const video = event.target as HTMLVideoElement;
+    if (video && video.videoWidth && video.videoHeight) {
+      const videoRatio = video.videoWidth / video.videoHeight;
+      this.isRemoteVideoVertical = videoRatio < 1.0;
+      console.log(`Remote video dimensions loaded/resized: ${video.videoWidth}x${video.videoHeight} (isVertical: ${this.isRemoteVideoVertical})`);
+    }
   }
 }

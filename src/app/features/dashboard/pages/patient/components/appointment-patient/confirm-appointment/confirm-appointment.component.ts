@@ -60,7 +60,33 @@ export class ConfirmAppointmentComponent implements OnInit {
 		this.selectedEndTime =
 			queryMap.get('endTime') ?? snapshot.slotEndTime ?? '';
 
-		if (!this.canConfirm) {
+		console.log('ConfirmAppointmentComponent OnInit. Extracted values:', {
+			specialty: this.specialty,
+			serviceId: this.serviceId,
+			serviceCode: this.serviceCode,
+			serviceName: this.serviceName,
+			providerId: this.providerId,
+			providerName: this.providerName,
+			slotId: this.slotId,
+			selectedDate: this.selectedDate,
+			selectedStartTime: this.selectedStartTime,
+			selectedEndTime: this.selectedEndTime
+		});
+
+		if (
+			!this.slotId ||
+			!this.providerId ||
+			!this.serviceId ||
+			!this.selectedDate ||
+			!this.selectedStartTime
+		) {
+			console.warn('ConfirmAppointmentComponent: Redirecting back to select-datetime because required navigation data is missing:', {
+				slotId: !this.slotId,
+				providerId: !this.providerId,
+				serviceId: !this.serviceId,
+				selectedDate: !this.selectedDate,
+				selectedStartTime: !this.selectedStartTime
+			});
 			this.navigateToDatetime();
 			return;
 		}

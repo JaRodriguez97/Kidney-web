@@ -15,14 +15,24 @@
 
   <div *ngIf="errorMessage" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 p-4">
     <div class="max-w-md w-full text-center bg-white border border-slate-200 rounded-2xl p-8 shadow-2xl">
-      <span class="material-symbols-outlined text-5xl text-red-500 mb-4">error</span>
-      <p class="text-slate-800 font-bold text-lg mb-2">Error de Conexión</p>
-      <p class="text-slate-600 mb-6 text-sm">{{ errorMessage }}</p>
-      <button type="button"
-        class="w-full py-3 rounded-xl bg-primary text-white hover:bg-slate-800 font-bold transition-colors shadow-lg"
-        (click)="leaveRoom()">
-        Volver
-      </button>
+      <span class="material-symbols-outlined text-5xl text-amber-500 mb-4">warning</span>
+      <p class="text-slate-800 font-bold text-lg mb-2">
+        {{ isDeviceError ? 'Advertencia de Dispositivo' : 'Error de Conexión' }}
+      </p>
+      <p class="text-slate-600 mb-6 text-sm leading-relaxed">{{ errorMessage }}</p>
+      
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button type="button"
+          class="flex-1 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors"
+          (click)="leaveRoom()">
+          {{ isDeviceError ? 'Salir de la Llamada' : 'Volver' }}
+        </button>
+        <button *ngIf="isDeviceError" type="button"
+          class="flex-1 py-3 rounded-xl bg-primary text-white hover:bg-slate-800 font-bold transition-colors shadow-lg shadow-primary/20"
+          (click)="dismissError()">
+          Continuar de todos modos
+        </button>
+      </div>
     </div>
   </div>
 
@@ -115,7 +125,12 @@
       <!-- Video Call Screen -->
       <div class="flex-1 bg-slate-900 relative flex flex-col justify-center items-center overflow-hidden">
         <!-- Main background video (Remote Participant stream) -->
-        <video #remoteVideo autoplay playsinline class="absolute inset-0 w-full h-full object-cover opacity-90"></video>
+        <video #remoteVideo autoplay playsinline
+          [class.object-contain]="isRemoteVideoVertical"
+          [class.object-cover]="!isRemoteVideoVertical"
+          (loadedmetadata)="onRemoteVideoLoaded($event)"
+          (resize)="onRemoteVideoLoaded($event)"
+          class="absolute inset-0 w-full h-full opacity-90 bg-slate-950"></video>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none">
         </div>
 
@@ -134,6 +149,7 @@
         <div
           class="absolute top-6 right-6 w-32 h-48 md:w-48 md:h-32 bg-slate-800 rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl cursor-move select-none z-30"
           [style.transform]="'translate(' + pipPosition.x + 'px, ' + pipPosition.y + 'px)'"
+          style="touch-action: none;"
           (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)">
           <video #localVideo autoplay playsinline muted
             class="w-full h-full object-cover transform scale-x-[-1] pointer-events-none"></video>

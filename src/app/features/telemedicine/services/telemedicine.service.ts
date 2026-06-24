@@ -19,6 +19,7 @@ export interface SessionAccessResponse {
 	roomName: string;
 	scheduledStartAt: string;
 	scheduledEndAt: string;
+	actualStartAt?: string | null;
 	patientDetails?: {
 		id: string;
 		name: string;
