@@ -270,10 +270,14 @@ export class AppointmentProviderComponent implements OnInit {
 	}
 
 	showPlayButton(appointment: ProviderAgendaItem): boolean {
+		const isTelemedicine =
+			appointment.isTelemedicine ||
+			appointment.careModalityCode === 'TELEMEDICINA';
 		return (
-			appointment.status === 'CHECKED_IN' ||
-			appointment.status === 'CONFIRMED' ||
-			appointment.status === 'IN_PROGRESS'
+			!isTelemedicine &&
+			(appointment.status === 'CHECKED_IN' ||
+				appointment.status === 'CONFIRMED' ||
+				appointment.status === 'IN_PROGRESS')
 		);
 	}
 
