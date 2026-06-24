@@ -108,6 +108,63 @@
 					</div>
 				</div>
 
+				<div class="w-full mt-8 text-left">
+					<p class="summary-label mb-3">Modalidad de atención</p>
+					<div *ngIf="isLoadingModalities" class="text-sm text-slate-500">
+						Cargando modalidades...
+					</div>
+					<div
+						*ngIf="modalitiesError"
+						class="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm"
+					>
+						{{ modalitiesError }}
+					</div>
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<button
+							type="button"
+							*ngFor="let modality of careModalities"
+							class="rounded-2xl border p-4 text-left transition-all"
+							[ngClass]="{
+								'border-primary bg-blue-50/70': isModalitySelected(modality),
+								'border-slate-200': !isModalitySelected(modality)
+							}"
+							[class.opacity-50]="isModalityDisabled(modality)"
+							[class.cursor-not-allowed]="isModalityDisabled(modality)"
+							[disabled]="isModalityDisabled(modality)"
+							(click)="selectCareModality(modality)"
+						>
+							<div class="flex items-center gap-3">
+								<div
+									class="w-11 h-11 rounded-xl flex items-center justify-center"
+									[ngClass]="
+										modality.code === 'TELEMEDICINA'
+											? 'bg-sky-100 text-sky-700'
+											: 'bg-purple-100 text-purple-700'
+									"
+								>
+									<span class="material-symbols-outlined">
+										{{
+											modality.code === 'TELEMEDICINA'
+												? 'videocam'
+												: 'location_on'
+										}}
+									</span>
+								</div>
+								<div>
+									<p class="font-bold text-slate-800">{{ modality.name }}</p>
+									<p class="text-sm text-slate-500">
+										{{
+											modality.code === 'TELEMEDICINA'
+												? 'Atención por videollamada'
+												: 'Atención en sede clínica'
+										}}
+									</p>
+								</div>
+							</div>
+						</button>
+					</div>
+				</div>
+
 				<div
 					class="mt-8 w-full bg-amber-50/80 border border-amber-100 rounded-xl p-4 flex items-start gap-3"
 				>
@@ -116,8 +173,12 @@
 					>
 					<div class="text-left">
 						<p class="text-sm font-bold text-amber-800">Recomendación previa</p>
-						<p class="text-sm text-amber-700/80">
+						<p class="text-sm text-amber-700/80" *ngIf="!isTelemedicineSelected">
 							Llegar 15 minutos antes para completar el proceso de admisión.
+						</p>
+						<p class="text-sm text-amber-700/80" *ngIf="isTelemedicineSelected">
+							Asegúrate de contar con buena conexión a internet, cámara y
+							micrófono para tu videoconsulta.
 						</p>
 					</div>
 				</div>

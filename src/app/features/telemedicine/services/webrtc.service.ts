@@ -89,10 +89,10 @@ export class WebRTCService {
     });
   }
 
-  public joinSession(sessionId: string, userId: string) {
+  public joinSession(sessionId: string, userId: string, role: string = 'TEST') {
     if (!this.isBrowser) return;
     this.sessionId = sessionId;
-    this.signaling.joinRoom(sessionId, userId, 'TEST');
+    this.signaling.joinRoom(sessionId, userId, role);
   }
 
   public async startLocalVideo(): Promise<MediaStream | null> {

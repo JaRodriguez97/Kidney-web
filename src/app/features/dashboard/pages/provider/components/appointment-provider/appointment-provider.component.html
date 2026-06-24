@@ -237,6 +237,18 @@
 							</button>
 						}
 
+						@if (canJoinTeleconsultation(appointment)) {
+							<button
+								class="w-11 h-11 rounded-xl bg-sky-600 text-white flex items-center justify-center hover:bg-sky-700 transition-colors shadow-lg shadow-sky-600/20"
+								type="button"
+								title="Ingresar a videollamada"
+								(click)="joinTeleconsultation(appointment)"
+								[disabled]="joiningAppointmentId === appointment.id"
+							>
+								<span class="material-symbols-outlined text-2xl">videocam</span>
+							</button>
+						}
+
 						<div class="relative">
 							<button
 								class="p-2 text-slate-400 hover:text-primary transition-colors"
@@ -284,6 +296,19 @@
 										>
 										Ver Ficha del Paciente
 									</button>
+
+									@if (canJoinTeleconsultation(appointment)) {
+										<button
+											class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors text-left"
+											type="button"
+											(click)="joinTeleconsultation(appointment)"
+										>
+											<span class="material-symbols-outlined text-sky-600"
+												>videocam</span
+											>
+											Ingresar a Videollamada
+										</button>
+									}
 
 									@if (canCall(appointment)) {
 										<button

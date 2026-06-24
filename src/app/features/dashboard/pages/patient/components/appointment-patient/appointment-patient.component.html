@@ -127,14 +127,12 @@
 										</span>
 										<span
 											class="badge"
-											[ngClass]="
-												getModalityBadgeClasses(appointment.careModality)
-											"
+											[ngClass]="getModalityBadgeClasses(appointment)"
 										>
 											<span class="material-symbols-outlined text-[14px]">{{
-												getModalityIcon(appointment.careModality)
+												getModalityIcon(appointment)
 											}}</span>
-											{{ getModalityLabel(appointment.careModality) }}
+											{{ getModalityLabel(appointment) }}
 										</span>
 									</div>
 									<h4 class="text-lg font-bold text-slate-800">
@@ -152,6 +150,16 @@
 									</p>
 								</div>
 								<div class="flex items-center gap-2 mt-2 md:mt-0">
+									<button
+										*ngIf="canJoinTeleconsultation(appointment)"
+										type="button"
+										class="icon-action-btn text-sky-700"
+										title="Ingresar a videollamada"
+										[disabled]="joiningAppointmentId === appointment.id"
+										(click)="joinTeleconsultation(appointment)"
+									>
+										<span class="material-symbols-outlined">videocam</span>
+									</button>
 									<button class="icon-action-btn" title="Ver Instrucciones">
 										<span class="material-symbols-outlined">description</span>
 									</button>

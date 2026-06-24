@@ -3,7 +3,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppointmentBookingStateService } from '@app/core/services/appointment-booking-state.service';
-import { AppointmentService } from '@app/core/services/appointment.service';
+import {
+	AppointmentService,
+	CareModalityOption,
+} from '@app/core/services/appointment.service';
 import { formatColombiaTime } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
@@ -31,6 +34,11 @@ export class ConfirmAppointmentComponent implements OnInit {
 	selectedDate = '';
 	selectedStartTime = '';
 	selectedEndTime = '';
+
+	careModalities: CareModalityOption[] = [];
+	selectedCareModalityId: string | null = null;
+	isLoadingModalities = false;
+	modalitiesError: string | null = null;
 
 	isSubmitting = false;
 	errorMessage: string | null = null;
@@ -63,6 +71,20 @@ export class ConfirmAppointmentComponent implements OnInit {
 			slotStartTime: this.selectedStartTime,
 			slotEndTime: this.selectedEndTime,
 		});
+
+		this.loadCareModalities();
+	}
+
+	get selectedCareModality(): CareModalityOption | null {
+		return (
+			this.careModalities.find(
+				(modality) => modality.id === this.selectedCareModalityId,
+			) ?? null
+		);
+	}
+
+	get isTelemedicineSelected(): boolean {
+		return this.selectedCareModality?.code === 'TELEMEDICINA';
 	}
 
 	get canConfirm(): boolean {
@@ -71,7 +93,8 @@ export class ConfirmAppointmentComponent implements OnInit {
 			!!this.providerId &&
 			!!this.serviceId &&
 			!!this.selectedDate &&
-			!!this.selectedStartTime
+			!!this.selectedStartTime &&
+			!!this.selectedCareModalityId
 		);
 	}
 
@@ -119,6 +142,29 @@ export class ConfirmAppointmentComponent implements OnInit {
 		this.navigateToDatetime();
 	}
 
+	selectCareModality(modality: CareModalityOption): void {
+		this.selectedCareModalityId = modality.id;
+		this.appointmentBookingState.setCareModalitySelection({
+			careModalityId: modality.id,
+			careModalityCode: modality.code,
+			careModalityName: modality.name,
+		});
+	}
+
+	isModalitySelected(modality: CareModalityOption): boolean {
+		return this.selectedCareModalityId === modality.id;
+	}
+
+	isModalityDisabled(modality: CareModalityOption): boolean {
+		return modality.code === 'TELEMEDICINA' && !this.isTelemedicineAvailable;
+	}
+
+	get isTelemedicineAvailable(): boolean {
+		return this.careModalities.some(
+			(modality) => modality.code === 'TELEMEDICINA',
+		);
+	}
+
 	confirmAppointment(): void {
 		if (!this.canConfirm || this.isSubmitting) {
 			return;
@@ -132,6 +178,7 @@ export class ConfirmAppointmentComponent implements OnInit {
 				slotId: this.slotId!,
 				providerId: this.providerId!,
 				serviceId: this.serviceId!,
+				careModalityId: this.selectedCareModalityId ?? undefined,
 			})
 			.subscribe({
 				next: (response) => {
@@ -171,6 +218,42 @@ export class ConfirmAppointmentComponent implements OnInit {
 					);
 				},
 			});
+	}
+
+	private loadCareModalities(): void {
+		if (!this.providerId) {
+			return;
+		}
+
+		this.isLoadingModalities = true;
+		this.modalitiesError = null;
+
+		this.appointmentService.getCareModalities(this.providerId).subscribe({
+			next: (modalities) => {
+				this.careModalities = modalities;
+				this.isLoadingModalities = false;
+
+				const snapshot = this.appointmentBookingState.getSnapshot();
+				const snapshotModality = modalities.find(
+					(modality) => modality.id === snapshot.careModalityId,
+				);
+				const presencialModality = modalities.find(
+					(modality) => modality.code === 'PRESENCIAL',
+				);
+				const defaultModality = snapshotModality ?? presencialModality ?? modalities[0];
+
+				if (defaultModality) {
+					this.selectCareModality(defaultModality);
+				}
+			},
+			error: (error) => {
+				this.isLoadingModalities = false;
+				this.modalitiesError = this.getErrorMessage(
+					error,
+					'No fue posible cargar las modalidades de atención.',
+				);
+			},
+		});
 	}
 
 	private navigateToDatetime(): void {

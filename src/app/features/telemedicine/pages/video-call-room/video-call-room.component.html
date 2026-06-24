@@ -1,0 +1,224 @@
+<div
+  class="bg-slate-50 font-sans text-slate-800 antialiased h-screen overflow-hidden flex selection:bg-primary selection:text-white relative w-full">
+  <!-- Background Backdrop -->
+  <div class="fixed inset-0 z-0">
+    <img alt="Background" class="w-full h-full object-cover opacity-20 blur-sm"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi2bavdH1R1RA62UNvU5eAf89Go3pszC9IaIQXx9Ax0CXMRhN9z09d3lXTI0hMwxTjr41_CnwjHL5rhAUpPNyqMwQk2ocRy0wxIrf8nqHb0NG7OOPiW7obsGIDDw3y5DyiOExBSDZ-UB7ZxFurYIwV9dHAcM5swNAlzofOXfG7YCVRldKGpG9wZmyt1BlUxc6zwWDllSCPxiK3WM8uzSpoGx8Kf6JHM_56iR2Aq23O57rqOqgU4XCZaiTeSsCqsKVQ0yfETaBc97Y" />
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-100/80 via-white/50 to-blue-50/50 mix-blend-overlay">
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/90 text-white">
+    <span class="material-symbols-outlined text-5xl animate-spin mb-4 text-primaryF">progress_activity</span>
+    <p class="font-bold text-lg">Validando acceso e iniciando videollamada segura...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 p-4">
+    <div class="max-w-md w-full text-center bg-white border border-slate-200 rounded-2xl p-8 shadow-2xl">
+      <span class="material-symbols-outlined text-5xl text-red-500 mb-4">error</span>
+      <p class="text-slate-800 font-bold text-lg mb-2">Error de Conexión</p>
+      <p class="text-slate-600 mb-6 text-sm">{{ errorMessage }}</p>
+      <button type="button"
+        class="w-full py-3 rounded-xl bg-primary text-white hover:bg-slate-800 font-bold transition-colors shadow-lg"
+        (click)="leaveRoom()">
+        Volver
+      </button>
+    </div>
+  </div>
+
+  <main *ngIf="!loading && !errorMessage" class="relative z-10 flex-1 h-full overflow-hidden flex flex-col w-full">
+    <!-- Premium Header -->
+    <header
+      class="h-16 bg-white/70 backdrop-blur-md border-b border-white/50 px-6 flex items-center justify-between shrink-0 z-20 shadow-sm w-full">
+      <!-- Left side: Patient info for Provider, or Provider info for Patient -->
+      <div class="flex items-center gap-4">
+        <ng-container *ngIf="role === 'PROVIDER'">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden relative flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-2xl">face_3</span>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">{{ patientName }}</h2>
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <span>{{ patientDocument }}</span>
+                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                <div class="flex items-center gap-1 font-bold px-1.5 py-0.5 rounded border text-[10px]" [ngClass]="{
+                    'text-red-600 bg-red-50 border-red-100': patientRiskLevel === 'ALTO',
+                    'text-orange-600 bg-orange-50 border-orange-100': patientRiskLevel === 'MODERADO',
+                    'text-green-600 bg-green-50 border-green-100': patientRiskLevel === 'BAJO',
+                    'text-slate-600 bg-slate-50 border-slate-100': patientRiskLevel === 'PENDIENTE'
+                  }">
+                  <span class="material-symbols-outlined text-[10px]">warning</span>
+                  <span>Riesgo {{ patientRiskLevel | titlecase }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="role === 'PATIENT'">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 border-2 border-white shadow-md overflow-hidden relative flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-2xl">support_agent</span>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900">{{ providerName }}</h2>
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <span>{{ providerSpecialty }}</span>
+                <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+                <span class="text-green-600 font-bold">En línea</span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Center: stopwatch with dynamic warning color -->
+      <div
+        class="absolute left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full border flex items-center gap-2 transition-all"
+        [class]="getTimerBadgeClass()">
+        <span class="w-2 h-2 rounded-full animate-pulse" [class]="getTimerDotColorClass()"></span>
+        <span class="font-mono font-bold text-sm">{{ elapsedLabel }}</span>
+      </div>
+
+      <!-- Right side: Attending user identity card -->
+      <div class="flex items-center gap-3">
+        <ng-container *ngIf="role === 'PROVIDER'">
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-bold text-slate-800">{{ providerName }}</p>
+            <p class="text-xs text-slate-500">Tú (Profesional)</p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden relative flex items-center justify-center text-slate-600">
+            <span class="material-symbols-outlined text-2xl">medical_services</span>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="role === 'PATIENT'">
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-bold text-slate-800">{{ patientName }}</p>
+            <p class="text-xs text-slate-500">Tú (Paciente)</p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white shadow-md overflow-hidden relative flex items-center justify-center text-slate-600">
+            <span class="material-symbols-outlined text-2xl">person</span>
+          </div>
+        </ng-container>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <div class="flex-1 flex overflow-hidden w-full">
+
+      <!-- Video Call Screen -->
+      <div class="flex-1 bg-slate-900 relative flex flex-col justify-center items-center overflow-hidden">
+        <!-- Main background video (Remote Participant stream) -->
+        <video #remoteVideo autoplay playsinline class="absolute inset-0 w-full h-full object-cover opacity-90"></video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none">
+        </div>
+
+        <!-- Waiting Indicator Overlay -->
+        <div *ngIf="!remoteConnected"
+          class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-slate-950/40 backdrop-blur-sm z-10">
+          <div
+            class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4 border border-white/20 shadow-2xl animate-pulse">
+            <span class="material-symbols-outlined text-5xl text-white">hourglass_empty</span>
+          </div>
+          <p class="text-white font-bold text-lg drop-shadow-md">Conectando videollamada...</p>
+          <p class="text-slate-300 text-sm drop-shadow-md mt-1">Esperando a que el otro participante ingrese</p>
+        </div>
+
+        <!-- Local Self-View Video PIP (Draggable) -->
+        <div
+          class="absolute top-6 right-6 w-32 h-48 md:w-48 md:h-32 bg-slate-800 rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl cursor-move select-none z-30"
+          [style.transform]="'translate(' + pipPosition.x + 'px, ' + pipPosition.y + 'px)'"
+          (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)">
+          <video #localVideo autoplay playsinline muted
+            class="w-full h-full object-cover transform scale-x-[-1] pointer-events-none"></video>
+          <div class="absolute bottom-2 left-2 text-[10px] text-white bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
+            Tú
+          </div>
+        </div>
+
+        <!-- Bottom Call Control Overlay -->
+        <div
+          class="absolute bottom-8 left-1/2 transform -translate-x-1/2 glass-panel !bg-black/30 !border-white/20 px-6 py-3 flex items-center gap-4 shadow-2xl backdrop-blur-xl rounded-full z-30">
+          <!-- Audio Toggle Button -->
+          <button type="button" (click)="toggleAudio()"
+            class="btn-control bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
+            [class.bg-red-500.text-white]="!isAudioEnabled"
+            [title]="isAudioEnabled ? 'Silenciar Micrófono' : 'Activar Micrófono'">
+            <span class="material-symbols-outlined">
+              {{ isAudioEnabled ? 'mic' : 'mic_off' }}
+            </span>
+          </button>
+
+          <!-- Video Toggle Button -->
+          <button type="button" (click)="toggleVideo()"
+            class="btn-control bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
+            [class.bg-red-500.text-white]="!isVideoEnabled"
+            [title]="isVideoEnabled ? 'Apagar Cámara' : 'Encender Cámara'">
+            <span class="material-symbols-outlined">
+              {{ isVideoEnabled ? 'videocam' : 'videocam_off' }}
+            </span>
+          </button>
+
+          <!-- Screen Share (Aesthetic / Not implemented) 
+          <button
+            type="button"
+            class="btn-control bg-white/10 text-white hover:bg-white/20"
+            title="Compartir Pantalla"
+          >
+            <span class="material-symbols-outlined">screen_share</span>
+          </button>
+
+          <div class="w-px h-8 bg-white/20 mx-1"></div>-->
+
+          <!-- Hang Up Button -->
+          <button type="button" (click)="leaveRoom()"
+            class="btn-control bg-red-600 text-white hover:bg-red-700 shadow-red-900/50" title="Finalizar Llamada">
+            <span class="material-symbols-outlined">call_end</span>
+          </button>
+        </div>
+
+        <!-- Recording Indicator -->
+        <div class="absolute top-6 left-6 flex items-center gap-2">
+          <span class="flex h-3 w-3 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+          </span>
+          <span class="text-white text-xs font-bold drop-shadow-md">CONEXIÓN SEGURA</span>
+        </div>
+      </div>
+
+      <!-- Provider Sidebar (Clinical Attention) -->
+      <div *ngIf="role === 'PROVIDER'"
+        class="w-full md:w-[450px] lg:w-[35%] xl:w-[30%] bg-white/60 backdrop-blur-xl border-l border-white/40 flex flex-col shadow-xl z-10 shrink-0">
+        <!-- Tab Navigation Bar -->
+        <div class="flex border-b border-slate-200/60 bg-white/40 shrink-0">
+          <button type="button" (click)="activeTab = 'FORM'"
+            [class]="activeTab === 'FORM' ? 'flex-1 py-3 text-sm font-bold border-b-2 border-primary bg-primary/5 text-primary' : 'flex-1 py-3 text-sm font-medium text-slate-500 hover:text-primary hover:bg-white/40 transition-colors'">
+            Registro Clínico
+          </button>
+          <button type="button" (click)="activeTab = 'HISTORY'"
+            [class]="activeTab === 'HISTORY' ? 'flex-1 py-3 text-sm font-bold border-b-2 border-primary bg-primary/5 text-primary' : 'flex-1 py-3 text-sm font-medium text-slate-500 hover:text-primary hover:bg-white/40 transition-colors'">
+            Historial
+          </button>
+          <button type="button" (click)="activeTab = 'ORDERS'"
+            [class]="activeTab === 'ORDERS' ? 'flex-1 py-3 text-sm font-bold border-b-2 border-primary bg-primary/5 text-primary' : 'flex-1 py-3 text-sm font-medium text-slate-500 hover:text-primary hover:bg-white/40 transition-colors'">
+            Órdenes
+          </button>
+        </div>
+
+        <!-- Embedded Component Container -->
+        <div class="flex-1 overflow-hidden flex flex-col">
+          <app-clinical-attention-provider [isEmbedded]="true" [activeTab]="activeTab"
+            class="flex-1 overflow-hidden flex flex-col"></app-clinical-attention-provider>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

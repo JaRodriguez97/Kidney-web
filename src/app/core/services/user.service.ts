@@ -60,6 +60,7 @@ export interface CreateProviderRequest {
 	commune?: number;
 	clinicBranchId: string;
 	schedule: ScheduleData;
+	isAvailableForTelemedicine?: boolean;
 }
 
 export interface OrganizationUserRequest {

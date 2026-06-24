@@ -24,8 +24,16 @@ export interface CreateAppointmentRequest {
 	slotId: string;
 	serviceId: string;
 	providerId: string;
+	careModalityId?: string;
 	paymentRequired?: boolean;
 	notes?: string;
+}
+
+export interface CareModalityOption {
+	id: string;
+	code: string;
+	name: string;
+	requiresLocation: boolean;
 }
 
 export interface PatientAppointment {
@@ -45,6 +53,10 @@ export interface PatientAppointment {
 	serviceName: string;
 	providerName: string | null;
 	careModality: string | null;
+	careModalityCode: string | null;
+	isTelemedicine: boolean;
+	hasTeleconsultationSession: boolean;
+	teleconsultationSessionId: string | null;
 	clinicBranchName: string;
 	notes: string | null;
 }
@@ -74,6 +86,11 @@ export interface ProviderAgendaItem {
 	providerName: string | null;
 	patientId: string;
 	patientName: string;
+	careModality: string | null;
+	careModalityCode: string | null;
+	isTelemedicine: boolean;
+	hasTeleconsultationSession: boolean;
+	teleconsultationSessionId: string | null;
 	notes: string | null;
 }
 
@@ -152,6 +169,18 @@ export class AppointmentService {
 			.set('date', date);
 
 		return this.http.get<AvailableSlot[]>(`${this.apiUrl}/slots`, { params });
+	}
+
+	getCareModalities(providerId?: string): Observable<CareModalityOption[]> {
+		let params = new HttpParams();
+		if (providerId) {
+			params = params.set('providerId', providerId);
+		}
+
+		return this.http.get<CareModalityOption[]>(
+			`${this.apiUrl}/care-modalities`,
+			{ params },
+		);
 	}
 
 	getMyAppointments(): Observable<GetPatientAppointmentsResponse> {

@@ -69,6 +69,7 @@ export class RolProviderComponent implements OnInit {
 			neighborhood: [''],
 			address: [''],
 			commune: [null],
+			isAvailableForTelemedicine: [false],
 		});
 
 		// Suscribirse a cambios de providerTypeId para validación condicional de licencia
@@ -127,6 +128,7 @@ export class RolProviderComponent implements OnInit {
 			providerTypeId: formData.providerTypeId,
 			documentType: formData.documentType,
 			documentNumber: formData.documentNumber,
+			isAvailableForTelemedicine: formData.isAvailableForTelemedicine,
 		};
 
 		if (

@@ -12,6 +12,9 @@ export interface AppointmentBookingState {
 	slotDate: string | null;
 	slotStartTime: string | null;
 	slotEndTime: string | null;
+	careModalityId: string | null;
+	careModalityCode: string | null;
+	careModalityName: string | null;
 }
 
 const INITIAL_STATE: AppointmentBookingState = {
@@ -25,6 +28,9 @@ const INITIAL_STATE: AppointmentBookingState = {
 	slotDate: null,
 	slotStartTime: null,
 	slotEndTime: null,
+	careModalityId: null,
+	careModalityCode: null,
+	careModalityName: null,
 };
 
 @Injectable({
@@ -89,6 +95,19 @@ export class AppointmentBookingStateService {
 			slotDate: payload.slotDate,
 			slotStartTime: payload.slotStartTime,
 			slotEndTime: payload.slotEndTime,
+		});
+	}
+
+	setCareModalitySelection(payload: {
+		careModalityId: string;
+		careModalityCode: string;
+		careModalityName: string;
+	}): void {
+		this.stateSubject.next({
+			...this.stateSubject.value,
+			careModalityId: payload.careModalityId,
+			careModalityCode: payload.careModalityCode,
+			careModalityName: payload.careModalityName,
 		});
 	}
 

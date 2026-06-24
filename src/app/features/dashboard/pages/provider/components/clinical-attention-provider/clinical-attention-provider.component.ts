@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, inject, Input } from '@angular/core';
 import {
 	FormBuilder,
 	FormControl,
@@ -54,6 +54,9 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 	private readonly engineFormService = inject(EngineFormService);
 	private readonly labsDashboardService = inject(LabsDashboardService);
 	private readonly clinicalRecordService = inject(ClinicalRecordService);
+
+	@Input() isEmbedded = false;
+	@Input() activeTab: 'FORM' | 'HISTORY' | 'ORDERS' = 'FORM';
 
 	appointmentId = '';
 	patientId = '';

@@ -20,6 +20,7 @@ import {
 	ProviderAgendaItem,
 	ProviderAppointmentStatusAction,
 } from '@app/core/services/appointment.service';
+import { TelemedicineService } from '@app/features/telemedicine/services/telemedicine.service';
 import {
 	formatColombiaTime,
 	toColombiaDateKey,
@@ -36,6 +37,7 @@ import { forkJoin } from 'rxjs';
 })
 export class AppointmentProviderComponent implements OnInit {
 	private readonly appointmentService = inject(AppointmentService);
+	private readonly telemedicineService = inject(TelemedicineService);
 	private readonly router = inject(Router);
 
 	loading = false;
@@ -53,6 +55,8 @@ export class AppointmentProviderComponent implements OnInit {
 	rescheduleLoading = false;
 	rescheduleSubmitting = false;
 	rescheduleErrorMessage = '';
+	joiningAppointmentId: string | null = null;
+	joinErrorMessage = '';
 
 	agenda: GetProviderAgendaResponse = {
 		date: this.selectedDate,
@@ -271,6 +275,44 @@ export class AppointmentProviderComponent implements OnInit {
 			appointment.status === 'CONFIRMED' ||
 			appointment.status === 'IN_PROGRESS'
 		);
+	}
+
+	canJoinTeleconsultation(appointment: ProviderAgendaItem): boolean {
+		return (
+			(appointment.isTelemedicine ||
+				appointment.careModalityCode === 'TELEMEDICINA') &&
+			['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status)
+		);
+	}
+
+	joinTeleconsultation(appointment: ProviderAgendaItem): void {
+		if (!this.canJoinTeleconsultation(appointment) || this.joiningAppointmentId) {
+			return;
+		}
+
+		this.openMenuAppointmentId = null;
+		this.joiningAppointmentId = appointment.id;
+		this.joinErrorMessage = '';
+
+		this.telemedicineService.joinByAppointment(appointment.id).subscribe({
+			next: (response) => {
+				this.joiningAppointmentId = null;
+				this.router.navigate(['/telemedicina', response.sessionId], {
+					queryParams: {
+						token: response.accessToken,
+						appointmentId: appointment.id,
+						patientId: appointment.patientId,
+						serviceId: appointment.serviceId,
+						serviceName: appointment.serviceName,
+					},
+				});
+			},
+			error: () => {
+				this.joiningAppointmentId = null;
+				this.joinErrorMessage =
+					'No fue posible ingresar a la videollamada.';
+			},
+		});
 	}
 
 	onPlayAction(appointment: ProviderAgendaItem): void {

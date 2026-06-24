@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppointmentBookingStateService } from '@app/core/services/appointment-booking-state.service';
 import { ProviderService } from '@app/core/services/provider.service';
 import { Provider } from '@app/domains/user/provider.entity';
+import { AppointmentService, CareModalityOption } from '@app/core/services/appointment.service';
 
 @Component({
 	selector: 'app-select-provider',
@@ -20,11 +21,16 @@ export class SelectProviderComponent implements OnInit {
 	private readonly appointmentBookingState = inject(
 		AppointmentBookingStateService,
 	);
+	private readonly appointmentService = inject(AppointmentService);
 
 	providers: Provider[] = [];
 	selectedProviderId: string | null = null;
 	isLoadingProviders = false;
 	providersError: string | null = null;
+
+	careModalities: CareModalityOption[] = [];
+	selectedCareModalityId: string | null = null;
+	selectedCareModalityCode: string | null = null;
 
 	searchTerm = '';
 	genderFilter = 'all';
@@ -54,6 +60,43 @@ export class SelectProviderComponent implements OnInit {
 			snapshot.providerId;
 
 		this.loadProviders();
+		this.loadCareModalities();
+	}
+
+	loadCareModalities(): void {
+		this.appointmentService.getCareModalities().subscribe({
+			next: (modalities) => {
+				this.careModalities = modalities;
+				const snapshot = this.appointmentBookingState.getSnapshot();
+				const defaultModality =
+					modalities.find((m) => m.id === snapshot.careModalityId) ??
+					modalities.find((m) => m.code === (snapshot.careModalityCode ?? 'PRESENCIAL')) ??
+					modalities[0];
+
+				if (defaultModality) {
+					this.selectCareModality(defaultModality);
+				}
+			},
+		});
+	}
+
+	selectCareModality(modality: CareModalityOption): void {
+		this.selectedCareModalityId = modality.id;
+		this.selectedCareModalityCode = modality.code;
+		this.appointmentBookingState.setCareModalitySelection({
+			careModalityId: modality.id,
+			careModalityCode: modality.code,
+			careModalityName: modality.name,
+		});
+
+		if (this.selectedProviderId) {
+			const stillValid = this.filteredProviders.some(
+				(p) => p.id === this.selectedProviderId,
+			);
+			if (!stillValid) {
+				this.selectedProviderId = null;
+			}
+		}
 	}
 
 	get filteredProviders(): Provider[] {
@@ -64,6 +107,10 @@ export class SelectProviderComponent implements OnInit {
 			filtered = filtered.filter((provider) =>
 				this.getProviderFullName(provider).toLowerCase().includes(term),
 			);
+		}
+
+		if (this.selectedCareModalityCode === 'TELEMEDICINA') {
+			filtered = filtered.filter((provider) => provider.isAvailableForTelemedicine);
 		}
 
 		if (this.experienceFilter !== 'all') {

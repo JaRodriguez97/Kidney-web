@@ -10,6 +10,7 @@ import {
 	AppointmentService,
 	PatientAppointment,
 } from '@app/core/services/appointment.service';
+import { TelemedicineService } from '@app/features/telemedicine/services/telemedicine.service';
 import {
 	formatColombiaDate,
 	formatColombiaTime,
@@ -31,6 +32,8 @@ export class AppointmentPatientComponent implements OnInit {
 	pastAppointments: PatientAppointment[] = [];
 	selectedRangeStart: string | null = null;
 	selectedRangeEnd: string | null = null;
+	joiningAppointmentId: string | null = null;
+	joinErrorMessage: string | null = null;
 
 	calendarOptions: CalendarOptions = {
 		plugins: [dayGridPlugin, interactionPlugin],
@@ -72,6 +75,7 @@ export class AppointmentPatientComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private appointmentService: AppointmentService,
+		private telemedicineService: TelemedicineService,
 	) {}
 
 	ngOnInit(): void {
@@ -186,30 +190,56 @@ export class AppointmentPatientComponent implements OnInit {
 		return map[status] ?? status;
 	}
 
-	getModalityIcon(modality: string | null): string {
-		if (!modality) return 'apartment';
-		const lower = modality.toLowerCase();
-		if (lower.includes('tele') || lower.includes('virtual')) return 'videocam';
+	getModalityIcon(appointment: PatientAppointment): string {
+		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
+			return 'videocam';
+		}
 		return 'apartment';
 	}
 
-	getModalityLabel(modality: string | null): string {
-		if (!modality) return 'Presencial';
-		const lower = modality.toLowerCase();
-		if (lower.includes('tele') || lower.includes('virtual'))
+	getModalityLabel(appointment: PatientAppointment): string {
+		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
 			return 'Telemedicina';
-		return 'Presencial';
+		}
+		return appointment.careModality ?? 'Presencial';
 	}
 
-	getModalityBadgeClasses(modality: string | null): string {
-		if (
-			modality &&
-			(modality.toLowerCase().includes('tele') ||
-				modality.toLowerCase().includes('virtual'))
-		) {
+	getModalityBadgeClasses(appointment: PatientAppointment): string {
+		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
 			return 'bg-sky-100 text-sky-700';
 		}
 		return 'bg-purple-100 text-purple-700';
+	}
+
+	canJoinTeleconsultation(appointment: PatientAppointment): boolean {
+		return (
+			(appointment.isTelemedicine ||
+				appointment.careModalityCode === 'TELEMEDICINA') &&
+			['CONFIRMED', 'CHECKED_IN', 'IN_PROGRESS'].includes(appointment.status)
+		);
+	}
+
+	joinTeleconsultation(appointment: PatientAppointment): void {
+		if (!this.canJoinTeleconsultation(appointment) || this.joiningAppointmentId) {
+			return;
+		}
+
+		this.joiningAppointmentId = appointment.id;
+		this.joinErrorMessage = null;
+
+		this.telemedicineService.joinByAppointment(appointment.id).subscribe({
+			next: (response) => {
+				this.joiningAppointmentId = null;
+				this.router.navigate(['/telemedicina', response.sessionId], {
+					queryParams: { token: response.accessToken },
+				});
+			},
+			error: () => {
+				this.joiningAppointmentId = null;
+				this.joinErrorMessage =
+					'No fue posible ingresar a la videollamada. Verifica que la cita esté confirmada.';
+			},
+		});
 	}
 
 	getMonth(dateStr: string): string {
