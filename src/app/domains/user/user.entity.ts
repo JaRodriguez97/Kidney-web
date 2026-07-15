@@ -28,4 +28,8 @@ export interface User {
   providerTypeId?: string;
   providerTypeCode?: string;
   providerTypeName?: string;
+  isRequest?: boolean;
+  notes?: string;
+  entity_type?: string;
+  contact_person_name?: string;
 }

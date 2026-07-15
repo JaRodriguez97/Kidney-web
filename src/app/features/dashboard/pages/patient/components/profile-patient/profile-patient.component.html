@@ -1,11 +1,42 @@
 <section
 	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
 >
-	<div class="space-y-6 mx-auto w-full">
+	<!-- Loading state spinner -->
+	<div
+		*ngIf="loading"
+		class="flex-1 flex flex-col items-center justify-center py-20"
+	>
+		<div
+			class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-600"
+		></div>
+		<p class="text-xs text-slate-500 mt-3 font-semibold">
+			Cargando perfil del paciente...
+		</p>
+	</div>
+
+	<!-- Form container -->
+	<div *ngIf="!loading" class="space-y-6 mx-auto w-full">
+		<!-- Alerts Feedback -->
+		<div
+			*ngIf="successMessage"
+			class="p-4 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl text-sm font-semibold flex items-center gap-2"
+		>
+			<span class="material-symbols-outlined text-lg">check_circle</span>
+			{{ successMessage }}
+		</div>
+		<div
+			*ngIf="errorMessage"
+			class="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl text-sm font-semibold flex items-center gap-2"
+		>
+			<span class="material-symbols-outlined text-lg">error</span>
+			{{ errorMessage }}
+		</div>
+
+		<!-- Personal Information -->
 		<section class="glass-panel p-8">
 			<div class="card-header">
 				<div
-					class="w-10 h-10 rounded-full bg-blue-50 text-primary_p flex items-center justify-center"
+					class="w-10 h-10 rounded-full bg-blue-50 text-sky-600 flex items-center justify-center"
 				>
 					<span class="material-symbols-outlined">badge</span>
 				</div>
@@ -19,22 +50,80 @@
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				<div>
 					<label class="form-label">Primer Nombre</label>
-					<input class="form-input-glass" type="text" value="Juan" />
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.personalInformation.firstName"
+					/>
 				</div>
 				<div>
 					<label class="form-label">Segundo Nombre</label>
-					<input class="form-input-glass" type="text" value="Camilo" />
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.personalInformation.middleName"
+					/>
 				</div>
 				<div>
 					<label class="form-label">Primer Apellido</label>
-					<input class="form-input-glass" type="text" value="Pérez" />
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.personalInformation.lastName"
+					/>
 				</div>
 				<div>
 					<label class="form-label">Segundo Apellido</label>
-					<input class="form-input-glass" type="text" value="Rodríguez" />
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.personalInformation.secondLastName"
+					/>
+				</div>
+				<div>
+					<label class="form-label">Tipo de Documento</label>
+					<select
+						class="form-input-glass cursor-pointer"
+						[(ngModel)]="profile.personalInformation.document.type"
+						disabled
+					>
+						<option value="CC">Cédula de Ciudadanía (CC)</option>
+						<option value="TI">Tarjeta de Identidad (TI)</option>
+						<option value="CE">Cédula de Extranjería (CE)</option>
+						<option value="PAS">Pasaporte (PAS)</option>
+					</select>
+				</div>
+				<div>
+					<label class="form-label">Número de Documento</label>
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.personalInformation.document.number"
+						disabled
+					/>
+				</div>
+				<div>
+					<label class="form-label">Fecha de Nacimiento</label>
+					<input
+						class="form-input-glass"
+						type="date"
+						[(ngModel)]="profile.personalInformation.birthDate"
+					/>
+				</div>
+				<div>
+					<label class="form-label">Sexo Biológico</label>
+					<select
+						class="form-input-glass cursor-pointer"
+						[(ngModel)]="profile.personalInformation.sex"
+					>
+						<option value="MALE">Masculino</option>
+						<option value="FEMALE">Femenino</option>
+					</select>
 				</div>
 			</div>
 		</section>
+
+		<!-- Demographic Information (RDA Variables) -->
 		<section class="glass-panel p-8">
 			<div class="card-header">
 				<div
@@ -43,48 +132,263 @@
 					<span class="material-symbols-outlined">clinical_notes</span>
 				</div>
 				<div>
-					<h3 class="card-title">Variables RDA Seccion A</h3>
+					<h3 class="card-title">Información Demográfica (Variables RDA)</h3>
 					<p class="text-xs text-slate-500">
-						Datos requeridos para identificacion y determinantes sociales del
-						paciente
+						Determinantes sociales, residencia y clasificación del paciente
 					</p>
 				</div>
 			</div>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 				<div>
-					<label class="form-label">Pais Residencia (ISO)</label>
-					<input class="form-input-glass" type="text" value="CO" />
+					<label class="form-label">País Residencia (Código ISO)</label>
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.demographicInformation.country.code"
+						placeholder="Ej. CO"
+					/>
 				</div>
 				<div>
-					<label class="form-label">Municipio Residencia (DIVIPOLA)</label>
-					<input class="form-input-glass" type="text" value="76001" />
+					<label class="form-label">Departamento</label>
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.demographicInformation.department.name"
+						placeholder="Ej. Valle del Cauca"
+					/>
+				</div>
+				<div>
+					<label class="form-label">Municipio (Código DIVIPOLA)</label>
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="profile.demographicInformation.municipality.code"
+						placeholder="Ej. 76001"
+					/>
 				</div>
 				<div>
 					<label class="form-label">Zona Territorial</label>
-					<input class="form-input-glass" type="text" value="URBANA" />
+					<select
+						class="form-input-glass cursor-pointer"
+						[(ngModel)]="profile.demographicInformation.territorialZone"
+					>
+						<option value="URBAN">Urbana</option>
+						<option value="RURAL">Rural</option>
+					</select>
 				</div>
 				<div>
-					<label class="form-label">Sexo Biologico</label>
-					<input class="form-input-glass" type="text" value="F" />
-				</div>
-				<div>
-					<label class="form-label">Identidad de Genero</label>
-					<input class="form-input-glass" type="text" value="MUJER" />
-				</div>
-				<div>
-					<label class="form-label">Etnia</label>
-					<input class="form-input-glass" type="text" value="MESTIZA" />
-				</div>
-				<div>
-					<label class="form-label">Ocupacion (CIUO)</label>
-					<input class="form-input-glass" type="text" value="2261" />
+					<label class="form-label">Etnia (Código)</label>
+					<select
+						class="form-input-glass cursor-pointer"
+						[(ngModel)]="profile.demographicInformation.ethnicity.code"
+					>
+						<option value="NONE">Ninguna / Mestizo</option>
+						<option value="INDIGENOUS">Indígena</option>
+						<option value="AFRO">Afrocolombiano</option>
+						<option value="ROM">Gitano (Rom)</option>
+						<option value="OTHER">Otro</option>
+					</select>
 				</div>
 				<div>
 					<label class="form-label">Nivel Educativo</label>
-					<input class="form-input-glass" type="text" value="UNIVERSITARIO" />
+					<select
+						class="form-input-glass cursor-pointer"
+						[(ngModel)]="profile.demographicInformation.educationLevel.code"
+					>
+						<option value="PRIMARY">Primaria</option>
+						<option value="SECONDARY">Bachillerato / Secundaria</option>
+						<option value="TECHNICAL">Técnico / Tecnólogo</option>
+						<option value="UNIVERSITY">Universitario</option>
+						<option value="POSTGRADUATE">Postgrado</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- Address Details -->
+			<div class="border-t border-slate-100 pt-6">
+				<h4
+					class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4"
+				>
+					Dirección Residencial
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+					<div class="md:col-span-2">
+						<label class="form-label">Dirección Completa</label>
+						<input
+							class="form-input-glass"
+							type="text"
+							[(ngModel)]="profile.demographicInformation.address.addressLine"
+							placeholder="Calle, Carrera, Apto..."
+						/>
+					</div>
+					<div>
+						<label class="form-label">Barrio</label>
+						<input
+							class="form-input-glass"
+							type="text"
+							[(ngModel)]="profile.demographicInformation.address.neighborhood"
+							placeholder="Ej. San Fernando"
+						/>
+					</div>
+					<div>
+						<label class="form-label">Comuna</label>
+						<input
+							class="form-input-glass"
+							type="text"
+							[(ngModel)]="profile.demographicInformation.address.commune"
+							placeholder="Ej. 19"
+						/>
+					</div>
 				</div>
 			</div>
 		</section>
+
+		<!-- Read-Only Clinical Summary (Ficha Clínica) -->
+		<section class="glass-panel p-8 bg-slate-50/40">
+			<div class="card-header pb-2">
+				<div
+					class="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">favorite</span>
+				</div>
+				<div>
+					<div class="flex items-center gap-2">
+						<h3 class="card-title">Resumen Clínico</h3>
+						<span
+							class="bg-rose-50 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase border border-rose-100"
+							>Solo Lectura</span
+						>
+					</div>
+					<p class="text-xs text-slate-500">
+						Antecedentes y constantes vitales consolidadas en tu última atención
+						médica
+					</p>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+				<div>
+					<label class="form-label text-slate-400">Grupo Sanguíneo</label>
+					<div
+						class="form-input-glass bg-slate-100/80 text-slate-600 flex items-center font-semibold"
+					>
+						{{ profile.clinicalSummary.bloodType }}
+					</div>
+				</div>
+				<div>
+					<label class="form-label text-slate-400">Estatura</label>
+					<div
+						class="form-input-glass bg-slate-100/80 text-slate-600 flex items-center"
+					>
+						{{
+							profile.clinicalSummary.heightCm
+								? profile.clinicalSummary.heightCm + " cm"
+								: "Sin registrar"
+						}}
+					</div>
+				</div>
+				<div>
+					<label class="form-label text-slate-400">Peso</label>
+					<div
+						class="form-input-glass bg-slate-100/80 text-slate-600 flex items-center"
+					>
+						{{
+							profile.clinicalSummary.weightKg
+								? profile.clinicalSummary.weightKg + " kg"
+								: "Sin registrar"
+						}}
+					</div>
+				</div>
+				<div>
+					<label class="form-label text-slate-400"
+						>Índice de Masa Corporal (IMC)</label
+					>
+					<div
+						class="form-input-glass bg-slate-100/80 text-slate-600 flex items-center font-medium"
+					>
+						{{
+							profile.clinicalSummary.bodyMassIndex
+								? profile.clinicalSummary.bodyMassIndex + " kg/m²"
+								: "N/A"
+						}}
+					</div>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div>
+					<label class="form-label text-slate-400 mb-1.5"
+						>Alergias Reportadas</label
+					>
+					<div
+						class="min-h-16 p-4 bg-white/60 rounded-xl border border-slate-200/50"
+					>
+						<div class="flex flex-wrap gap-2">
+							<span
+								*ngFor="let allergy of profile.clinicalSummary.allergies"
+								class="bg-rose-50 text-rose-700 text-xs px-3 py-1 rounded-full font-semibold border border-rose-100/80"
+							>
+								{{ allergy }}
+							</span>
+							<span
+								*ngIf="!profile.clinicalSummary.allergies?.length"
+								class="text-slate-400 text-xs italic"
+							>
+								Ninguna alergia registrada
+							</span>
+						</div>
+					</div>
+				</div>
+				<div>
+					<label class="form-label text-slate-400 mb-1.5"
+						>Condiciones Crónicas</label
+					>
+					<div
+						class="min-h-16 p-4 bg-white/60 rounded-xl border border-slate-200/50"
+					>
+						<div class="flex flex-wrap gap-2">
+							<span
+								*ngFor="
+									let condition of profile.clinicalSummary.chronicConditions
+								"
+								class="bg-amber-50 text-amber-700 text-xs px-3 py-1 rounded-full font-semibold border border-amber-100/80"
+							>
+								{{ condition }}
+							</span>
+							<span
+								*ngIf="!profile.clinicalSummary.chronicConditions?.length"
+								class="text-slate-400 text-xs italic"
+							>
+								Sin diagnósticos crónicos registrados
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Meta information updated by doctor -->
+			<div
+				class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+			>
+				<span class="flex items-center gap-1.5">
+					<span class="material-symbols-outlined text-sm">schedule</span>
+					Último control:
+					{{
+						profile.clinicalSummary.lastUpdatedAt | date: "dd/MM/yyyy h:mm a"
+					}}
+				</span>
+				<span class="flex items-center gap-1.5">
+					<span class="material-symbols-outlined text-sm">stethoscope</span>
+					Profesional tratante:
+					{{
+						profile.clinicalSummary.lastUpdatedBy?.fullName ||
+							"Dra. Ana María Pérez"
+					}}
+				</span>
+			</div>
+		</section>
+
+		<!-- Contact Information -->
 		<section class="glass-panel p-8">
 			<div class="card-header">
 				<div
@@ -93,14 +397,15 @@
 					<span class="material-symbols-outlined">contact_mail</span>
 				</div>
 				<div>
-					<h3 class="card-title">Información de Contacto y Ubicación</h3>
+					<h3 class="card-title">Información de Contacto</h3>
 					<p class="text-xs text-slate-500">
-						Detalles para notificaciones y correspondencia
+						Detalles para notificaciones, contactos de emergencia y
+						correspondencia
 					</p>
 				</div>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-				<div class="lg:col-span-1">
+				<div>
 					<label class="form-label">Correo Electrónico</label>
 					<div class="relative">
 						<span
@@ -110,12 +415,13 @@
 						<input
 							class="form-input-glass pl-10"
 							type="email"
-							value="juan.perez@email.com"
+							[(ngModel)]="profile.contactInformation.email"
+							disabled
 						/>
 					</div>
 				</div>
-				<div class="lg:col-span-1">
-					<label class="form-label">Teléfono Celular</label>
+				<div>
+					<label class="form-label">Celular Móvil</label>
 					<div class="relative">
 						<span
 							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
@@ -124,44 +430,55 @@
 						<input
 							class="form-input-glass pl-10"
 							type="tel"
-							value="+57 300 123 4567"
+							[(ngModel)]="profile.contactInformation.mobile.number"
+							placeholder="Ej. 3001234567"
 						/>
 					</div>
 				</div>
-				<div class="lg:col-span-1">
-					<label class="form-label">Ciudad</label>
-					<select class="form-input-glass">
-						<option selected="">Cali</option>
-						<option>Bogotá</option>
-						<option>Medellín</option>
-					</select>
-				</div>
 			</div>
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<div>
-					<label class="form-label">Barrio</label>
-					<input class="form-input-glass" type="text" value="El Ingenio" />
-				</div>
-				<div>
-					<label class="form-label">Comuna</label>
-					<input class="form-input-glass" type="text" value="17" />
-				</div>
-				<div class="md:col-span-1">
-					<label class="form-label">Dirección Residencial</label>
-					<div class="relative">
-						<span
-							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
-							>home_pin</span
-						>
+
+			<!-- Emergency Contact -->
+			<div class="border-t border-slate-100 pt-6">
+				<h4
+					class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4"
+				>
+					Contacto de Emergencia
+				</h4>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div>
+						<label class="form-label">Nombre Completo</label>
 						<input
-							class="form-input-glass pl-10"
+							class="form-input-glass"
 							type="text"
-							value="Cra 83 # 14-50 Apto 402"
+							[(ngModel)]="profile.contactInformation.emergencyContact.fullName"
+							placeholder="Ej. María Gómez"
+						/>
+					</div>
+					<div>
+						<label class="form-label">Parentesco</label>
+						<input
+							class="form-input-glass"
+							type="text"
+							[(ngModel)]="
+								profile.contactInformation.emergencyContact.relationship
+							"
+							placeholder="Ej. Madre, Esposo..."
+						/>
+					</div>
+					<div>
+						<label class="form-label">Teléfono de Contacto</label>
+						<input
+							class="form-input-glass"
+							type="tel"
+							[(ngModel)]="profile.contactInformation.emergencyContact.phone"
+							placeholder="Ej. 3001234567"
 						/>
 					</div>
 				</div>
 			</div>
 		</section>
+
+		<!-- Payment Methods -->
 		<section class="glass-panel p-8">
 			<div class="card-header border-none pb-0 mb-4">
 				<div
@@ -172,72 +489,142 @@
 				<div>
 					<h3 class="card-title">Métodos de Pago</h3>
 					<p class="text-xs text-slate-500">
-						Gestione sus tarjetas para copagos y servicios
+						Gestione sus tarjetas para copagos y servicios de teleconsulta
 					</p>
 				</div>
 			</div>
 			<div class="bg-slate-50/50 rounded-2xl p-6 border border-slate-200/60">
 				<div class="flex flex-col md:flex-row gap-8 items-start">
+					<!-- Dynamically bound Card Layout representing the primary/selected card -->
 					<div
-						class="w-full md:w-80 h-auto rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 relative shadow-xl shadow-slate-900/10 overflow-hidden shrink-0"
+						class="w-full md:w-80 h-44 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 relative shadow-xl shadow-slate-900/10 overflow-hidden shrink-0"
 					>
 						<div
 							class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl"
 						></div>
-						<div class="flex justify-between items-start mb-8">
+						<div class="flex justify-between items-start mb-6">
 							<span class="material-symbols-outlined text-3xl opacity-80"
 								>contactless</span
 							>
-							<span class="font-bold italic text-lg opacity-90">VISA</span>
+							<span class="font-bold italic text-lg opacity-90">{{
+								primaryCard ? primaryCard.brand : "VISA"
+							}}</span>
 						</div>
-						<div class="mb-6">
-							<p class="text-xs text-slate-400 mb-1">Número de Tarjeta</p>
-							<p class="text-xl font-mono tracking-widest">
-								**** **** **** 1234
+						<div class="mb-4">
+							<p class="text-[9px] text-slate-400 mb-0.5">Número de Tarjeta</p>
+							<p class="text-lg font-mono tracking-widest">
+								{{
+									primaryCard
+										? maskCardNumber(primaryCard.number)
+										: "**** **** **** 1234"
+								}}
 							</p>
 						</div>
 						<div class="flex justify-between items-end">
 							<div>
-								<p class="text-[10px] text-slate-400 uppercase">Titular</p>
-								<p class="text-sm font-medium tracking-wide">JUAN PÉREZ</p>
+								<p class="text-[8px] text-slate-400 uppercase">Titular</p>
+								<p
+									class="text-xs font-semibold tracking-wide uppercase truncate w-40"
+								>
+									{{
+										primaryCard
+											? primaryCard.holderName
+											: (
+													profile.personalInformation.firstName +
+													" " +
+													(profile.personalInformation.middleName
+														? profile.personalInformation.middleName + " "
+														: "") +
+													profile.personalInformation.lastName +
+													" " +
+													(profile.personalInformation.secondLastName ?? "")
+												).trim() || "Titular de la Tarjeta"
+									}}
+								</p>
 							</div>
 							<div>
-								<p class="text-[10px] text-slate-400 uppercase">Expira</p>
-								<p class="text-sm font-medium">10/26</p>
+								<p class="text-[8px] text-slate-400 uppercase">Expira</p>
+								<p class="text-xs font-semibold font-mono">
+									{{ primaryCard ? primaryCard.expiryDate : "10/28" }}
+								</p>
 							</div>
 						</div>
 					</div>
-					<div class="flex-1 w-full space-y-4">
-						<div
-							class="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-slate-100"
-						>
+
+					<div class="flex-1 w-full space-y-4 font-sans">
+						<!-- List of registered cards -->
+						<div *ngIf="cards.length > 0; else noCards" class="space-y-3">
 							<div
-								class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"
+								*ngFor="let card of cards"
+								[ngClass]="{'border-sky-500 bg-sky-50/20': card.isPrimary}"
+								class="flex items-center gap-3 p-4 bg-white/60 rounded-xl border border-slate-100 transition-all hover:border-slate-300"
 							>
-								<span class="material-symbols-outlined">check_circle</span>
+								<div
+									class="w-12 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-700 font-bold text-[10px] uppercase shrink-0 border border-slate-200"
+								>
+									{{ card.brand }}
+								</div>
+
+								<div class="flex-1 min-w-0">
+									<h4
+										class="font-bold text-slate-800 text-sm flex items-center gap-2 truncate"
+									>
+										{{ card.brand }} •••• {{ card.number.slice(-4) }}
+										<span
+											*ngIf="card.isPrimary"
+											class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold shrink-0"
+										>
+											Principal
+										</span>
+									</h4>
+									<p class="text-xs text-slate-500 truncate">
+										Vence: {{ card.expiryDate }} | {{ card.holderName }}
+									</p>
+								</div>
+
+								<div class="flex items-center gap-3 shrink-0">
+									<button
+										*ngIf="!card.isPrimary"
+										(click)="setPrimaryCard(card.id)"
+										class="text-sky-600 text-xs font-semibold hover:underline"
+									>
+										Hacer Principal
+									</button>
+									<button
+										(click)="deleteCard(card.id)"
+										class="text-rose-600 text-xs font-semibold hover:underline"
+									>
+										Eliminar
+									</button>
+								</div>
 							</div>
-							<div class="flex-1">
-								<h4 class="font-bold text-slate-800 text-sm">
-									Tarjeta Principal Activa
-								</h4>
-								<p class="text-xs text-slate-500">
-									Esta tarjeta se usará para cobros automáticos autorizados.
+						</div>
+
+						<!-- Fallback when no cards are registered -->
+						<ng-template #noCards>
+							<div
+								class="p-6 bg-white/40 rounded-xl border border-dashed border-slate-200 text-center text-slate-500"
+							>
+								<span
+									class="material-symbols-outlined text-3xl mb-1 text-slate-400"
+									>credit_card_off</span
+								>
+								<p class="text-xs font-medium">
+									No tiene tarjetas registradas.
 								</p>
 							</div>
-							<button
-								class="text-primary_p text-sm font-medium hover:underline"
-							>
-								Editar
-							</button>
-						</div>
+						</ng-template>
+
 						<button
-							class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-primary_p hover:text-primary_p hover:bg-primary_p/5 transition-all"
+							(click)="openAddCardModal()"
+							class="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-sky-600 hover:text-sky-600 hover:bg-sky-50 transition-all"
 						>
 							<span class="material-symbols-outlined">add_card</span>
 							<span class="font-semibold text-sm"
 								>Registrar nueva tarjeta Débito/Crédito</span
 							>
 						</button>
+
 						<div
 							class="flex items-center justify-center gap-4 text-slate-400 pt-2"
 						>
@@ -256,9 +643,12 @@
 				</div>
 			</div>
 		</section>
+
+		<!-- Save Button -->
 		<div class="flex justify-end p-4">
 			<button
-				class="bg-primary_p hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg shadow-primary_p/30 transition-all transform hover:scale-[1.02] flex items-center gap-2"
+				(click)="saveProfile()"
+				class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg shadow-sky-600/30 transition-all transform hover:scale-[1.02] flex items-center gap-2"
 			>
 				<span class="material-symbols-outlined">save</span>
 				Guardar Cambios
@@ -266,3 +656,131 @@
 		</div>
 	</div>
 </section>
+
+<!-- Modal para Registrar Nueva Tarjeta -->
+<div
+	*ngIf="showAddCardModal"
+	class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm overflow-y-auto"
+>
+	<div class="modal-glass w-full max-w-md p-8 relative flex flex-col my-8">
+		<!-- Header -->
+		<div class="flex justify-between items-center mb-6">
+			<h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+				<span class="material-symbols-outlined text-sky-600">credit_card</span>
+				Registrar Nueva Tarjeta
+			</h3>
+			<button
+				(click)="closeAddCardModal()"
+				class="text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center"
+			>
+				<span class="material-symbols-outlined">close</span>
+			</button>
+		</div>
+
+		<!-- Card Preview -->
+		<div
+			class="w-full h-40 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 text-white p-5 relative shadow-lg overflow-hidden mb-6"
+		>
+			<div
+				class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-8 -mt-8 blur-xl"
+			></div>
+			<div class="flex justify-between items-start mb-4">
+				<span class="material-symbols-outlined text-2xl opacity-80"
+					>contactless</span
+				>
+				<span class="font-bold italic text-base opacity-90">{{
+					detectCardType(newCard.number)
+				}}</span>
+			</div>
+			<div class="mb-3">
+				<p class="text-[8px] text-slate-400 mb-0.5">Número de Tarjeta</p>
+				<p class="text-base font-mono tracking-widest">
+					{{ formatCardNumber(newCard.number) || "**** **** **** ****" }}
+				</p>
+			</div>
+			<div class="flex justify-between items-end">
+				<div>
+					<p class="text-[8px] text-slate-400 uppercase">Titular</p>
+					<p
+						class="text-xs font-semibold tracking-wide uppercase truncate w-36"
+					>
+						{{ newCard.holderName || "Nombre del Titular" }}
+					</p>
+				</div>
+				<div>
+					<p class="text-[8px] text-slate-400 uppercase">Expira</p>
+					<p class="text-xs font-semibold font-mono">
+						{{ newCard.expiryDate || "MM/YY" }}
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Form Fields -->
+		<div class="space-y-4">
+			<div>
+				<label class="form-label">Número de Tarjeta</label>
+				<input
+					class="form-input-glass"
+					type="text"
+					[(ngModel)]="newCard.number"
+					placeholder="4111 2222 3333 4444"
+					maxlength="19"
+					(input)="onCardNumberInput($event)"
+				/>
+			</div>
+			<div>
+				<label class="form-label">Nombre del Titular</label>
+				<input
+					class="form-input-glass"
+					type="text"
+					[(ngModel)]="newCard.holderName"
+					placeholder="Ej. Juan Pérez"
+				/>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+				<div>
+					<label class="form-label">Vencimiento (MM/YY)</label>
+					<input
+						class="form-input-glass"
+						type="text"
+						[(ngModel)]="newCard.expiryDate"
+						placeholder="12/28"
+						maxlength="5"
+						(input)="onExpiryInput($event)"
+					/>
+				</div>
+				<div class="flex items-center gap-2 pb-3 pl-1">
+					<input
+						type="checkbox"
+						id="isPrimaryCheck"
+						[(ngModel)]="newCard.isPrimary"
+						class="w-4 h-4 text-sky-600 border-slate-300 rounded focus:ring-sky-500 cursor-pointer"
+					/>
+					<label
+						for="isPrimaryCheck"
+						class="text-sm font-semibold text-slate-700 cursor-pointer select-none"
+					>
+						Tarjeta Principal
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<!-- Buttons -->
+		<div class="flex justify-end gap-3 mt-8">
+			<button
+				(click)="closeAddCardModal()"
+				class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors font-medium text-sm"
+			>
+				Cancelar
+			</button>
+			<button
+				(click)="saveCard()"
+				class="px-5 py-2.5 rounded-xl bg-sky-600 text-white hover:bg-sky-700 transition-colors font-medium text-sm shadow-lg shadow-sky-600/20"
+			>
+				Registrar Tarjeta
+			</button>
+		</div>
+	</div>
+</div>

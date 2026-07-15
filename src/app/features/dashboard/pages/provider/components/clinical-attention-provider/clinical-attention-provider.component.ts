@@ -249,24 +249,64 @@ export class ClinicalAttentionProviderComponent implements OnInit, OnDestroy {
 
 	private hydrateContext(): void {
 		const queryMap = this.route.snapshot.queryParamMap;
-		this.appointmentId = queryMap.get('appointmentId') ?? '';
-		this.patientId = queryMap.get('patientId') ?? '';
-		this.serviceId = queryMap.get('serviceId') ?? '';
-		this.serviceName = queryMap.get('serviceName') ?? this.serviceName;
+		const appointmentIdFromUrl = queryMap.get('appointmentId') ?? '';
 
-		const currentNavigationState = (this.router.getCurrentNavigation()?.extras
-			.state ?? {}) as ClinicalAttentionNavigationState;
+		if (appointmentIdFromUrl) {
+			this.appointmentId = appointmentIdFromUrl;
+			this.patientId = queryMap.get('patientId') ?? '';
+			this.serviceId = queryMap.get('serviceId') ?? '';
+			this.serviceName = queryMap.get('serviceName') ?? this.serviceName;
 
-		const historyState =
-			(typeof history !== 'undefined'
-				? (history.state as ClinicalAttentionNavigationState)
-				: {}) ?? {};
+			const currentNavigationState = (this.router.getCurrentNavigation()?.extras
+				.state ?? {}) as ClinicalAttentionNavigationState;
 
-		const context: ClinicalAttentionNavigationState = {
-			...historyState,
-			...currentNavigationState,
-		};
+			const historyState =
+				(typeof history !== 'undefined'
+					? (history.state as ClinicalAttentionNavigationState)
+					: {}) ?? {};
 
+			let context: ClinicalAttentionNavigationState = {
+				...historyState,
+				...currentNavigationState,
+			};
+
+			if (typeof sessionStorage !== 'undefined') {
+				const queryParams = {
+					appointmentId: this.appointmentId,
+					patientId: this.patientId,
+					serviceId: this.serviceId,
+					serviceName: this.serviceName,
+				};
+				
+				if (!context.patientName) {
+					const savedStateStr = sessionStorage.getItem('active_clinical_attention_state');
+					if (savedStateStr) {
+						try {
+							context = JSON.parse(savedStateStr);
+						} catch (e) {
+							console.error('Error parsing active_clinical_attention_state', e);
+						}
+					}
+				}
+				
+				sessionStorage.setItem('active_clinical_attention_query_params', JSON.stringify(queryParams));
+				sessionStorage.setItem('active_clinical_attention_state', JSON.stringify(context));
+			}
+
+			this.applyContext(context);
+		} else if (typeof sessionStorage !== 'undefined') {
+			const savedQueryParamsStr = sessionStorage.getItem('active_clinical_attention_query_params');
+			if (savedQueryParamsStr) {
+				const savedQueryParams = JSON.parse(savedQueryParamsStr);
+				void this.router.navigate(['/dashboard/provider/clinical-attention'], {
+					queryParams: savedQueryParams,
+				});
+				return;
+			}
+		}
+	}
+
+	private applyContext(context: ClinicalAttentionNavigationState): void {
 		if (context.patientName) {
 			this.patientName = context.patientName;
 		}

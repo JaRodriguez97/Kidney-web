@@ -12,6 +12,10 @@ export class ProviderService {
 
 	constructor(private readonly http: HttpClient) {}
 
+	assignBranch(providerId: string, data: any): Observable<any> {
+		return this.http.post<any>(`${this.apiUrl}/${providerId}/branch`, data);
+	}
+
 	getProviders(params?: {
 		serviceId?: string | null;
 		specialty?: string | null;

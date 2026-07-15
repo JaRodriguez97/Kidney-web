@@ -1,0 +1,177 @@
+<div class="flex-1 flex flex-col p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+	<!-- Header -->
+	<header class="glass-container !rounded-2xl px-6 py-4 mb-6 flex items-center justify-between shrink-0">
+		<div>
+			<h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+				Gestión de Pacientes
+				<span class="text-base font-medium text-slate-400"> - NIT: {{ organizationNit || '900.452.123-1' }}</span>
+			</h1>
+			<p class="text-primary font-bold text-sm mt-0.5">{{ organizationName || 'Laboratorios Clínicos del Norte S.A.S.' }}</p>
+		</div>
+		<div class="flex items-center gap-4">
+			<div class="hidden lg:flex flex-col items-end">
+				<div class="flex items-center gap-2">
+					<div
+						class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 text-primary">
+						<span class="material-symbols-outlined text-lg">medical_services</span>
+					</div>
+					<div class="text-right">
+						<p class="text-xs font-bold text-slate-700">{{ contactPersonName || 'Dra. María González' }}</p>
+						<p class="text-[10px] text-slate-500 font-medium">Contacto Personal</p>
+					</div>
+				</div>
+			</div>
+			<button class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+				<span class="material-symbols-outlined">menu</span>
+			</button>
+		</div>
+	</header>
+	<div class="flex-1 overflow-y-auto custom-scrollbar pb-6">
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1600px] mx-auto h-full">
+			<div class="lg:col-span-9 flex flex-col gap-6">
+				<div class="glass-card flex flex-col md:flex-row gap-4 items-end md:items-center justify-between">
+					<div class="flex-1 w-full md:w-auto flex flex-col md:flex-row gap-4">
+						<div class="relative flex-1">
+							<span
+								class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+							<input class="input-search pl-10" placeholder="Buscar por nombre o ID..." type="text"
+								[(ngModel)]="search" (keyup.enter)="onSearch()" />
+						</div>
+						<div class="relative w-full md:w-48">
+							<span
+								class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">location_on</span>
+							<select class="input-search pl-10 appearance-none cursor-pointer" [(ngModel)]="selectedBranchName" (change)="applyFilters()">
+								<option value="">Todas las Sedes</option>
+								@for (branch of clinicBranches; track branch.id) {
+									<option [value]="branch.name">{{ branch.name }}</option>
+								}
+							</select>
+							<span
+								class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined pointer-events-none text-sm">expand_more</span>
+						</div>
+						<div class="relative w-full md:w-48">
+							<span
+								class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">date_range</span>
+							<input class="input-search pl-10 text-sm text-slate-500" type="date" [(ngModel)]="selectedDate" (change)="applyFilters()" />
+						</div>
+					</div>
+					<button (click)="onSearch()"
+						class="bg-primary hover:bg-[#0274ae] text-white p-2.5 rounded-xl transition-colors shadow-lg shadow-primary/20 shrink-0">
+						<span class="material-symbols-outlined">search</span>
+					</button>
+				</div>
+				<div class="glass-card flex-1 flex flex-col overflow-hidden">
+					<div class="flex items-center justify-between mb-4">
+						<h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+							<span class="material-symbols-outlined text-primary">list_alt</span>
+							Listado de Pacientes
+						</h3>
+						<div
+							class="text-xs font-bold text-slate-500 bg-white/50 px-3 py-1 rounded-full border border-slate-200">
+							Mostrando {{ filteredPatients.length }} de {{ total }} registros
+						</div>
+					</div>
+					@if (loading) {
+					<div class="flex-1 flex flex-col items-center justify-center py-12">
+						<div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+						<p class="text-xs text-slate-500 mt-3 font-semibold">Cargando pacientes...</p>
+					</div>
+					} @else {
+					<div class="overflow-auto custom-scrollbar -mx-6 px-6">
+						<table class="w-full min-w-[700px]">
+							<thead>
+								<tr class="border-b border-slate-200/60">
+									<th class="table-header pl-0">Paciente</th>
+									<th class="table-header">Identificación</th>
+									<th class="table-header">Última Actividad</th>
+									<th class="table-header">Sede</th>
+									<th class="table-header text-right pr-0">Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								@for (item of filteredPatients; track item.patientId) {
+								<tr class="group hover:bg-white/40 transition-colors">
+									<td class="table-cell pl-0">
+										<div class="flex items-center gap-3">
+											<div
+												class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
+												{{ getInitials(item.fullName) }}</div>
+											<div>
+												<p class="text-slate-800 font-bold text-sm">{{ item.fullName }}</p>
+												<p class="text-[11px] text-slate-500">{{ item.relationshipType }}</p>
+											</div>
+										</div>
+									</td>
+									<td class="table-cell font-mono text-xs text-slate-500">{{ item.documentType }} {{
+										item.documentNumber }}</td>
+									<td class="table-cell text-xs text-slate-500">
+										{{ item.lastActivityAt ? (item.lastActivityAt | date: 'dd MMM, yyyy - hh:mm a')
+										: 'Sin actividad registrada' }}
+									</td>
+									<td class="table-cell">
+										<span class="status-badge status-badge-active">
+											<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {{ item.city
+											}}
+										</span>
+									</td>
+									<td class="table-cell text-right pr-0">
+										<div class="flex justify-end gap-2">
+											<button class="btn-action flex items-center justify-center"
+												title="Ver Historia" (click)="viewDetail(item.patientId)">
+												<span class="material-symbols-outlined text-[18px]">visibility</span>
+											</button>
+										</div>
+									</td>
+								</tr>
+								}
+								@if (!filteredPatients.length) {
+								<tr>
+									<td class="table-cell border-none text-center py-12 text-slate-500" colspan="5">
+										No se encontraron colaboradores.
+									</td>
+								</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+					}
+				</div>
+			</div>
+			<div class="lg:col-span-3 flex flex-col gap-6">
+				<div class="glass-card relative overflow-hidden group">
+					<div
+						class="absolute -right-6 -top-6 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all">
+					</div>
+					<div class="flex justify-between items-start mb-4 relative z-10">
+						<div class="p-3 bg-blue-50 rounded-xl text-primary">
+							<span class="material-symbols-outlined">diversity_3</span>
+						</div>
+					</div>
+					<h3 class="text-slate-500 font-medium text-sm">Total Colaboradores</h3>
+					<p class="text-4xl font-extrabold text-slate-800 mt-2">{{ total }}</p>
+					<p class="text-xs text-slate-400 mt-2">Pacientes registrados y activos</p>
+				</div>
+				<div class="glass-card flex-1 flex flex-col">
+					<div class="flex items-center gap-2 mb-4">
+						<div class="p-2 bg-red-50 rounded-lg text-secondary animate-pulse">
+							<span class="material-symbols-outlined">warning</span>
+						</div>
+						<h3 class="text-lg font-bold text-slate-800">Alertas de Salud</h3>
+					</div>
+					<p class="text-xs text-slate-500 mb-4">Resultados críticos que requieren atención inmediata.</p>
+					<div class="space-y-3 overflow-y-auto custom-scrollbar pr-1 flex-1">
+						<div class="flex flex-col items-center justify-center py-8 text-center bg-slate-50/50 rounded-2xl border border-slate-100/50">
+							<span class="material-symbols-outlined text-slate-300 text-3xl mb-2">check_circle</span>
+							<p class="text-xs text-slate-500 font-medium">No hay alertas críticas en este momento</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Patient Detail Modal -->
+@if (selectedPatientId) {
+<app-patient-detail-modal [patientId]="selectedPatientId" (close)="selectedPatientId = null"></app-patient-detail-modal>
+}

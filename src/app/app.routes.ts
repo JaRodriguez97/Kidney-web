@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AdminDashboardComponent } from './features/dashboard/pages/admin/admin-dashboard/admin-dashboard.component';
 import { ADMIN_DASHBOARD_ROUTES } from './features/dashboard/pages/admin/admin-dashboard/admin-dashboard.routes';
 import { AuthGuard } from './core/guards/auth.guard';
 import { PATIENT_DASHBOARD_ROUTES } from './features/dashboard/pages/patient/patient-dashboard/patient-dashboard.routes';
@@ -29,6 +28,13 @@ export const routes: Routes = [
 		loadComponent: () =>
 			import('./features/auth/pages/login-aliado/login-aliado.component').then(
 				(m) => m.LoginAliadoComponent,
+			),
+	},
+	{
+		path: 'join',
+		loadComponent: () =>
+			import('./features/join/join.component').then(
+				(m) => m.JoinComponent,
 			),
 	},
 	{
@@ -103,9 +109,9 @@ export const routes: Routes = [
 		path: 'dashboard/organization',
 		canActivate: [AuthGuard],
 		data: { role: 'ORGANIZATION' },
-		loadComponent: () =>
-			import('./features/dashboard/pages/organization/organization-dashboard/organization-dashboard.component').then(
-				(m) => m.OrganizationDashboardComponent,
+		loadChildren: () =>
+			import('./features/dashboard/pages/organization/organization-dashboard.routes').then(
+				(m) => m.ORGANIZATION_DASHBOARD_ROUTES,
 			),
 	},
 	{

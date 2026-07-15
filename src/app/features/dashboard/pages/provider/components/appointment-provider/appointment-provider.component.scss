@@ -1,3 +1,8 @@
+:host {
+	display: block;
+	height: 100%;
+}
+
 .glass-panel {
 	@apply bg-white/60 backdrop-blur-md shadow-glass rounded-2xl;
 }

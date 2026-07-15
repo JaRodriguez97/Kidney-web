@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '@env/environment';
 
 export interface OrganizationDashboardSummary {
@@ -38,6 +38,7 @@ export interface OrganizationDashboardResponse {
 		legalName: string;
 		documentNumber: string;
 		status: string;
+		isSuperAliado: boolean;
 	};
 	summary: OrganizationDashboardSummary;
 	recentEmployees: OrganizationDashboardEmployee[];
@@ -71,6 +72,7 @@ export interface CreateOrganizationDto {
 })
 export class OrganizationService {
 	private readonly baseUrl = environment.apiUrl + 'organizations/';
+	public readonly refresh$ = new Subject<void>();
 
 	constructor(private http: HttpClient) {}
 
@@ -91,5 +93,89 @@ export class OrganizationService {
 				},
 			},
 		);
+	}
+
+	getProfile(): Observable<any> {
+		return this.http.get<any>(`${this.baseUrl}profile`);
+	}
+
+	updateProfile(data: any): Observable<any> {
+		return this.http.put<any>(`${this.baseUrl}profile`, data);
+	}
+
+	uploadLogo(file: File): Observable<any> {
+		const formData = new FormData();
+		formData.append('logo', file);
+		return this.http.post<any>(`${this.baseUrl}profile/logo`, formData);
+	}
+
+	requestUpgrade(): Observable<any> {
+		return this.http.post<any>(`${this.baseUrl}upgrade`, {});
+	}
+
+	getPatients(params?: {
+		search?: string;
+		page?: number;
+		limit?: number;
+	}): Observable<any> {
+		return this.http.get<any>(`${this.baseUrl}patients`, {
+			params: {
+				...(params?.search ? { search: params.search } : {}),
+				...(params?.page ? { page: String(params.page) } : {}),
+				...(params?.limit ? { limit: String(params.limit) } : {}),
+			},
+		});
+	}
+
+	getPatientDetail(patientId: string): Observable<any> {
+		return this.http.get<any>(`${this.baseUrl}patients/${patientId}`);
+	}
+
+	getClinicalRequests(params?: {
+		search?: string;
+		date?: string;
+		page?: number;
+		limit?: number;
+	}): Observable<any> {
+		return this.http.get<any>(`${this.baseUrl}clinical-requests`, {
+			params: {
+				...(params?.search ? { search: params.search } : {}),
+				...(params?.date ? { date: params.date } : {}),
+				...(params?.page ? { page: String(params.page) } : {}),
+				...(params?.limit ? { limit: String(params.limit) } : {}),
+			},
+		});
+	}
+
+	getResults(params?: {
+		search?: string;
+		date?: string;
+		page?: number;
+		limit?: number;
+	}): Observable<any> {
+		return this.http.get<any>(`${this.baseUrl}results`, {
+			params: {
+				...(params?.search ? { search: params.search } : {}),
+				...(params?.date ? { date: params.date } : {}),
+				...(params?.page ? { page: String(params.page) } : {}),
+				...(params?.limit ? { limit: String(params.limit) } : {}),
+			},
+		});
+	}
+
+	createAccessRequest(data: any): Observable<any> {
+		return this.http.post<any>(`${this.baseUrl}access-request`, data);
+	}
+
+	approveAccessRequest(id: string): Observable<any> {
+		return this.http.post<any>(`${this.baseUrl}access-request/${id}/approve`, {});
+	}
+
+	rejectAccessRequest(id: string, reason?: string): Observable<any> {
+		return this.http.post<any>(`${this.baseUrl}access-request/${id}/reject`, { reason });
+	}
+
+	createClinicalRequests(data: { patientIds: string[]; packageId: string }): Observable<any> {
+		return this.http.post<any>(`${this.baseUrl}clinical-requests`, data);
 	}
 }

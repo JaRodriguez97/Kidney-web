@@ -1,0 +1,108 @@
+<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+	<div class="glass-panel w-full max-w-2xl overflow-hidden animate-fade-in flex flex-col shadow-2xl"
+		style="border: 1px solid rgba(255, 255, 255, 0.4)">
+		<!-- Header -->
+		<div class="p-6 border-b border-slate-200/50 flex justify-between items-center bg-white/40">
+			<div class="flex items-center gap-3">
+				<span class="material-symbols-outlined text-primary text-2xl">corporate_fare</span>
+				<div>
+					<h3 class="font-bold text-slate-800 text-lg">
+						Detalles de la Solicitud de Aliado
+					</h3>
+					<p class="text-xs text-slate-500">
+						Revisa la información proporcionada por la entidad solicitante
+					</p>
+				</div>
+			</div>
+			<button (click)="onClose()"
+				class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors text-slate-600">
+				<span class="material-symbols-outlined text-lg">close</span>
+			</button>
+		</div>
+
+		<!-- Body -->
+		<div class="p-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white/10">
+			<!-- Legal Name & Type -->
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Razón Social</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.firstName }}
+					</p>
+				</div>
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Tipo de Entidad</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.entity_type || 'N/A' }}
+					</p>
+				</div>
+			</div>
+
+			<!-- NIT & Location -->
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">NIT / Documento</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.documentNumber }}
+					</p>
+				</div>
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Ciudad / Sede</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.city || 'N/A' }}
+					</p>
+				</div>
+			</div>
+
+			<!-- Contact Person -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-4">
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Nombre de
+						Contacto</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.contact_person_name || request.lastName }}
+					</p>
+				</div>
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Correo
+						Electrónico</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5 break-all">
+						{{ request.email }}
+					</p>
+				</div>
+				<div>
+					<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Teléfono</label>
+					<p class="text-sm font-semibold text-slate-700 mt-0.5">
+						{{ request.phone || 'N/A' }}
+					</p>
+				</div>
+			</div>
+
+			<!-- Message/Notes -->
+			<div class="border-t border-slate-100 pt-4" *ngIf="request.notes">
+				<label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Mensaje o Motivo de
+					Solicitud</label>
+				<div
+					class="mt-1.5 p-3 rounded-xl bg-slate-50/50 border border-slate-200/40 text-sm text-slate-600 leading-relaxed italic">
+					"{{ request.notes }}"
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer Actions -->
+		<div class="p-6 flex justify-end items-center gap-4 bg-white/40 border-t border-slate-200/50">
+			<button type="button" (click)="onClose()"
+				class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">
+				Cerrar
+			</button>
+			<button (click)="onReject()"
+				class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg shadow-red-200 hover:scale-[1.01] active:scale-95 transition-all">
+				Rechazar
+			</button>
+			<button (click)="onApprove()"
+				class="bg-primary hover:bg-sky-700 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-lg shadow-sky-200 hover:scale-[1.01] active:scale-95 transition-all">
+				Aprobar y Crear Aliado
+			</button>
+		</div>
+	</div>
+</div>

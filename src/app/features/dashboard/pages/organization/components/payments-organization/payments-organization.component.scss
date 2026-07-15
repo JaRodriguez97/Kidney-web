@@ -1,0 +1,39 @@
+.glass-container {
+    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-glass rounded-[2rem];
+}
+
+.glass-card {
+    @apply bg-white/60 backdrop-blur-md border border-white/60 p-6 rounded-3xl shadow-sm transition-all duration-300;
+}
+
+.input-search {
+    @apply w-full bg-white/70 border border-slate-200 rounded-xl px-4 py-2.5 pl-10 text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none placeholder:text-slate-400 font-medium;
+}
+
+.btn-action {
+    @apply bg-white text-slate-700 border border-slate-200 px-3 py-2 rounded-xl text-xs font-bold hover:bg-slate-50 hover:border-primary/30 hover:text-primary transition-all shadow-sm cursor-pointer;
+}
+
+.table-header {
+    @apply text-left text-xs font-bold text-slate-500 uppercase tracking-wider pb-3 px-4;
+}
+
+.table-cell {
+    @apply py-3 px-4 text-sm font-medium text-slate-600 border-b border-slate-100/50 align-middle;
+}
+
+.status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-400/30 rounded-full;
+}

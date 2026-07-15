@@ -75,4 +75,26 @@ export class PatientService {
       },
     );
   }
+
+  getMyProfile(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}my-profile`);
+  }
+
+  updateMyProfile(payload: any): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}me`, payload);
+  }
+
+  getMyDocuments(): Observable<PatientDocument[]> {
+    return this.http.get<PatientDocument[]>(`${this.baseUrl}my-documents`);
+  }
+}
+
+export interface PatientDocument {
+  id: string;
+  type: 'INCAPACITY' | 'REFERRAL' | 'LAB' | 'CERTIFICATE' | 'INVOICE';
+  title: string;
+  date: string;
+  issuer: string;
+  details: string;
+  downloadParam: string;
 }

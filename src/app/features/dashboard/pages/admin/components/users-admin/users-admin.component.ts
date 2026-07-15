@@ -16,6 +16,8 @@ import { RolPatientComponent } from './components/rol-patient/rol-patient.compon
 import { SidebarService } from '@app/shared/services/sidebar.service';
 import { RolProviderComponent } from './components/rol-provider/rol-provider.component';
 import { CreateProviderTypeComponent } from './components/create-provider-type/create-provider-type.component';
+import { OrganizationService } from '@app/core/services/organization.service';
+import { RequestDetailsModalComponent } from './components/request-details-modal/request-details-modal.component';
 
 @Component({
 	selector: 'app-users-admin',
@@ -29,6 +31,7 @@ import { CreateProviderTypeComponent } from './components/create-provider-type/c
 		RolOrganizationComponent,
 		RolProviderComponent,
 		CreateProviderTypeComponent,
+		RequestDetailsModalComponent,
 	],
 	templateUrl: './users-admin.component.html',
 	styleUrl: './users-admin.component.scss',
@@ -71,10 +74,15 @@ export class UsersAdminComponent implements OnInit {
 	// Datos del formulario recopilados
 	formData: any = {};
 
+	// Modal - solicitud seleccionada al ver datos
+	showRequestDetailsModal = false;
+	selectedRequest: any = null;
+
 	constructor(
 		private userService: UserService,
 		private sidebarService: SidebarService,
 		private providerTypeService: ProviderTypeService,
+		private organizationService: OrganizationService,
 	) {}
 
 	ngOnInit() {
@@ -129,7 +137,14 @@ export class UsersAdminComponent implements OnInit {
 
 			const matchesStatus =
 				this.selectedStatus === '' ||
-				this.selectedStatus.toUpperCase() === user.status!;
+				(this.selectedStatus === 'pending' &&
+					(user.status === 'SUBMITTED' ||
+						user.status === 'UNDER_REVIEW' ||
+						user.status === 'PENDING')) ||
+				(this.selectedStatus === 'active' &&
+					(user.status === 'ACTIVE' || user.status === 'active' || (user.status as any) === true)) ||
+				(this.selectedStatus === 'inactive' &&
+					(user.status === 'INACTIVE' || user.status === 'inactive' || !user.status || (user.status as any) === false));
 
 			return matchesSearch && matchesRole && matchesStatus;
 		});
@@ -303,15 +318,30 @@ export class UsersAdminComponent implements OnInit {
 		return this.users.filter((u) => u.status == 'ACTIVE').length;
 	}
 
-	getStatusBadgeClass(user: User): string {
-		if (user.status) {
+	getStatusBadgeClass(user: any): string {
+		if (user.status === 'ACTIVE' || user.status === 'active' || user.status === true) {
 			return 'bg-green-50 text-green-700 border-green-100';
+		} else if (
+			user.status === 'SUBMITTED' ||
+			user.status === 'UNDER_REVIEW' ||
+			user.status === 'PENDING'
+		) {
+			return 'bg-amber-50 text-amber-700 border-amber-100';
 		}
 		return 'bg-red-50 text-red-700 border-red-100';
 	}
 
-	getStatusText(user: User): string {
-		return user.status ? 'Activo' : 'Inactivo';
+	getStatusText(user: any): string {
+		if (user.status === 'ACTIVE' || user.status === 'active' || user.status === true) {
+			return 'Activo';
+		} else if (
+			user.status === 'SUBMITTED' ||
+			user.status === 'UNDER_REVIEW' ||
+			user.status === 'PENDING'
+		) {
+			return 'Pendiente';
+		}
+		return 'Inactivo';
 	}
 
 	getRoleBadgeClass(role: string): string {
@@ -390,5 +420,64 @@ export class UsersAdminComponent implements OnInit {
 
 	onProviderTypeCreated(): void {
 		this.loadProviderTypes();
+	}
+
+	// --- Request Actions ---
+
+	viewRequestDetails(user: any) {
+		this.selectedRequest = user;
+		this.showRequestDetailsModal = true;
+		this.sidebarService.hide();
+	}
+
+	closeRequestDetailsModal() {
+		this.showRequestDetailsModal = false;
+		this.selectedRequest = null;
+		this.sidebarService.show();
+	}
+
+	approveRequest(user: any) {
+		if (
+			confirm(
+				`¿Estás seguro de que quieres APROBAR la solicitud de ${user.firstName}?`,
+			)
+		) {
+			this.isLoading = true;
+			this.organizationService.approveAccessRequest(user.id).subscribe({
+				next: (response) => {
+					alert('Solicitud aprobada exitosamente. Se ha creado el aliado.');
+					this.loadUsers();
+				},
+				error: (err) => {
+					console.error('Error al aprobar solicitud:', err);
+					alert(
+						'Error al aprobar la solicitud: ' +
+							(err.error?.message || err.message),
+					);
+					this.isLoading = false;
+				},
+			});
+		}
+	}
+
+	rejectRequest(user: any) {
+		const reason = prompt('Por favor, indica la razón del rechazo:');
+		if (reason !== null) {
+			this.isLoading = true;
+			this.organizationService.rejectAccessRequest(user.id, reason).subscribe({
+				next: (response) => {
+					alert('Solicitud rechazada exitosamente.');
+					this.loadUsers();
+				},
+				error: (err) => {
+					console.error('Error al rechazar solicitud:', err);
+					alert(
+						'Error al rechazar la solicitud: ' +
+							(err.error?.message || err.message),
+					);
+					this.isLoading = false;
+				},
+			});
+		}
 	}
 }

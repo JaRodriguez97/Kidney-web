@@ -62,8 +62,13 @@ export class LoginAliadoComponent {
 			},
 			error: (err) => {
 				console.error('Login aliado error', err);
-				this.errorMessage =
-					'Credenciales incorrectas. Verifique su correo y contraseña corporativa.';
+				const msg = err.error?.message || err.message;
+				if (msg && msg !== 'Invalid credentials') {
+					this.errorMessage = msg;
+				} else {
+					this.errorMessage =
+						'Credenciales incorrectas. Verifique su correo y contraseña corporativa.';
+				}
 				this.loading = false;
 			},
 		});

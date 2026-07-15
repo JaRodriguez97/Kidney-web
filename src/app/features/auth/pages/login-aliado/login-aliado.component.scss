@@ -9,6 +9,10 @@
 }
 .input-field {
 	@apply w-full pr-5 py-4 rounded-xl border border-[#0284c7]/30 bg-white/50 backdrop-blur-sm focus:border-[#0284c7] focus:ring-4 focus:ring-[#0284c7]/10 outline-none transition-all placeholder:text-slate-400 text-slate-700 shadow-input font-medium;
+
+	&.pl-12 {
+		padding-left: 3rem;
+	}
 }
 
 section {

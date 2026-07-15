@@ -1,0 +1,227 @@
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 flex flex-col h-full">
+	<!-- Header -->
+	<header
+		class="p-6 mb-6 border-b border-white/40 flex items-center gap-6 bg-white/30 backdrop-blur-sm sticky top-0 z-30 shrink-0"
+	>
+		<button
+			(click)="goBack()"
+			class="w-10 h-10 rounded-xl bg-white/50 border border-white/60 hover:bg-white hover:text-primary transition-all flex items-center justify-center text-slate-600 shadow-sm cursor-pointer"
+			type="button"
+		>
+			<span class="material-symbols-outlined">arrow_back</span>
+		</button>
+		<div>
+			<h2 class="text-3xl font-extrabold text-slate-800">Upgrade a Super Aliado</h2>
+			<p class="text-slate-500 font-medium mt-1">Desbloquea herramientas avanzadas de gestión clínica y administrativa.</p>
+		</div>
+	</header>
+
+	<!-- Content -->
+	<div class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 flex justify-center items-start">
+		<div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 h-fit">
+			<!-- Benefits Card -->
+			<div class="glass-card flex flex-col h-full bg-gradient-to-br from-white/70 to-blue-50/40">
+				<div class="mb-8">
+					<span
+						class="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-primary text-sm font-bold mb-4 border border-blue-200"
+						>Plan Premium</span
+					>
+					<h3 class="text-3xl font-extrabold text-slate-800 mb-2">¿Por qué ser Super Aliado?</h3>
+					<p class="text-slate-600">Lleva la gestión de tu entidad al siguiente nivel con funcionalidades exclusivas.</p>
+				</div>
+				<div class="flex-1 space-y-2 mb-8">
+					<div class="benefit-item group">
+						<div
+							class="w-12 h-12 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors"
+						>
+							<span class="material-symbols-outlined text-2xl">corporate_fare</span>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-800 text-lg">Gestión por NIT</h4>
+							<p class="text-sm text-slate-500 leading-relaxed">
+								Vinculación de aliado por NIT, enfocada en una identidad corporativa para múltiples pacientes.
+							</p>
+						</div>
+					</div>
+					<div class="benefit-item group">
+						<div
+							class="w-12 h-12 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors"
+						>
+							<span class="material-symbols-outlined text-2xl">history_edu</span>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-800 text-lg">Historial de Colaboradores</h4>
+							<p class="text-sm text-slate-500 leading-relaxed">
+								Registro detallado de actividad, cambios y accesos de todo tu personal.
+							</p>
+						</div>
+					</div>
+					<div class="benefit-item group">
+						<div
+							class="w-12 h-12 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors"
+						>
+							<span class="material-symbols-outlined text-2xl">hub</span>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-800 text-lg">Resultados Centralizados</h4>
+							<p class="text-sm text-slate-500 leading-relaxed">
+								Acceso inmediato a laboratorios y diagnósticos de pacientes referidos.
+							</p>
+						</div>
+					</div>
+					<div class="benefit-item group">
+						<div
+							class="w-12 h-12 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors"
+						>
+							<span class="material-symbols-outlined text-2xl">request_quote</span>
+						</div>
+						<div>
+							<h4 class="font-bold text-slate-800 text-lg">Facturación Empresarial</h4>
+							<p class="text-sm text-slate-500 leading-relaxed">
+								Herramientas automatizadas para conciliación de pagos y reportes financieros.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Secure Payment Card -->
+			<div class="glass-card flex flex-col h-full relative overflow-hidden">
+				@if (processing) {
+					<div class="absolute inset-0 bg-white/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center">
+						<div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+						<p class="text-sm font-bold text-slate-800 mt-4 animate-pulse">Procesando pago seguro...</p>
+						<p class="text-xs text-slate-500 mt-1">Por favor no cierre esta ventana</p>
+					</div>
+				}
+
+				<div class="flex items-center justify-between mb-8">
+					<h3 class="text-2xl font-bold text-slate-800">Pago Seguro</h3>
+					<div class="flex gap-2 opacity-70">
+						<img
+							alt="Visa"
+							class="h-6"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgN-MEDnBMDJTn2ALMycry7AmSWvPhfKayHFePr3fXIMtk8dc2q0tUSjQNYWVfPyX_0o0AsNjSc8E50KQgvr-drcn3QIlw9Bdsokxxu2hLLDl44d9Gq_Wn-u83iah1ORVkYCuiAHjK7-0T0-ZlF-D8St4PlFidOFp8cVtjgow3ch2av2mixs1R9-ryQu6VeI6VVrdLQqb-G1yYsOH2IZ7TGOmFSeZ9cS1FhbeapYY2sHuxaeCLaViObLmhUBh3jT3AAa4LNdk1mWk"
+						/>
+						<img
+							alt="Mastercard"
+							class="h-6"
+							src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqVOA1Lw6qusQ7nkDcYPgCnh8dFxJRcdOYv341TjA-Hi76baXXbZY9CwhhsZTg-NKzMVlocZ-GAdVrRcbMbyEZI6vd2Y1SeO_zMxYXiHAbh45nYtC6vv57NRwmWfOBw3zWn36BV_qGbc1a-04Ak1W66uzgPF4519Nu3jxJCVXM01Xf-npBmaSmhPXQ0eR4hzF3uDzd01zHa2Qo-xuEZi8_F9dedBTQapyxkYvJZU95ysltI4QzDt1gi_BAJ2D394wImwGMU9No2ig"
+						/>
+					</div>
+				</div>
+
+				<form (ngSubmit)="onSubmit()" class="flex-1 flex flex-col gap-6">
+					@if (errorMessage) {
+						<div class="p-3 bg-red-50 text-red-700 rounded-xl border border-red-100 text-xs font-semibold">
+							{{ errorMessage }}
+						</div>
+					}
+
+					<div>
+						<label class="label-text">Nombre del Titular</label>
+						<div class="relative">
+							<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">person</span>
+							<input
+								class="input-field pl-11"
+								placeholder="Como aparece en la tarjeta"
+								type="text"
+								name="cardHolder"
+								[(ngModel)]="cardHolder"
+								required
+							/>
+						</div>
+					</div>
+					<div>
+						<label class="label-text">Número de Tarjeta</label>
+						<div class="relative">
+							<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">credit_card</span>
+							<input
+								class="input-field pl-11 font-mono tracking-wider"
+								[class.border-red-400]="!isCardNumberValid"
+								placeholder="0000 0000 0000 0000"
+								type="text"
+								name="cardNumber"
+								[(ngModel)]="cardNumber"
+								(input)="onCardNumberInput($event)"
+								required
+							/>
+						</div>
+						@if (!isCardNumberValid) {
+							<span class="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">El número de tarjeta debe tener 16 dígitos</span>
+						}
+					</div>
+					<div class="grid grid-cols-2 gap-6">
+						<div>
+							<label class="label-text">Expiración</label>
+							<div class="relative">
+								<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">calendar_month</span>
+								<input
+									class="input-field pl-11 text-center"
+									[class.border-red-400]="!isExpirationValid"
+									placeholder="MM/AA"
+									type="text"
+									name="expiration"
+									[(ngModel)]="expiration"
+									(input)="onExpirationInput($event)"
+									required
+								/>
+							</div>
+							@if (!isExpirationValid) {
+								<span class="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">Mes 01-12 y año actual o futuro (ej. 12/28)</span>
+							}
+						</div>
+						<div>
+							<label class="label-text">CVC</label>
+							<div class="relative">
+								<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">lock</span>
+								<input
+									class="input-field pl-11 text-center"
+									[class.border-red-400]="!isCvcValid"
+									maxlength="3"
+									placeholder="123"
+									type="text"
+									name="cvc"
+									[(ngModel)]="cvc"
+									(input)="onCvcInput($event)"
+									required
+								/>
+							</div>
+							@if (!isCvcValid) {
+								<span class="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">El código CVC debe tener 3 dígitos</span>
+							}
+						</div>
+					</div>
+					<div class="bg-blue-50/50 rounded-xl p-4 flex gap-3 items-start border border-blue-100">
+						<span class="material-symbols-outlined text-primary text-xl mt-0.5">verified_user</span>
+						<div>
+							<p class="text-xs font-bold text-slate-700">Transacción Encriptada</p>
+							<p class="text-[10px] text-slate-500 leading-tight mt-1">
+								Tus datos están protegidos con encriptación SSL de 256-bits. No almacenamos la información completa de tu tarjeta.
+							</p>
+						</div>
+					</div>
+					<!-- Pricing Block -->
+					<div class="pt-4 border-t border-slate-200/60">
+						<div class="flex items-end gap-2">
+							<span class="text-3xl font-black text-primary">$250.000</span>
+							<span class="text-base font-bold text-slate-500 mb-1">COP / Pago Único</span>
+						</div>
+						<p class="text-[11px] text-slate-400 mt-1">*Un solo cargo realizado de forma segura. Sin cobros recurrentes.</p>
+					</div>
+					<div class="mt-auto pt-4">
+						<button
+							class="btn-primary-km"
+							type="submit"
+							[disabled]="!isFormValid() || processing"
+						>
+							Finalizar Upgrade Seguro
+							<span class="material-symbols-outlined ml-1">check_circle</span>
+						</button>
+						<p class="text-center text-xs text-slate-400 mt-4">Al pagar aceptas los términos y condiciones de servicio.</p>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

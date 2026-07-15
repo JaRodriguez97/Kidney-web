@@ -1,0 +1,355 @@
+<div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:p-8">
+	<!-- Header -->
+	<header
+		class="glass-container !rounded-2xl px-6 py-4 mb-6 flex items-center justify-between shrink-0"
+	>
+		<div>
+			<h1
+				class="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight"
+			>
+				Panel de Control Super Aliado
+			</h1>
+			<p class="text-slate-500 font-medium text-sm mt-0.5">
+				Visión general del estado operativo de su alianza.
+			</p>
+		</div>
+		<div class="flex items-center gap-4">
+			<div class="hidden lg:flex flex-col items-end">
+				<span class="text-sm font-bold text-slate-700">{{
+					organizationName
+				}}</span>
+				<div
+					class="flex items-center gap-1 text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100"
+				>
+					<span
+						class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"
+					></span>
+					Activo
+				</div>
+			</div>
+			<button class="btn-action flex items-center gap-2" (click)="refresh()">
+				<span class="material-symbols-outlined text-[18px]">refresh</span>
+				Actualizar
+			</button>
+		</div>
+	</header>
+
+	@if (loading) {
+		<div class="flex flex-col items-center justify-center py-12">
+			<div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+			<p class="text-xs text-slate-500 mt-3 font-semibold">Cargando datos...</p>
+		</div>
+	} @else if (errorMessage) {
+		<div class="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200">
+			{{ errorMessage }}
+		</div>
+	} @else {
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+			<div class="glass-card !p-0 overflow-hidden relative">
+				<div class="metric-card">
+					<div>
+						<p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">
+							Total Pacientes / Colaboradores
+						</p>
+						<p class="text-4xl font-extrabold text-slate-800">
+							{{ totalEmployees }}
+						</p>
+					</div>
+					<div class="mt-4 flex items-center justify-between">
+						<span class="text-xs text-slate-400">Pacientes vinculados</span>
+						<span class="material-symbols-outlined text-primary text-[28px]"
+							>groups</span
+						>
+					</div>
+				</div>
+			</div>
+			<div class="glass-card !p-0 overflow-hidden relative">
+				<div class="metric-card">
+					<div>
+						<p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">
+							Solicitudes Clínicas Activas
+						</p>
+						<p class="text-4xl font-extrabold text-slate-800">
+							{{ pendingClinicalRequests }}
+						</p>
+					</div>
+					<div class="mt-4 flex items-center justify-between">
+						<span class="text-xs text-slate-400">En proceso de atención</span>
+						<span class="material-symbols-outlined text-primary text-[28px]"
+							>biotech</span
+						>
+					</div>
+				</div>
+			</div>
+			<div class="glass-card !p-0 overflow-hidden relative">
+				<div class="metric-card">
+					<div>
+						<p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">
+							Facturas Pendientes
+						</p>
+						<p class="text-4xl font-extrabold text-slate-800">
+							{{ pendingInvoices }}
+						</p>
+					</div>
+					<div class="mt-4 flex items-center justify-between">
+						<span class="text-xs text-slate-400">Por conciliar / pagar</span>
+						<span class="material-symbols-outlined text-primary text-[28px]"
+							>description</span
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+			<div class="lg:col-span-7 glass-card flex flex-col min-h-[400px]">
+				<div class="flex items-center justify-between mb-6">
+					<div class="flex items-center gap-3">
+						<div class="p-2 bg-primary/10 rounded-lg text-primary">
+							<span class="material-symbols-outlined">groups</span>
+						</div>
+						<h3 class="text-lg font-bold text-slate-800">
+							Pacientes Recientes
+						</h3>
+					</div>
+					<button
+						class="text-xs font-bold text-primary hover:underline"
+						routerLink="../patients"
+					>
+						Ver todos
+					</button>
+				</div>
+				<div class="relative mb-6">
+					<span
+						class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined"
+						>search</span
+					>
+					<input
+						class="input-search pl-12"
+						placeholder="Buscar colaborador por nombre o documento..."
+						type="text"
+						(input)="onSearchInput($event)"
+						(keydown.enter)="searchEmployees()"
+					/>
+					<button
+						class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-md hover:bg-sky-700 transition-colors"
+						(click)="searchEmployees()"
+					>
+						Buscar
+					</button>
+				</div>
+				<div class="flex-1 overflow-x-auto">
+					<table class="w-full border-collapse">
+						<thead>
+							<tr>
+								<th class="table-header">Colaborador</th>
+								<th class="table-header">Identificación</th>
+								<th class="table-header text-right">Estado</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (item of recentEmployees; track item.patientId) {
+								<tr>
+									<td class="table-cell">
+										<p class="text-slate-800 font-bold text-sm">
+											{{ item.fullName }}
+										</p>
+										<p class="text-xs text-slate-500">
+											{{ item.relationshipType }}
+										</p>
+									</td>
+									<td class="table-cell text-xs font-semibold text-slate-600">
+										{{ item.documentType }} {{ item.documentNumber }}
+									</td>
+									<td class="table-cell text-right">
+										<span
+											class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100"
+										>
+											<span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+											Activo
+										</span>
+									</td>
+								</tr>
+							}
+							@if (!recentEmployees.length && !loading) {
+								<tr>
+									<td class="table-cell border-none text-center py-8" colspan="3">
+										No se encontraron colaboradores.
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="lg:col-span-5 glass-card flex flex-col min-h-[400px]">
+				<div class="flex items-center justify-between mb-6">
+					<div class="flex items-center gap-3">
+						<div class="p-2 bg-primary/10 rounded-lg text-primary">
+							<span class="material-symbols-outlined">biotech</span>
+						</div>
+						<h3 class="text-lg font-bold text-slate-800">
+							Solicitudes Clínicas
+						</h3>
+					</div>
+				</div>
+				<div class="flex-1 overflow-x-auto">
+					<table class="w-full border-collapse">
+						<thead>
+							<tr>
+								<th class="table-header">Paciente</th>
+								<th class="table-header">Servicio</th>
+								<th class="table-header text-right">Estado</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (item of labRequests; track item.appointmentId) {
+								<tr>
+									<td class="table-cell">
+										<p class="text-slate-800 font-bold text-sm">
+											{{ item.patientName }}
+										</p>
+										<p class="text-xs text-slate-500">
+											{{ item.scheduledAt | date: "dd MMM, hh:mm a" }}
+										</p>
+									</td>
+									<td class="table-cell text-xs font-medium text-slate-600">
+										{{ item.serviceName }}
+									</td>
+									<td class="table-cell text-right">
+										<span
+											class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold border"
+											[ngClass]="statusClass(item.status)"
+										>
+											{{ statusLabel(item.status) }}
+										</span>
+									</td>
+								</tr>
+							}
+							@if (!labRequests.length && !loading) {
+								<tr>
+									<td class="table-cell border-none text-center py-8" colspan="3">
+										No hay solicitudes para mostrar.
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+				<div class="mt-auto pt-4 border-t border-slate-100/50">
+					<button
+						class="w-full py-2 text-sm font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors"
+						routerLink="../clinical-requests"
+					>
+						Ver todas las solicitudes
+					</button>
+				</div>
+			</div>
+
+			<div
+				class="lg:col-span-6 glass-card bg-gradient-to-br from-white/70 to-blue-50/50"
+			>
+				<div class="flex items-center gap-3 mb-6">
+					<div class="p-2 bg-primary/10 rounded-lg text-primary">
+						<span class="material-symbols-outlined">download</span>
+					</div>
+					<h3 class="text-lg font-bold text-slate-800">
+						Acceso a Resultados
+					</h3>
+				</div>
+				<p class="text-slate-600 text-sm mb-6">
+					Descargue informes centralizados de cualquier paciente vinculado a
+					su empresa.
+				</p>
+				<div class="relative mb-6">
+					<span
+						class="absolute left-4 top-1/2 -translate-y-1/2 text-primary material-symbols-outlined"
+						>id_card</span
+					>
+					<input
+						class="input-search pl-12 border-primary/30 focus:border-primary focus:ring-primary/20 bg-white"
+						placeholder="Ingrese número del documento del paciente"
+						type="text"
+					/>
+					<button
+						class="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white p-1.5 rounded-lg text-sm font-bold shadow-md hover:bg-sky-700 transition-colors"
+					>
+						Buscar
+					</button>
+				</div>
+				<div
+					class="flex items-center gap-4 text-xs text-slate-500 font-medium"
+				>
+					<span class="flex items-center gap-1">
+						<span
+							class="material-symbols-outlined text-[16px] text-emerald-500"
+							>check_circle</span
+						>
+						Descarga Segura
+					</span>
+					<span class="flex items-center gap-1">
+						<span class="material-symbols-outlined text-[16px] text-blue-500"
+							>history</span
+						>
+						Historial 5 años
+					</span>
+				</div>
+			</div>
+
+			<div class="lg:col-span-6 glass-card relative overflow-hidden">
+				<div
+					class="absolute right-0 top-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -z-10"
+				></div>
+				<div class="flex items-center justify-between mb-6">
+					<div class="flex items-center gap-3">
+						<div class="p-2 bg-red-50 rounded-lg text-secondary">
+							<span class="material-symbols-outlined"
+								>account_balance_wallet</span
+							>
+						</div>
+						<h3 class="text-lg font-bold text-slate-800">
+							Facturación y Pagos
+						</h3>
+					</div>
+				</div>
+				<div class="grid grid-cols-2 gap-4 mb-6">
+					<div class="bg-white/60 p-4 rounded-2xl border border-white/60">
+						<p class="text-xs text-slate-500 font-bold uppercase mb-1">
+							Por Pagar
+						</p>
+						<p class="text-2xl font-extrabold text-slate-800">
+							{{ pendingAmount | currency: "COP" : "symbol" : "1.0-0" }}
+						</p>
+						<p class="text-xs text-secondary font-medium mt-1">
+							Facturas activas por pagar
+						</p>
+					</div>
+					<div class="bg-white/60 p-4 rounded-2xl border border-white/60">
+						<p class="text-xs text-slate-500 font-bold uppercase mb-1">
+							Último Pago
+						</p>
+						<p class="text-2xl font-extrabold text-slate-800">
+							{{ lastPaidAmount | currency: "COP" : "symbol" : "1.0-0" }}
+						</p>
+						<p class="text-xs text-emerald-600 font-medium mt-1">
+							@if (lastPaidAt) {
+								Procesado {{ lastPaidAt | date: "dd MMM" }}
+							} @else {
+								Sin pagos registrados
+							}
+						</p>
+					</div>
+				</div>
+				<button
+					class="btn-primary-km w-full !bg-slate-800 hover:!bg-slate-900"
+				>
+					Ir a Pagos Empresariales
+					<span class="material-symbols-outlined text-sm ml-1"
+						>arrow_outward</span
+					>
+				</button>
+			</div>
+		</div>
+	}
+</div>

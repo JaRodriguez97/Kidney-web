@@ -1,0 +1,169 @@
+<div class="flex-1 flex flex-col p-4 md:p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+	<!-- Header -->
+	<header class="glass-container !rounded-2xl px-6 py-4 mb-6 flex items-center justify-between shrink-0">
+		<div>
+			<h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+				Facturación y Transacciones
+				<span class="text-base font-medium text-slate-400"> - NIT: {{ organizationNit || '900.452.123-1' }}</span>
+			</h1>
+			<p class="text-primary font-bold text-sm mt-0.5">{{ organizationName || 'Laboratorios Clínicos del Norte S.A.S.' }}</p>
+		</div>
+		<div class="flex items-center gap-4">
+			<div class="hidden lg:flex flex-col items-end">
+				<div class="flex items-center gap-2">
+					<div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 text-primary">
+						<span class="material-symbols-outlined text-lg">medical_services</span>
+					</div>
+					<div class="text-right">
+						<p class="text-xs font-bold text-slate-700">{{ contactPersonName || 'Dra. María González' }}</p>
+						<p class="text-[10px] text-slate-500 font-medium">Contacto Personal</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div class="flex-1 overflow-y-auto custom-scrollbar pb-6">
+		<div class="max-w-[1600px] mx-auto space-y-6">
+			<!-- Metrics Grid -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				<div class="glass-card flex items-center gap-4">
+					<div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+						<span class="material-symbols-outlined text-2xl">receipt_long</span>
+					</div>
+					<div>
+						<p class="text-xs text-slate-500 font-semibold uppercase">Total Facturado</p>
+						<p class="text-xl font-extrabold text-slate-800 mt-0.5">{{ summary.totalInvoiced | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+					</div>
+				</div>
+				<div class="glass-card flex items-center gap-4">
+					<div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+						<span class="material-symbols-outlined text-2xl">price_check</span>
+					</div>
+					<div>
+						<p class="text-xs text-slate-500 font-semibold uppercase">Total Pagado</p>
+						<p class="text-xl font-extrabold text-slate-800 mt-0.5">{{ summary.totalPaid | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+					</div>
+				</div>
+				<div class="glass-card flex items-center gap-4">
+					<div class="p-3 bg-amber-50 text-amber-600 rounded-2xl">
+						<span class="material-symbols-outlined text-2xl">pending_actions</span>
+					</div>
+					<div>
+						<p class="text-xs text-slate-500 font-semibold uppercase">Total Pendiente</p>
+						<p class="text-xl font-extrabold text-slate-800 mt-0.5">{{ summary.totalPending | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+					</div>
+				</div>
+				<div class="glass-card flex items-center gap-4">
+					<div class="p-3 bg-rose-50 text-rose-600 rounded-2xl">
+						<span class="material-symbols-outlined text-2xl">sms_failed</span>
+					</div>
+					<div>
+						<p class="text-xs text-slate-500 font-semibold uppercase">Total Fallido</p>
+						<p class="text-xl font-extrabold text-slate-800 mt-0.5">{{ summary.totalFailed | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Filter Bar & Table Card -->
+			<div class="glass-card flex flex-col">
+				<!-- Filter Bar -->
+				<div class="p-6 border-b border-slate-100/50 flex flex-wrap items-center justify-between gap-4">
+					<h3 class="text-lg font-bold text-slate-800">Historial de Transacciones</h3>
+					<div class="flex items-center gap-3">
+						<label class="text-xs text-slate-500 font-bold uppercase">Estado:</label>
+						<select class="input-search !py-1.5 !px-3 !w-44 !pl-3 cursor-pointer" [(ngModel)]="statusFilter" (change)="onFilterChange()">
+							<option value="">Todos los Estados</option>
+							<option value="PAID">Pagado</option>
+							<option value="ISSUED">Emitida / Pendiente</option>
+							<option value="CANCELLED">Cancelada</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- Table Container -->
+				<div class="overflow-x-auto">
+					<table class="w-full text-left border-collapse">
+						<thead>
+							<tr class="border-b border-slate-100 bg-slate-50/50">
+								<th class="table-header py-4 px-6">Factura / Recibo</th>
+								<th class="table-header py-4 px-6">Servicio / Concepto</th>
+								<th class="table-header py-4 px-6">Beneficiario</th>
+								<th class="table-header py-4 px-6">Fecha</th>
+								<th class="table-header py-4 px-6">Valor</th>
+								<th class="table-header py-4 px-6">Estado</th>
+								<th class="table-header py-4 px-6 text-center">Acción</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-slate-100">
+							@if (loading) {
+								<tr>
+									<td class="py-12 text-center text-slate-500" colspan="7">
+										<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto"></div>
+										<p class="text-xs text-slate-400 mt-2 font-semibold">Cargando transacciones...</p>
+									</td>
+								</tr>
+							} @else {
+								@for (item of invoices; track item.invoiceId) {
+									<tr class="hover:bg-slate-50/40 transition-colors">
+										<td class="table-cell py-4 px-6 font-bold text-slate-800">{{ item.invoiceNumber }}</td>
+										<td class="table-cell py-4 px-6">{{ item.serviceName }}</td>
+										<td class="table-cell py-4 px-6">{{ item.patientName }}</td>
+										<td class="table-cell py-4 px-6 text-xs text-slate-500">{{ item.createdAt | date:'dd MMM yyyy - hh:mm a' }}</td>
+										<td class="table-cell py-4 px-6 font-extrabold text-slate-700">{{ item.amount | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+										<td class="table-cell py-4 px-6">
+											<span class="status-badge"
+												[ngClass]="{
+													'bg-emerald-50 text-emerald-600 border-emerald-100': item.invoiceStatus === 'PAID',
+													'bg-amber-50 text-amber-600 border-amber-100': item.invoiceStatus === 'ISSUED',
+													'bg-rose-50 text-rose-600 border-rose-100': item.invoiceStatus === 'CANCELLED'
+												}">
+												{{ item.invoiceStatus === 'PAID' ? 'PAGADO' : item.invoiceStatus === 'ISSUED' ? 'PENDIENTE' : 'CANCELADO' }}
+											</span>
+										</td>
+										<td class="table-cell py-4 px-6 text-center">
+											@if (item.invoiceStatus === 'ISSUED') {
+												<button (click)="payInvoice(item.invoiceId)" class="btn-action !text-primary hover:!border-primary">
+													Pagar
+												</button>
+											} @else {
+												<span class="text-xs text-slate-400 font-semibold">—</span>
+											}
+										</td>
+									</tr>
+								}
+								@if (!invoices.length) {
+									<tr>
+										<td class="py-12 text-center text-slate-500" colspan="7">
+											No se encontraron transacciones registradas.
+										</td>
+									</tr>
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Footer -->
+				<div class="p-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center px-6">
+					<p class="text-xs text-slate-500 font-semibold">
+						Mostrando {{ invoices.length }} de {{ total }} transacciones
+					</p>
+					<div class="flex gap-2">
+						<button class="px-3 py-1 border border-slate-300 rounded text-xs hover:bg-white transition-colors disabled:opacity-50"
+							(click)="prevPage()" [disabled]="page === 1">
+							Anterior
+						</button>
+						<button class="px-3 py-1 bg-primary text-white rounded text-xs font-medium">
+							{{ page }}
+						</button>
+						<button class="px-3 py-1 border border-slate-300 rounded text-xs hover:bg-white transition-colors disabled:opacity-50"
+							(click)="nextPage()" [disabled]="page * limit >= total">
+							Siguiente
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

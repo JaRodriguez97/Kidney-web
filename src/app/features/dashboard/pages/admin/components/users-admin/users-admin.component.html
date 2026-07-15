@@ -20,6 +20,7 @@
 				<option value="PATIENT">Paciente</option>
 				<option value="PROVIDER">Médico</option>
 				<option value="ADMIN">Administrador</option>
+				<option value="ORGANIZATION">Aliado</option>
 			</select>
 			<select
 				class="glass-input cursor-pointer bg-white/40"
@@ -29,6 +30,7 @@
 				<option value="">Estado: Todos</option>
 				<option value="active">Activos</option>
 				<option value="inactive">Inactivos</option>
+				<option value="pending">Pendientes</option>
 			</select>
 			<button
 				type="button"
@@ -135,22 +137,45 @@
 								<div
 									class="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
 								>
-									<button
-										(click)="editUser(user)"
-										class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
-										title="Editar usuario"
-									>
-										<span class="material-symbols-outlined text-lg">edit</span>
-									</button>
-									<button
-										(click)="deleteUser(user)"
-										class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-red-600"
-										title="Eliminar usuario"
-									>
-										<span class="material-symbols-outlined text-lg"
-											>delete</span
+									<ng-container *ngIf="user.isRequest; else regularUserActions">
+										<button
+											(click)="viewRequestDetails(user)"
+											class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+											title="Ver datos de solicitud"
 										>
-									</button>
+											<span class="material-symbols-outlined text-lg">visibility</span>
+										</button>
+										<button
+											(click)="approveRequest(user)"
+											class="p-1.5 hover:bg-green-50 rounded text-slate-500 hover:text-green-600"
+											title="Aceptar solicitud"
+										>
+											<span class="material-symbols-outlined text-lg">check_circle</span>
+										</button>
+										<button
+											(click)="rejectRequest(user)"
+											class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-red-600"
+											title="Rechazar solicitud"
+										>
+											<span class="material-symbols-outlined text-lg">cancel</span>
+										</button>
+									</ng-container>
+									<ng-template #regularUserActions>
+										<button
+											(click)="editUser(user)"
+											class="p-1.5 hover:bg-slate-100 rounded text-slate-500 hover:text-primary"
+											title="Editar usuario"
+										>
+											<span class="material-symbols-outlined text-lg">edit</span>
+										</button>
+										<button
+											(click)="deleteUser(user)"
+											class="p-1.5 hover:bg-red-50 rounded text-slate-500 hover:text-red-600"
+											title="Eliminar usuario"
+										>
+											<span class="material-symbols-outlined text-lg">delete</span>
+										</button>
+									</ng-template>
 								</div>
 							</td>
 						</tr>
@@ -506,3 +531,12 @@
 	(close)="closeCreateProviderTypeModal()"
 	(created)="onProviderTypeCreated()"
 ></app-create-provider-type>
+
+<!-- Modal de detalles de solicitud de aliado -->
+<app-request-details-modal
+	*ngIf="showRequestDetailsModal && selectedRequest"
+	[request]="selectedRequest"
+	(close)="closeRequestDetailsModal()"
+	(approve)="approveRequest($event); closeRequestDetailsModal()"
+	(reject)="rejectRequest($event); closeRequestDetailsModal()"
+></app-request-details-modal>
