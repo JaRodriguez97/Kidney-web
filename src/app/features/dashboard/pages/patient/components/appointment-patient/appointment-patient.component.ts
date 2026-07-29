@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
@@ -21,7 +22,7 @@ import {
 @Component({
 	selector: 'app-appointment-patient',
 	standalone: true,
-	imports: [CommonModule, FullCalendarModule],
+	imports: [CommonModule, FormsModule, FullCalendarModule],
 	templateUrl: './appointment-patient.component.html',
 	styleUrl: './appointment-patient.component.scss',
 })
@@ -34,6 +35,15 @@ export class AppointmentPatientComponent implements OnInit {
 	selectedRangeEnd: string | null = null;
 	joiningAppointmentId: string | null = null;
 	joinErrorMessage: string | null = null;
+
+	downloadingCertId: string | null = null;
+	surveyModalOpen = false;
+	surveyAppointmentId = '';
+	surveyRating = 5;
+	surveyComments = '';
+	surveySubmitting = false;
+	surveySuccessMessage = '';
+	surveyErrorMessage = '';
 
 	calendarOptions: CalendarOptions = {
 		plugins: [dayGridPlugin, interactionPlugin],
@@ -89,6 +99,14 @@ export class AppointmentPatientComponent implements OnInit {
 	get completedCount(): number {
 		return this.filteredPastAppointments.filter((a) => a.status === 'COMPLETED')
 			.length;
+	}
+
+	get latestCompletedAppointment(): PatientAppointment | null {
+		return (
+			this.pastAppointments.find((a) => a.status === 'COMPLETED') ??
+			this.pastAppointments[0] ??
+			null
+		);
 	}
 
 	get cancelledCount(): number {
@@ -191,21 +209,30 @@ export class AppointmentPatientComponent implements OnInit {
 	}
 
 	getModalityIcon(appointment: PatientAppointment): string {
-		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
+		if (
+			appointment.isTelemedicine ||
+			appointment.careModalityCode === 'TELEMEDICINA'
+		) {
 			return 'videocam';
 		}
 		return 'apartment';
 	}
 
 	getModalityLabel(appointment: PatientAppointment): string {
-		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
+		if (
+			appointment.isTelemedicine ||
+			appointment.careModalityCode === 'TELEMEDICINA'
+		) {
 			return 'Telemedicina';
 		}
 		return appointment.careModality ?? 'Presencial';
 	}
 
 	getModalityBadgeClasses(appointment: PatientAppointment): string {
-		if (appointment.isTelemedicine || appointment.careModalityCode === 'TELEMEDICINA') {
+		if (
+			appointment.isTelemedicine ||
+			appointment.careModalityCode === 'TELEMEDICINA'
+		) {
 			return 'bg-sky-100 text-sky-700';
 		}
 		return 'bg-purple-100 text-purple-700';
@@ -220,7 +247,10 @@ export class AppointmentPatientComponent implements OnInit {
 	}
 
 	joinTeleconsultation(appointment: PatientAppointment): void {
-		if (!this.canJoinTeleconsultation(appointment) || this.joiningAppointmentId) {
+		if (
+			!this.canJoinTeleconsultation(appointment) ||
+			this.joiningAppointmentId
+		) {
 			return;
 		}
 
@@ -284,6 +314,10 @@ export class AppointmentPatientComponent implements OnInit {
 	getTime(timeStr: string): string {
 		const formatted = formatColombiaTime(timeStr);
 		return formatted === '-' ? '--:--' : formatted;
+	}
+
+	formatDate(date: string): string {
+		return formatColombiaDate(date);
 	}
 
 	private loadAppointments(): void {
@@ -363,5 +397,90 @@ export class AppointmentPatientComponent implements OnInit {
 		const endDate = new Date(`${exclusiveEnd}T00:00:00`);
 		endDate.setDate(endDate.getDate() - 1);
 		return toColombiaDateKey(endDate);
+	}
+
+	downloadAttendanceCertificate(app?: PatientAppointment): void {
+		const target = app ?? this.pastAppointments.find((a) => a.careId || a.id);
+		if (!target) {
+			this.joinErrorMessage =
+				'No se encontró una atención previa para generar el certificado.';
+			return;
+		}
+
+		const careId = target.careId ?? target.id;
+		if (this.downloadingCertId) return;
+
+		this.downloadingCertId = careId;
+		this.appointmentService.downloadAttendanceCertificate(careId).subscribe({
+			next: (blob) => {
+				const fileName = `certificado-asistencia-medica-${careId}.pdf`;
+				const objectUrl = window.URL.createObjectURL(blob);
+				const link = document.createElement('a');
+				link.href = objectUrl;
+				link.download = fileName;
+				link.click();
+				window.URL.revokeObjectURL(objectUrl);
+				this.downloadingCertId = null;
+			},
+			error: () => {
+				this.joinErrorMessage =
+					'No fue posible descargar el certificado de asistencia médica.';
+				this.downloadingCertId = null;
+			},
+		});
+	}
+
+	openSurveyModal(app?: PatientAppointment): void {
+		const target =
+			app ?? this.pastAppointments[0] ?? this.upcomingAppointments[0];
+		if (!target) {
+			this.joinErrorMessage =
+				'No se encontró una cita para evaluar en este momento.';
+			return;
+		}
+
+		this.surveyAppointmentId = target.id;
+		this.surveyRating = 5;
+		this.surveyComments = '';
+		this.surveySuccessMessage = '';
+		this.surveyErrorMessage = '';
+		this.surveyModalOpen = true;
+	}
+
+	closeSurveyModal(): void {
+		this.surveyModalOpen = false;
+	}
+
+	setSurveyRating(rating: number): void {
+		this.surveyRating = rating;
+	}
+
+	submitSurvey(): void {
+		if (!this.surveyAppointmentId || this.surveySubmitting) return;
+
+		this.surveySubmitting = true;
+		this.surveyErrorMessage = '';
+
+		this.appointmentService
+			.submitSatisfactionSurvey({
+				appointmentId: this.surveyAppointmentId,
+				rating: this.surveyRating,
+				comments: this.surveyComments,
+			})
+			.subscribe({
+				next: () => {
+					this.surveySubmitting = false;
+					this.surveySuccessMessage =
+						'¡Gracias por evaluar nuestra atención médica!';
+					setTimeout(() => {
+						this.closeSurveyModal();
+					}, 1800);
+				},
+				error: () => {
+					this.surveySubmitting = false;
+					this.surveyErrorMessage =
+						'No fue posible registrar la encuesta de satisfacción.';
+				},
+			});
 	}
 }

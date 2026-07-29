@@ -1,63 +1,231 @@
-<section class="w-full h-full overflow-y-auto pb-6">
-	<header class="glass-card p-6 mb-6">
-		<h2 class="text-2xl font-bold text-slate-800">Facturación</h2>
-		<p class="text-sm text-slate-500">Resumen y estado de facturas y pagos.</p>
+<section class="w-full h-full overflow-y-auto pb-6 space-y-6">
+	<!-- Glass Header -->
+	<header class="glass-card p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+		<div>
+			<h2 class="text-xl font-bold text-slate-800 flex items-center gap-2.5">
+				<span class="material-symbols-outlined text-primary text-2xl">receipt_long</span>
+				Gestión de Facturación y Pasarela AvalPay
+			</h2>
+			<p class="text-xs text-slate-500 mt-1">
+				Monitoreo de ingresos, facturas electrónicas e integración sandbox con AvalPay.
+			</p>
+		</div>
+		<button
+			(click)="loadData()"
+			class="bg-primary/10 text-primary hover:bg-primary/20 transition-all font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-2 self-start md:self-auto cursor-pointer"
+		>
+			<span class="material-symbols-outlined text-sm">refresh</span>
+			Actualizar Registro
+		</button>
 	</header>
 
-	<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-		<div class="glass-card p-4">
-			<p class="text-xs text-slate-500">Total facturado</p>
-			<p class="text-xl font-bold text-slate-800">
+	<!-- Summary Cards -->
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+		<div class="glass-card p-5 space-y-2 border-l-4 border-primary">
+			<div class="flex items-center justify-between text-slate-500">
+				<span class="text-xs font-semibold uppercase tracking-wider">Total Facturado</span>
+				<span class="material-symbols-outlined text-primary text-xl">account_balance_wallet</span>
+			</div>
+			<p class="text-2xl font-extrabold text-slate-800">
 				{{ formatMoney(summary.totalInvoiced) }}
 			</p>
 		</div>
-		<div class="glass-card p-4">
-			<p class="text-xs text-slate-500">Total pagado</p>
-			<p class="text-xl font-bold text-green-700">
+
+		<div class="glass-card p-5 space-y-2 border-l-4 border-emerald-500">
+			<div class="flex items-center justify-between text-slate-500">
+				<span class="text-xs font-semibold uppercase tracking-wider">Total Recaudado</span>
+				<span class="material-symbols-outlined text-emerald-500 text-xl">check_circle</span>
+			</div>
+			<p class="text-2xl font-extrabold text-emerald-600">
 				{{ formatMoney(summary.totalPaid) }}
 			</p>
 		</div>
-		<div class="glass-card p-4">
-			<p class="text-xs text-slate-500">Pendiente</p>
-			<p class="text-xl font-bold text-amber-700">
+
+		<div class="glass-card p-5 space-y-2 border-l-4 border-amber-500">
+			<div class="flex items-center justify-between text-slate-500">
+				<span class="text-xs font-semibold uppercase tracking-wider">Pendiente por Cobro</span>
+				<span class="material-symbols-outlined text-amber-500 text-xl">pending</span>
+			</div>
+			<p class="text-2xl font-extrabold text-amber-600">
 				{{ formatMoney(summary.totalPending) }}
 			</p>
 		</div>
-		<div class="glass-card p-4">
-			<p class="text-xs text-slate-500">Fallido</p>
-			<p class="text-xl font-bold text-red-700">
+
+		<div class="glass-card p-5 space-y-2 border-l-4 border-red-500">
+			<div class="flex items-center justify-between text-slate-500">
+				<span class="text-xs font-semibold uppercase tracking-wider">Rechazado / Fallido</span>
+				<span class="material-symbols-outlined text-red-500 text-xl">error_med</span>
+			</div>
+			<p class="text-2xl font-extrabold text-red-600">
 				{{ formatMoney(summary.totalFailed) }}
 			</p>
 		</div>
 	</div>
 
-	<div class="glass-card p-4 overflow-x-auto">
-		<p *ngIf="errorMessage" class="text-sm text-red-600 mb-3">
-			{{ errorMessage }}
-		</p>
-		<p *ngIf="loading" class="text-sm text-slate-500">Cargando...</p>
+	<!-- Filter & Table Section -->
+	<div class="glass-card overflow-hidden">
+		<!-- Filters Bar -->
+		<div class="p-6 border-b border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+			<div class="relative flex-1 w-full max-w-md">
+				<span class="absolute left-3 top-2.5 material-symbols-outlined text-slate-400 text-sm">search</span>
+				<input
+					type="text"
+					[(ngModel)]="searchQuery"
+					(ngModelChange)="applyFilter()"
+					placeholder="Buscar por cliente, factura o servicio..."
+					class="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+				/>
+			</div>
 
-		<table *ngIf="!loading" class="w-full text-sm">
-			<thead>
-				<tr class="text-left text-slate-500 border-b border-slate-200">
-					<th class="py-2 pr-2">Factura</th>
-					<th class="py-2 pr-2">Paciente</th>
-					<th class="py-2 pr-2">Servicio</th>
-					<th class="py-2 pr-2">Estado factura</th>
-					<th class="py-2 pr-2">Estado pago</th>
-					<th class="py-2 pr-2">Valor</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let row of rows" class="border-b border-slate-100">
-					<td class="py-2 pr-2">{{ row.invoiceNumber }}</td>
-					<td class="py-2 pr-2">{{ row.patientName }}</td>
-					<td class="py-2 pr-2">{{ row.serviceName }}</td>
-					<td class="py-2 pr-2">{{ row.invoiceStatus }}</td>
-					<td class="py-2 pr-2">{{ row.paymentStatus }}</td>
-					<td class="py-2 pr-2">{{ formatMoney(row.amount) }}</td>
-				</tr>
-			</tbody>
-		</table>
+			<div class="flex items-center gap-3 w-full md:w-auto">
+				<select
+					[(ngModel)]="selectedStatus"
+					(change)="loadData()"
+					class="px-4 py-2 text-xs bg-white border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer transition-all"
+				>
+					<option value="">Todos los Estados</option>
+					<option value="PAID">Pagado</option>
+					<option value="PENDING">Pendiente</option>
+					<option value="ISSUED">Emitida</option>
+					<option value="FAILED">Fallido</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- Error Message -->
+		<div *ngIf="errorMessage" class="m-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+			<span class="material-symbols-outlined text-sm">error</span>
+			<span>{{ errorMessage }}</span>
+		</div>
+
+		<!-- Loading State -->
+		<div *ngIf="loading" class="p-12 text-center text-slate-500 space-y-3">
+			<div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+			<p class="text-xs font-semibold">Cargando registros de facturación...</p>
+		</div>
+
+		<!-- Empty State -->
+		<div *ngIf="!loading && filteredRows.length === 0" class="p-12 text-center text-slate-400 space-y-2">
+			<span class="material-symbols-outlined text-4xl text-slate-300">receipt</span>
+			<p class="text-sm font-semibold text-slate-600">No se encontraron facturas</p>
+			<p class="text-xs text-slate-400">Intenta cambiar los parámetros de búsqueda o filtro</p>
+		</div>
+
+		<!-- Table -->
+		<div *ngIf="!loading && filteredRows.length > 0" class="overflow-x-auto">
+			<table class="w-full min-w-[700px]">
+				<thead>
+					<tr class="bg-slate-50/70 border-b border-slate-100 text-left text-xs font-bold text-slate-500 uppercase">
+						<th class="px-6 py-3">Factura</th>
+						<th class="py-3">Cliente / Paciente</th>
+						<th class="py-3">Servicio</th>
+						<th class="py-3">Fecha</th>
+						<th class="py-3 text-center">Estado Pago</th>
+						<th class="py-3 text-right">Valor</th>
+						<th class="px-6 py-3 text-right">Acción</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-slate-100">
+					<tr *ngFor="let row of filteredRows" class="hover:bg-slate-50/50 transition-colors text-xs">
+						<td class="px-6 py-4 font-bold text-slate-800">
+							{{ row.invoiceNumber }}
+						</td>
+						<td class="py-4 font-medium text-slate-700">
+							{{ row.patientName }}
+						</td>
+						<td class="py-4 text-slate-600 max-w-[200px] truncate">
+							{{ row.serviceName }}
+						</td>
+						<td class="py-4 text-slate-500">
+							{{ formatDate(row.createdAt) }}
+						</td>
+						<td class="py-4 text-center">
+							<span
+								[class]="getStatusBadgeClass(row.paymentStatus)"
+								class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] font-bold uppercase"
+							>
+								<span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+								{{ getStatusLabel(row.paymentStatus) }}
+							</span>
+						</td>
+						<td class="py-4 text-right font-extrabold text-slate-800">
+							{{ formatMoney(row.amount) }}
+						</td>
+						<td class="px-6 py-4 text-right">
+							<button
+								(click)="openInvoiceDetail(row.invoiceId)"
+								class="px-3 py-1.5 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg font-semibold transition-all cursor-pointer inline-flex items-center gap-1"
+							>
+								<span class="material-symbols-outlined text-sm">visibility</span>
+								Ver Detalle
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </section>
+
+<!-- Modal: Detalle de Factura -->
+<div *ngIf="selectedInvoiceDetail" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+	<div class="bg-white/95 backdrop-blur-md w-full max-w-lg rounded-2xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+		<div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+			<div>
+				<h3 class="text-base font-bold text-slate-800">Comprobante #{{ selectedInvoiceDetail.invoiceNumber }}</h3>
+				<p class="text-xs text-slate-500">Detalles de facturación y pasarela de pago</p>
+			</div>
+			<button (click)="closeModal()" class="text-slate-400 hover:text-slate-600 cursor-pointer">
+				<span class="material-symbols-outlined">close</span>
+			</button>
+		</div>
+
+		<div class="p-6 space-y-4 text-xs">
+			<div class="grid grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+				<div>
+					<p class="text-slate-400 font-medium">Cliente / Paciente</p>
+					<p class="font-bold text-slate-800 text-sm mt-0.5">{{ selectedInvoiceDetail.patientName }}</p>
+				</div>
+				<div>
+					<p class="text-slate-400 font-medium">Servicio</p>
+					<p class="font-bold text-slate-800 text-sm mt-0.5">{{ selectedInvoiceDetail.serviceName }}</p>
+				</div>
+			</div>
+
+			<div class="space-y-2">
+				<div class="flex justify-between py-1 border-b border-slate-100">
+					<span class="text-slate-500">Subtotal:</span>
+					<span class="font-semibold text-slate-800">{{ formatMoney(selectedInvoiceDetail.subtotalAmount) }}</span>
+				</div>
+				<div class="flex justify-between py-1 border-b border-slate-100">
+					<span class="text-slate-500">Moneda:</span>
+					<span class="font-semibold text-slate-800">{{ selectedInvoiceDetail.currency }}</span>
+				</div>
+				<div class="flex justify-between py-1 border-b border-slate-100">
+					<span class="text-slate-500 font-bold">Total Facturado:</span>
+					<span class="font-extrabold text-primary text-base">{{ formatMoney(selectedInvoiceDetail.totalAmount) }}</span>
+				</div>
+			</div>
+
+			<div *ngIf="selectedInvoiceDetail.payment" class="p-4 rounded-xl bg-emerald-50/50 border border-emerald-100 space-y-2">
+				<div class="flex items-center justify-between">
+					<span class="font-bold text-emerald-800 flex items-center gap-1.5">
+						<span class="material-symbols-outlined text-sm">payments</span>
+						Pasarela AvalPay (Sandbox)
+					</span>
+					<span [class]="getStatusBadgeClass(selectedInvoiceDetail.payment.status)" class="px-2 py-0.5 rounded-md border font-bold text-[10px] uppercase">
+						{{ getStatusLabel(selectedInvoiceDetail.payment.status) }}
+					</span>
+				</div>
+				<p class="text-[11px] text-emerald-700">Ref. Transacción: <strong>{{ selectedInvoiceDetail.payment.externalReference }}</strong></p>
+				<p class="text-[11px] text-emerald-700">Número de Pago: <strong>{{ selectedInvoiceDetail.payment.paymentNumber }}</strong></p>
+			</div>
+		</div>
+
+		<div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+			<button (click)="closeModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer">
+				Cerrar
+			</button>
+		</div>
+	</div>
+</div>

@@ -21,6 +21,12 @@ import {
 	ProviderAppointmentStatusAction,
 } from '@app/core/services/appointment.service';
 import { TelemedicineService } from '@app/features/telemedicine/services/telemedicine.service';
+import { PatientService, ProviderDashboardPatient } from '@app/core/services/patient.service';
+import { ServiceCatalogService, BackendServiceItem } from '@app/core/services/service-catalog.service';
+import { ProviderService } from '@app/core/services/provider.service';
+import { ClinicBranchService, ClinicBranchResponse } from '@app/core/services/clinic-branch.service';
+import { Provider } from '@app/domains/user/provider.entity';
+import { AuthService } from '@app/features/auth/services/auth.service';
 import {
 	formatColombiaTime,
 	toColombiaDateKey,
@@ -38,6 +44,11 @@ import { forkJoin } from 'rxjs';
 export class AppointmentProviderComponent implements OnInit {
 	private readonly appointmentService = inject(AppointmentService);
 	private readonly telemedicineService = inject(TelemedicineService);
+	private readonly patientService = inject(PatientService);
+	private readonly serviceCatalogService = inject(ServiceCatalogService);
+	private readonly providerService = inject(ProviderService);
+	private readonly clinicBranchService = inject(ClinicBranchService);
+	private readonly authService = inject(AuthService);
 	private readonly router = inject(Router);
 
 	loading = false;
@@ -57,6 +68,32 @@ export class AppointmentProviderComponent implements OnInit {
 	rescheduleErrorMessage = '';
 	joiningAppointmentId: string | null = null;
 	joinErrorMessage = '';
+
+	// Booking Modal State
+	isBookingModalOpen = false;
+	bookingPatients: ProviderDashboardPatient[] = [];
+	bookingServices: BackendServiceItem[] = [];
+	bookingProviders: Provider[] = [];
+	bookingBranches: ClinicBranchResponse[] = [];
+	bookingSlots: AvailableSlot[] = [];
+
+	bookingForm = {
+		patientId: '',
+		serviceId: '',
+		providerId: '',
+		clinicBranchId: '',
+		date: '',
+		slotId: '',
+		notes: '',
+		paymentRequired: true
+	};
+	bookingLoading = false;
+	bookingError = '';
+	bookingSaving = false;
+
+	get isReceptionist(): boolean {
+		return this.authService.currentUser?.providerTypeCode === 'RECEPTIONIST';
+	}
 
 	agenda: GetProviderAgendaResponse = {
 		date: this.selectedDate,
@@ -254,12 +291,14 @@ export class AppointmentProviderComponent implements OnInit {
 	}
 
 	canStart(appointment: ProviderAgendaItem): boolean {
+		if (this.isReceptionist) return false;
 		return (
 			appointment.status === 'CHECKED_IN' || appointment.status === 'CONFIRMED'
 		);
 	}
 
 	canReenter(appointment: ProviderAgendaItem): boolean {
+		if (this.isReceptionist) return false;
 		return appointment.status === 'IN_PROGRESS';
 	}
 
@@ -273,6 +312,12 @@ export class AppointmentProviderComponent implements OnInit {
 		const isTelemedicine =
 			appointment.isTelemedicine ||
 			appointment.careModalityCode === 'TELEMEDICINA';
+		
+		if (this.isReceptionist) {
+			// Receptionist can only trigger calling (CALL) when the appointment is CONFIRMED
+			return !isTelemedicine && appointment.status === 'CONFIRMED';
+		}
+
 		return (
 			!isTelemedicine &&
 			(appointment.status === 'CHECKED_IN' ||
@@ -282,6 +327,7 @@ export class AppointmentProviderComponent implements OnInit {
 	}
 
 	canJoinTeleconsultation(appointment: ProviderAgendaItem): boolean {
+		if (this.isReceptionist) return false;
 		return (
 			(appointment.isTelemedicine ||
 				appointment.careModalityCode === 'TELEMEDICINA') &&
@@ -703,5 +749,122 @@ export class AppointmentProviderComponent implements OnInit {
 		}
 
 		return [...map.values()];
+	}
+
+	openCreateAppointmentModal(): void {
+		this.bookingError = '';
+		this.isBookingModalOpen = true;
+		this.bookingForm = {
+			patientId: '',
+			serviceId: '',
+			providerId: '',
+			clinicBranchId: '',
+			date: '',
+			slotId: '',
+			notes: '',
+			paymentRequired: true
+		};
+		this.bookingSlots = [];
+		this.bookingProviders = [];
+		this.loadBookingCatalogs();
+	}
+
+	loadBookingCatalogs(): void {
+		this.bookingLoading = true;
+		forkJoin({
+			patients: this.patientService.getProviderPatients(),
+			services: this.serviceCatalogService.getServices(),
+			branches: this.clinicBranchService.getClinicBranches()
+		}).subscribe({
+			next: (res) => {
+				this.bookingPatients = res.patients.patients;
+				this.bookingServices = res.services;
+				this.bookingBranches = res.branches;
+				this.bookingLoading = false;
+			},
+			error: () => {
+				this.bookingError = 'No fue posible cargar los catálogos de citas.';
+				this.bookingLoading = false;
+			}
+		});
+	}
+
+	onBookingServiceChange(): void {
+		this.bookingForm.providerId = '';
+		this.bookingForm.slotId = '';
+		this.bookingSlots = [];
+		if (!this.bookingForm.serviceId) {
+			this.bookingProviders = [];
+			return;
+		}
+
+		this.providerService.getProviders({ serviceId: this.bookingForm.serviceId }).subscribe({
+			next: (providers) => {
+				this.bookingProviders = providers;
+			},
+			error: () => {
+				this.bookingError = 'Error al cargar proveedores del servicio.';
+			}
+		});
+	}
+
+	onBookingCriteriaChange(): void {
+		this.bookingForm.slotId = '';
+		this.bookingSlots = [];
+		if (!this.bookingForm.providerId || !this.bookingForm.serviceId || !this.bookingForm.date) {
+			return;
+		}
+
+		this.appointmentService.getAvailableSlots(
+			this.bookingForm.providerId,
+			this.bookingForm.serviceId,
+			this.bookingForm.date
+		).subscribe({
+			next: (slots) => {
+				this.bookingSlots = slots.filter(
+					(s) => s.available > 0 && s.status === 'AVAILABLE'
+				);
+			},
+			error: () => {
+				this.bookingError = 'Error al cargar los slots disponibles.';
+			}
+		});
+	}
+
+	saveAppointment(): void {
+		if (this.bookingSaving) return;
+		if (!this.bookingForm.patientId || !this.bookingForm.slotId || !this.bookingForm.serviceId || !this.bookingForm.providerId) {
+			this.bookingError = 'Por favor complete los campos obligatorios.';
+			return;
+		}
+
+		this.bookingSaving = true;
+		this.bookingError = '';
+
+		const payload = {
+			slotId: this.bookingForm.slotId,
+			serviceId: this.bookingForm.serviceId,
+			providerId: this.bookingForm.providerId,
+			notes: this.bookingForm.notes || undefined,
+			paymentRequired: this.bookingForm.paymentRequired,
+			patientId: this.bookingForm.patientId
+		};
+
+		this.appointmentService.createAppointment(payload).subscribe({
+			next: () => {
+				this.bookingSaving = false;
+				this.isBookingModalOpen = false;
+				this.loadAgenda();
+				alert('Cita médica agendada con éxito.');
+			},
+			error: (err) => {
+				this.bookingSaving = false;
+				this.bookingError = err.error?.message || 'Error al agendar la cita médica.';
+			}
+		});
+	}
+
+	closeBookingModal(): void {
+		this.isBookingModalOpen = false;
 	}
 }

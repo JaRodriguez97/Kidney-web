@@ -6,7 +6,9 @@ import {
 	ProviderDashboardPatient,
 	ProviderPatientRisk,
 	ProviderPatientsResponse,
+	PatientDocument,
 } from '@app/core/services/patient.service';
+import { AuthService } from '@app/features/auth/services/auth.service';
 import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 
 @Component({
@@ -18,6 +20,7 @@ import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 })
 export class PatientProviderComponent implements OnInit {
 	private readonly patientService = inject(PatientService);
+	private readonly authService = inject(AuthService);
 
 	patients: ProviderDashboardPatient[] = [];
 	filteredPatients: ProviderDashboardPatient[] = [];
@@ -36,6 +39,49 @@ export class PatientProviderComponent implements OnInit {
 		lowRiskPatients: 0,
 		unclassifiedRiskPatients: 0,
 	};
+
+	// Receptionist Patient Modal
+	isModalOpen = false;
+	isEditing = false;
+	savingPatient = false;
+	modalError = '';
+	selectedPatientId: string | null = null;
+
+	patientForm = {
+		email: '',
+		password: '',
+		firstName: '',
+		lastName: '',
+		middleName: '',
+		secondLastName: '',
+		documentType: 'CC',
+		documentNumber: '',
+		birthDate: '',
+		phone: '',
+		gender: 'MALE',
+		address: '',
+		neighborhood: '',
+		commune: null as number | null,
+		city: 'Cali',
+		department: 'Valle del Cauca',
+		bloodType: 'O+',
+		allergies: '',
+		chronicConditions: '',
+		heightCm: null as number | null,
+		weightKg: null as number | null,
+		isMinor: false
+	};
+
+	// Receptionist Documents Modal
+	isDocumentsModalOpen = false;
+	selectedPatientName = '';
+	documents: PatientDocument[] = [];
+	documentsLoading = false;
+	documentsError = '';
+
+	get isReceptionist(): boolean {
+		return this.authService.currentUser?.providerTypeCode === 'RECEPTIONIST';
+	}
 
 	ngOnInit(): void {
 		this.loadPatients();
@@ -146,5 +192,193 @@ export class PatientProviderComponent implements OnInit {
 			default:
 				return true;
 		}
+	}
+
+	// Modal Actions
+	openCreateModal(): void {
+		this.isEditing = false;
+		this.selectedPatientId = null;
+		this.modalError = '';
+		this.resetForm();
+		this.isModalOpen = true;
+	}
+
+	openEditModal(patient: ProviderDashboardPatient): void {
+		this.isEditing = true;
+		this.selectedPatientId = patient.patientId;
+		this.modalError = '';
+		this.loading = true;
+
+		this.patientService.getPatientById(patient.patientId).subscribe({
+			next: (profile) => {
+				this.populateForm(profile);
+				this.isModalOpen = true;
+				this.loading = false;
+			},
+			error: () => {
+				this.modalError = 'No fue posible cargar el perfil del paciente.';
+				this.loading = false;
+			}
+		});
+	}
+
+	closeModal(): void {
+		this.isModalOpen = false;
+	}
+
+	resetForm(): void {
+		this.patientForm = {
+			email: '',
+			password: '',
+			firstName: '',
+			lastName: '',
+			middleName: '',
+			secondLastName: '',
+			documentType: 'CC',
+			documentNumber: '',
+			birthDate: '',
+			phone: '',
+			gender: 'MALE',
+			address: '',
+			neighborhood: '',
+			commune: null,
+			city: 'Cali',
+			department: 'Valle del Cauca',
+			bloodType: 'O+',
+			allergies: '',
+			chronicConditions: '',
+			heightCm: null,
+			weightKg: null,
+			isMinor: false
+		};
+	}
+
+	populateForm(profile: any): void {
+		const pi = profile.personalInformation || {};
+		const di = profile.demographicInformation || {};
+		const ci = profile.contactInformation || {};
+		const cs = profile.clinicalSummary || {};
+
+		this.patientForm = {
+			email: ci.email || '',
+			password: '',
+			firstName: pi.firstName || '',
+			middleName: pi.middleName || '',
+			lastName: pi.lastName || '',
+			secondLastName: pi.secondLastName || '',
+			documentType: pi.document?.type || 'CC',
+			documentNumber: pi.document?.number || '',
+			birthDate: pi.birthDate || '',
+			phone: ci.mobile?.number || '',
+			gender: pi.sex || 'MALE',
+			address: di.address?.addressLine || '',
+			neighborhood: di.address?.neighborhood || '',
+			commune: di.address?.commune ? parseInt(di.address.commune, 10) : null,
+			city: di.municipality?.name || 'Cali',
+			department: di.department?.name || 'Valle del Cauca',
+			bloodType: cs.bloodType || 'O+',
+			allergies: cs.allergies || '',
+			chronicConditions: cs.chronicConditions || '',
+			heightCm: cs.heightCm || null,
+			weightKg: cs.weightKg || null,
+			isMinor: profile.isMinor || false
+		};
+	}
+
+	savePatient(): void {
+		if (this.savingPatient) return;
+		this.savingPatient = true;
+		this.modalError = '';
+
+		if (this.isEditing && this.selectedPatientId) {
+			const payload = {
+				personalInformation: {
+					firstName: this.patientForm.firstName,
+					middleName: this.patientForm.middleName,
+					lastName: this.patientForm.lastName,
+					secondLastName: this.patientForm.secondLastName,
+					sex: this.patientForm.gender,
+					birthDate: this.patientForm.birthDate
+				},
+				demographicInformation: {
+					department: { name: this.patientForm.department },
+					municipality: { name: this.patientForm.city },
+					address: {
+						addressLine: this.patientForm.address,
+						neighborhood: this.patientForm.neighborhood,
+						commune: this.patientForm.commune ? String(this.patientForm.commune) : null
+					}
+				},
+				contactInformation: {
+					mobile: { number: this.patientForm.phone }
+				}
+			};
+
+			this.patientService.updatePatient(this.selectedPatientId, payload).subscribe({
+				next: () => {
+					this.savingPatient = false;
+					this.closeModal();
+					this.loadPatients();
+				},
+				error: (err) => {
+					this.savingPatient = false;
+					this.modalError = err.error?.message || 'Error al actualizar paciente.';
+				}
+			});
+		} else {
+			// Create Patient
+			const payload = {
+				...this.patientForm,
+				commune: this.patientForm.commune ?? undefined,
+				heightCm: this.patientForm.heightCm ?? undefined,
+				weightKg: this.patientForm.weightKg ?? undefined,
+			};
+
+			this.patientService.createPatient(payload).subscribe({
+				next: () => {
+					this.savingPatient = false;
+					this.closeModal();
+					this.loadPatients();
+				},
+				error: (err) => {
+					this.savingPatient = false;
+					this.modalError = err.error?.message || 'Error al registrar paciente.';
+				}
+			});
+		}
+	}
+
+	// Documents Modal Actions
+	openDocumentsModal(patient: ProviderDashboardPatient): void {
+		this.selectedPatientName = patient.fullName;
+		this.documents = [];
+		this.documentsLoading = true;
+		this.documentsError = '';
+		this.isDocumentsModalOpen = true;
+
+		this.patientService.getPatientDocuments(patient.patientId).subscribe({
+			next: (docs) => {
+				this.documents = docs;
+				this.documentsLoading = false;
+			},
+			error: () => {
+				this.documentsError = 'No fue posible cargar la lista de documentos.';
+				this.documentsLoading = false;
+			}
+		});
+	}
+
+	closeDocumentsModal(): void {
+		this.isDocumentsModalOpen = false;
+	}
+
+	shareDocument(doc: PatientDocument): void {
+		// Mock sharing document: Copying details/link to clipboard
+		const shareText = `Documento compartido: ${doc.title} (${doc.type}) - Emitido por: ${doc.issuer}`;
+		navigator.clipboard.writeText(shareText).then(() => {
+			alert(`Enlace de descarga del documento "${doc.title}" copiado al portapapeles.`);
+		}).catch(() => {
+			alert('No fue posible compartir el documento.');
+		});
 	}
 }

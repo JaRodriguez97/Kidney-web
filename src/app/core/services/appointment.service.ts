@@ -38,6 +38,7 @@ export interface CareModalityOption {
 
 export interface PatientAppointment {
 	id: string;
+	careId?: string | null;
 	scheduledDate: string;
 	startTime: string;
 	endTime: string;
@@ -248,5 +249,21 @@ export class AppointmentService {
 
 	createAppointment(payload: CreateAppointmentRequest): Observable<unknown> {
 		return this.http.post(`${this.apiUrl}`, payload);
+	}
+
+	downloadAttendanceCertificate(careId: string): Observable<Blob> {
+		const careApiUrl = environment.apiUrl + 'care';
+		return this.http.get(`${careApiUrl}/care/${careId}/attendance-certificate`, {
+			responseType: 'blob',
+		});
+	}
+
+	submitSatisfactionSurvey(payload: {
+		appointmentId: string;
+		rating: number;
+		comments?: string;
+	}): Observable<any> {
+		const careApiUrl = environment.apiUrl + 'care';
+		return this.http.post(`${careApiUrl}/post-attention/survey`, payload);
 	}
 }

@@ -46,6 +46,7 @@ export class LoginComponent {
 	});
 
 	public loading = false;
+	public errorMessage: string | null = null;
 
 	// convenience getter for patient context
 	public get isPatient(): boolean {
@@ -81,6 +82,7 @@ export class LoginComponent {
 		}
 
 		this.loading = true;
+		this.errorMessage = null;
 		const payload = this.form.value;
 		this.authService.login(payload).subscribe({
 			next: (res: any) => {
@@ -112,7 +114,7 @@ export class LoginComponent {
 			},
 			error: (err) => {
 				console.error('Login error', err);
-				// TODO: show UI feedback
+				this.errorMessage = err.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
 				this.loading = false;
 			},
 		});

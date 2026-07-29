@@ -163,8 +163,8 @@
           class="absolute bottom-8 left-1/2 transform -translate-x-1/2 glass-panel !bg-black/30 !border-white/20 px-6 py-3 flex items-center gap-4 shadow-2xl backdrop-blur-xl rounded-full z-30">
           <!-- Audio Toggle Button -->
           <button type="button" (click)="toggleAudio()"
-            class="btn-control bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
-            [class.bg-red-500.text-white]="!isAudioEnabled"
+            class="btn-control transition-all duration-300"
+            [ngClass]="isAudioEnabled ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-red-500 text-white hover:bg-red-600'"
             [title]="isAudioEnabled ? 'Silenciar Micrófono' : 'Activar Micrófono'">
             <span class="material-symbols-outlined">
               {{ isAudioEnabled ? 'mic' : 'mic_off' }}
@@ -173,24 +173,14 @@
 
           <!-- Video Toggle Button -->
           <button type="button" (click)="toggleVideo()"
-            class="btn-control bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
-            [class.bg-red-500.text-white]="!isVideoEnabled"
+            class="btn-control transition-all duration-300"
+            [ngClass]="isVideoEnabled ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-red-500 text-white hover:bg-red-600'"
             [title]="isVideoEnabled ? 'Apagar Cámara' : 'Encender Cámara'">
             <span class="material-symbols-outlined">
               {{ isVideoEnabled ? 'videocam' : 'videocam_off' }}
             </span>
           </button>
 
-          <!-- Screen Share (Aesthetic / Not implemented) 
-          <button
-            type="button"
-            class="btn-control bg-white/10 text-white hover:bg-white/20"
-            title="Compartir Pantalla"
-          >
-            <span class="material-symbols-outlined">screen_share</span>
-          </button>
-
-          <div class="w-px h-8 bg-white/20 mx-1"></div>-->
 
           <!-- Hang Up Button -->
           <button type="button" (click)="leaveRoom()"

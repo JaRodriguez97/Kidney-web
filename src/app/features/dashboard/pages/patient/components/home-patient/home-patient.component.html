@@ -203,6 +203,7 @@
 			<button
 				type="button"
 				*ngIf="hasResults"
+				(click)="viewAllResults()"
 				class="text-xs font-bold text-primary_p hover:text-sky-700"
 			>
 				Ver todos
@@ -252,7 +253,11 @@
 						</div>
 						<p class="text-[11px] text-slate-400">01 Oct 2023</p>
 					</div>
-					<button class="btn-download-icon" title="Descargar">
+					<button
+						class="btn-download-icon"
+						(click)="downloadResult('Hemograma Completo')"
+						title="Descargar"
+					>
 						<span class="material-symbols-outlined text-[18px]">download</span>
 					</button>
 				</div>
@@ -269,7 +274,11 @@
 						</div>
 						<p class="text-[11px] text-slate-400">01 Oct 2023</p>
 					</div>
-					<button class="btn-download-icon" title="Descargar">
+					<button
+						class="btn-download-icon"
+						(click)="downloadResult('Hemoglobina')"
+						title="Descargar"
+					>
 						<span class="material-symbols-outlined text-[18px]">download</span>
 					</button>
 				</div>
@@ -286,7 +295,11 @@
 						</div>
 						<p class="text-[11px] text-slate-400">28 Sep 2023</p>
 					</div>
-					<button class="btn-download-icon" title="Descargar">
+					<button
+						class="btn-download-icon"
+						(click)="downloadResult('Perfil Lipídico')"
+						title="Descargar"
+					>
 						<span class="material-symbols-outlined text-[18px]">download</span>
 					</button>
 				</div>
@@ -328,13 +341,25 @@
 			<div class="flex bg-white rounded-lg p-1 border border-slate-100">
 				<button
 					type="button"
-					class="px-3 py-1 text-xs font-bold bg-slate-100 text-slate-700 rounded-md shadow-sm"
+					(click)="setGraphRange('6M')"
+					class="px-3 py-1 text-xs rounded-md shadow-sm transition-colors"
+					[ngClass]="
+						selectedGraphRange === '6M'
+							? 'font-bold bg-slate-100 text-slate-700'
+							: 'font-medium text-slate-400 hover:text-slate-600'
+					"
 				>
 					6 Meses
 				</button>
 				<button
 					type="button"
-					class="px-3 py-1 text-xs font-medium text-slate-400 hover:text-slate-600"
+					(click)="setGraphRange('1Y')"
+					class="px-3 py-1 text-xs rounded-md shadow-sm transition-colors"
+					[ngClass]="
+						selectedGraphRange === '1Y'
+							? 'font-bold bg-slate-100 text-slate-700'
+							: 'font-medium text-slate-400 hover:text-slate-600'
+					"
 				>
 					1 Año
 				</button>
@@ -538,7 +563,10 @@
 		</ng-container>
 
 		<div *ngIf="!isLoading && hasDocuments" class="space-y-4 flex-1">
-			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+			<a
+				class="flex items-center gap-4 group cursor-pointer"
+				(click)="goToDocuments()"
+			>
 				<div
 					class="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center shrink-0 border border-red-100 group-hover:bg-red-100 transition-colors"
 				>
@@ -558,7 +586,10 @@
 					<p class="text-[11px] text-slate-400">Dr. Vargas • 02 Oct</p>
 				</div>
 			</a>
-			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+			<a
+				class="flex items-center gap-4 group cursor-pointer"
+				(click)="goToDocuments()"
+			>
 				<div
 					class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 group-hover:bg-blue-100 transition-colors"
 				>
@@ -578,7 +609,10 @@
 					<p class="text-[11px] text-slate-400">Medicina General • 15 Sep</p>
 				</div>
 			</a>
-			<a class="flex items-center gap-4 group cursor-pointer" href="#">
+			<a
+				class="flex items-center gap-4 group cursor-pointer"
+				(click)="goToDocuments()"
+			>
 				<div
 					class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100 group-hover:bg-emerald-100 transition-colors"
 				>

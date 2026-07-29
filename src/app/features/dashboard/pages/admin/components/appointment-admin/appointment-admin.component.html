@@ -39,6 +39,7 @@
 					</select>
 					<button
 						type="button"
+						(click)="goToCreateAppointment()"
 						class="flex items-center gap-2 bg-medical text-white px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-blue-500/30 font-semibold text-sm whitespace-nowrap"
 					>
 						<span class="material-symbols-outlined text-lg">add_circle</span>
@@ -85,7 +86,7 @@
 								</tr>
 							} @else {
 								@for (
-									row of filteredAppointments;
+									row of paginatedAppointments;
 									track trackByRow($index, row)
 								) {
 									<tr class="group hover:bg-white/60 transition-colors">
@@ -135,6 +136,7 @@
 											<div class="flex items-center justify-end gap-1">
 												<button
 													type="button"
+													(click)="editAppointment(row)"
 													class="p-2 hover:bg-slate-100 rounded-lg text-primary transition-colors"
 												>
 													<span class="material-symbols-outlined text-xl"
@@ -143,6 +145,7 @@
 												</button>
 												<button
 													type="button"
+													(click)="cancelAppointment(row)"
 													class="p-2 hover:bg-red-50 rounded-lg text-secondary transition-colors"
 												>
 													<span class="material-symbols-outlined text-xl"
@@ -161,19 +164,23 @@
 					class="px-6 py-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500 bg-white/30"
 				>
 					<span
-						>Mostrando {{ filteredAppointments.length }} de
-						{{ appointments.length }} citas hoy</span
+						>Mostrando {{ paginatedAppointments.length }} de
+						{{ filteredAppointments.length }} citas encontradas</span
 					>
 					<div class="flex gap-2">
 						<button
 							type="button"
-							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+							(click)="prevPage()"
+							[disabled]="currentPage === 1"
+							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							Anterior
 						</button>
 						<button
 							type="button"
-							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
+							(click)="nextPage()"
+							[disabled]="currentPage === totalPages"
+							class="px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							Siguiente
 						</button>

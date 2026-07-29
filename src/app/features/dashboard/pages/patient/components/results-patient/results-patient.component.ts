@@ -8,10 +8,12 @@ import {
 } from '@app/core/services/labs-dashboard.service';
 import { formatColombiaDate } from '@app/shared/utils/colombia-date.utils';
 
+import { InputTextComponent } from '@app/shared/components/form/input-text/input-text.component';
+
 @Component({
   selector: 'app-results-patient',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InputTextComponent],
   templateUrl: './results-patient.component.html',
   styleUrl: './results-patient.component.scss',
 })

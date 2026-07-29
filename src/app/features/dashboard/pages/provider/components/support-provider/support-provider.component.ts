@@ -123,6 +123,14 @@ export class SupportProviderComponent implements OnInit {
 			return;
 		}
 
+		const allowedTypes = ['image/png', 'image/jpeg', 'application/pdf'];
+		if (!allowedTypes.includes(file.type)) {
+			this.selectedFile = null;
+			this.submitErrorMessage = 'Tipo de archivo no permitido. Solo se aceptan PNG, JPG y PDF.';
+			input.value = '';
+			return;
+		}
+
 		if (file.size > 5 * 1024 * 1024) {
 			this.selectedFile = null;
 			this.submitErrorMessage = 'El archivo supera el tamano maximo de 5MB.';

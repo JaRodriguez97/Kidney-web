@@ -1,15 +1,19 @@
-<section class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col">
-	<div class="glass-panel p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-		<div class="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1">
-			<div class="relative flex-1 max-w-md">
-				<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
-				<input
+<section
+	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col"
+>
+	<div
+		class="glass-panel p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between"
+	>
+		<div
+			class="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1 items-center"
+		>
+			<div class="flex-1 max-w-md w-full">
+				<app-input-text
+					placeholder="Buscar examen por nombre..."
+					icon="search"
 					[ngModel]="searchTerm"
 					(ngModelChange)="onSearchChange($event)"
-					class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary_p/20 focus:border-primary_p text-sm transition-all"
-					placeholder="Buscar examen por nombre..."
-					type="text"
-				/>
+				></app-input-text>
 			</div>
 			<div class="relative">
 				<input
@@ -18,50 +22,76 @@
 					class="pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary_p/20 focus:border-primary_p text-sm w-40 text-slate-600 cursor-pointer"
 					type="date"
 				/>
-				<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">calendar_today</span>
+				<span
+					class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]"
+					>calendar_today</span
+				>
 			</div>
 		</div>
 		<div class="hidden md:block text-sm text-slate-500">
-			Mostrando <span class="font-bold text-slate-800">{{ rows.length }}</span> resultados
+			Mostrando
+			<span class="font-bold text-slate-800">{{ rows.length }}</span> resultados
 		</div>
 	</div>
 
 	@if (errorMessage) {
-		<div class="mb-4 px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium">
+		<div
+			class="mb-4 px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+		>
 			{{ errorMessage }}
 		</div>
 	}
 
 	<div class="space-y-4 pb-8">
-		<h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1">
+		<h3
+			class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 px-1"
+		>
 			Historial de Exámenes
 		</h3>
 
 		@if (loading) {
-			<div class="glass-card p-6 text-sm text-slate-500">Cargando resultados...</div>
+			<div class="glass-card p-6 text-sm text-slate-500">
+				Cargando resultados...
+			</div>
 		} @else if (rows.length === 0) {
-			<div class="glass-card p-6 text-sm text-slate-500">No se encontraron resultados para los filtros seleccionados.</div>
+			<div class="glass-card p-6 text-sm text-slate-500">
+				No se encontraron resultados para los filtros seleccionados.
+			</div>
 		} @else {
 			@for (row of rows; track row.appointmentId) {
-				<div class="glass-card p-4 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+				<div
+					class="glass-card p-4 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+				>
 					<div class="flex items-center gap-4">
-						<div class="w-12 h-12 rounded-xl bg-primary_p/10 flex items-center justify-center text-primary_p border border-primary_p/20 shrink-0">
+						<div
+							class="w-12 h-12 rounded-xl bg-primary_p/10 flex items-center justify-center text-primary_p border border-primary_p/20 shrink-0"
+						>
 							<span class="material-symbols-outlined text-2xl">science</span>
 						</div>
 						<div>
-							<h4 class="font-bold text-slate-800 text-lg">{{ row.serviceName }}</h4>
+							<h4 class="font-bold text-slate-800 text-lg">
+								{{ row.serviceName }}
+							</h4>
 							<div class="flex flex-wrap gap-x-4 text-xs text-slate-500 mt-1">
 								<span>{{ formatDate(row.scheduledDate) }}</span>
 								<span>•</span>
-								<span>{{ row.technicianName || 'Sin técnico asignado' }}</span>
+								<span>{{ row.technicianName || "Sin técnico asignado" }}</span>
 							</div>
 						</div>
 					</div>
-					<div class="flex items-center gap-3 sm:ml-auto w-full sm:w-auto pl-16 sm:pl-0">
+					<div
+						class="flex items-center gap-3 sm:ml-auto w-full sm:w-auto pl-16 sm:pl-0"
+					>
 						<span [class]="getStatusClass(row)">
-							{{ row.resultStatus === 'PUBLISHED' ? 'Disponible' : row.resultStatus === 'PENDING_VALIDATION' ? 'Pendiente Validación' : 'En Revisión' }}
+							{{
+								row.resultStatus === "PUBLISHED"
+									? "Disponible"
+									: row.resultStatus === "PENDING_VALIDATION"
+										? "Pendiente Validación"
+										: "En Revisión"
+							}}
 						</span>
-						@if (row.resultStatus === 'PUBLISHED') {
+						@if (row.resultStatus === "PUBLISHED") {
 							<button
 								class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-all"
 								(click)="onDownloadPdf(row.appointmentId)"
@@ -83,23 +113,35 @@
 
 	@if (selectedDetail || detailLoading || detailError) {
 		<div class="glass-panel p-4 mb-8">
-			<h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">Detalle de Resultado</h3>
+			<h3
+				class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4"
+			>
+				Detalle de Resultado
+			</h3>
 
 			@if (detailLoading) {
 				<p class="text-sm text-slate-500">Cargando detalle...</p>
 			} @else if (detailError) {
-				<div class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium">
+				<div
+					class="px-4 py-3 rounded-xl bg-red-50 text-secondary border border-red-100 text-sm font-medium"
+				>
 					{{ detailError }}
 				</div>
 			} @else if (selectedDetail) {
 				<div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
 					<div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
 						<p class="text-xs text-slate-500 uppercase font-semibold">Examen</p>
-						<p class="font-semibold text-slate-800">{{ selectedDetail.serviceName }}</p>
+						<p class="font-semibold text-slate-800">
+							{{ selectedDetail.serviceName }}
+						</p>
 					</div>
 					<div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
-						<p class="text-xs text-slate-500 uppercase font-semibold">Fecha toma</p>
-						<p class="font-semibold text-slate-800">{{ formatDate(selectedDetail.scheduledDate) }}</p>
+						<p class="text-xs text-slate-500 uppercase font-semibold">
+							Fecha toma
+						</p>
+						<p class="font-semibold text-slate-800">
+							{{ formatDate(selectedDetail.scheduledDate) }}
+						</p>
 					</div>
 				</div>
 
@@ -119,15 +161,15 @@
 								<tr class="border-t border-slate-100">
 									<td class="px-3 py-2">{{ value.fieldName }}</td>
 									<td class="px-3 py-2 font-semibold">{{ value.value }}</td>
-									<td class="px-3 py-2">{{ value.unit || '-' }}</td>
-									<td class="px-3 py-2">{{ value.referenceRange || '-' }}</td>
-									<td class="px-3 py-2">{{ value.flag || '-' }}</td>
+									<td class="px-3 py-2">{{ value.unit || "-" }}</td>
+									<td class="px-3 py-2">{{ value.referenceRange || "-" }}</td>
+									<td class="px-3 py-2">{{ value.flag || "-" }}</td>
 								</tr>
 							}
 						</tbody>
 					</table>
 				</div>
-				@if (selectedDetail.resultStatus === 'PUBLISHED') {
+				@if (selectedDetail.resultStatus === "PUBLISHED") {
 					<div class="mt-4 flex justify-end">
 						<button
 							class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-all"

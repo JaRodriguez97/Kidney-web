@@ -107,8 +107,8 @@
 			Configuraciones
 		</a>
 		<a
-			(click)="setActive(11)"
-			[class.active]="activeIndex === 11"
+			(click)="setActive(10)"
+			[class.active]="activeIndex === 10"
 			class="sidebar-item cursor-pointer"
 		>
 			<span class="material-symbols-outlined">account_tree</span>
@@ -118,14 +118,15 @@
 	<div class="mt-auto pt-6 border-t border-slate-200/50">
 		<a
 			id="tour-nav-support-admin"
-			(click)="setActive(10)"
-			[class.active]="activeIndex === 10"
+			(click)="setActive(11)"
+			[class.active]="activeIndex === 11"
 			class="sidebar-item cursor-pointer"
 		>
 			<span class="material-symbols-outlined">headset_mic</span>
 			Soporte y contacto
 		</a>
 		<a
+			(click)="logout()"
 			class="sidebar-item text-secondary hover:bg-red-50 hover:text-red-700 mt-2 cursor-pointer"
 		>
 			<span class="material-symbols-outlined">logout</span>

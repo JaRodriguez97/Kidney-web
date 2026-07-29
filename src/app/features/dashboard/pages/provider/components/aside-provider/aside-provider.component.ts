@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { PlatformService } from '@app/shared/services/platform.service';
 import { SidebarService } from '@app/shared/services/sidebar.service';
+import { AuthService } from '@app/features/auth/services/auth.service';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -17,6 +18,7 @@ export class AsideProviderComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private platformService = inject(PlatformService);
 	private sidebarService = inject(SidebarService);
+	private authService = inject(AuthService);
 	private readonly STORAGE_KEY = 'providerSidebarActive';
 	private destroy$ = new Subject<void>();
 	activeIndex: number = 0;
@@ -27,10 +29,20 @@ export class AsideProviderComponent implements OnInit, OnDestroy {
 		'patients',
 		'clinical-record',
 		'appointments',
-		'clinical-attention',
 		'labs',
 		'support',
 	];
+
+	get menuItems() {
+		const isReceptionist = this.authService.currentUser?.providerTypeCode === 'RECEPTIONIST';
+		return [
+			{ index: 0, id: 'tour-nav-home-provider', label: 'Dashboard', icon: 'dashboard', route: 'home', visible: true },
+			{ index: 1, id: 'tour-nav-patients-provider', label: isReceptionist ? 'Pacientes' : 'Mis Pacientes', icon: 'patient_list', route: 'patients', visible: true },
+			{ index: 2, id: 'tour-nav-clinical-record-provider', label: 'Historia Clínica', icon: 'clinical_notes', route: 'clinical-record', visible: !isReceptionist },
+			{ index: 3, id: 'tour-nav-agenda-provider', label: 'Agenda Médica', icon: 'calendar_month', route: 'appointments', visible: true },
+			{ index: 4, id: 'tour-nav-labs-provider', label: 'Laboratorios', icon: 'biotech', route: 'labs', visible: !isReceptionist },
+		];
+	}
 
 	constructor() {}
 
@@ -60,7 +72,7 @@ export class AsideProviderComponent implements OnInit, OnDestroy {
 			this.platformService.setLocalStorageItem(
 				this.STORAGE_KEY,
 				index.toString(),
-			);
+				);
 		}
 	}
 
@@ -74,5 +86,10 @@ export class AsideProviderComponent implements OnInit, OnDestroy {
 		if (route !== '' || index === 0) {
 			this.router.navigate(['dashboard/provider/' + route]);
 		}
+	}
+
+	logout(): void {
+		this.authService.clearSession();
+		this.router.navigate(['/login/proveedor']);
 	}
 }

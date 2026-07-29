@@ -74,6 +74,11 @@ export class UsersAdminComponent implements OnInit {
 	// Datos del formulario recopilados
 	formData: any = {};
 
+	// Edición de usuario
+	showEditModal = false;
+	editingUser: User | null = null;
+	editFormData: any = {};
+
 	// Modal - solicitud seleccionada al ver datos
 	showRequestDetailsModal = false;
 	selectedRequest: any = null;
@@ -366,7 +371,40 @@ export class UsersAdminComponent implements OnInit {
 
 	editUser(user: User) {
 		console.log('Editar usuario:', user);
-		// TODO: Implementar modal de edición
+		this.editingUser = user;
+		this.editFormData = {
+			firstName: user.firstName,
+			lastName: user.lastName,
+			phone: user.phone,
+			status: user.status
+		};
+		this.showEditModal = true;
+		this.sidebarService.hide();
+	}
+
+	closeEditModal() {
+		this.showEditModal = false;
+		this.editingUser = null;
+		this.editFormData = {};
+		this.sidebarService.show();
+	}
+
+	saveEditUser() {
+		if (!this.editingUser) return;
+		this.isLoading = true;
+		this.userService.updateUser(this.editingUser.id, this.editFormData).subscribe({
+			next: () => {
+				this.isLoading = false;
+				this.closeEditModal();
+				this.loadUsers();
+				alert('Usuario actualizado exitosamente');
+			},
+			error: (err) => {
+				console.error('Error al actualizar usuario:', err);
+				this.isLoading = false;
+				alert('Error al actualizar usuario');
+			}
+		});
 	}
 
 	deleteUser(user: User) {

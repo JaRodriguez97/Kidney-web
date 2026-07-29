@@ -54,6 +54,36 @@ export interface PlatformHealthResponse {
 	database: PlatformHealthItem;
 }
 
+export interface SupportTicketMessageItem {
+	id: string;
+	ticketId: string;
+	senderUserId: string;
+	senderName?: string;
+	senderRole?: string;
+	message: string;
+	attachmentUrl?: string | null;
+	createdAt: string;
+}
+
+export interface SupportTicketDetail {
+	id: string;
+	reporterUserId: string;
+	reporterProviderId: string | null;
+	reporterName?: string;
+	reporterEmail?: string;
+	subject: string;
+	category: SupportTicketCategory;
+	description: string;
+	status: SupportTicketStatus;
+	assignedToUserId?: string | null;
+	assignedToName?: string | null;
+	createdAt: string;
+	updatedAt: string | null;
+	resolvedAt: string | null;
+	attachments?: Array<{ id: string; fileName: string; mimeType: string; fileSizeBytes: number; fileUrl?: string }>;
+	messages?: SupportTicketMessageItem[];
+}
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -80,11 +110,54 @@ export class SupportService {
 		);
 	}
 
-	listMyTickets(limit = 3): Observable<ListSupportTicketsResponse> {
+	listMyTickets(limit = 10): Observable<ListSupportTicketsResponse> {
 		const params = new HttpParams().set('limit', String(limit));
 		return this.http.get<ListSupportTicketsResponse>(`${this.apiUrl}/tickets`, {
 			params,
 		});
+	}
+
+	respondTicket(ticketId: string, message: string, attachmentUrl?: string): Observable<SupportTicketMessageItem> {
+		return this.http.post<SupportTicketMessageItem>(`${this.apiUrl}/tickets/${ticketId}/messages`, {
+			message,
+			attachmentUrl,
+		});
+	}
+
+	updateTicketStatus(ticketId: string, status: SupportTicketStatus): Observable<SupportTicketDetail> {
+		return this.http.patch<SupportTicketDetail>(`${this.apiUrl}/tickets/${ticketId}/status`, {
+			status,
+		});
+	}
+
+	assignTicketAgent(ticketId: string, agentUserId: string): Observable<SupportTicketDetail> {
+		return this.http.patch<SupportTicketDetail>(`${this.apiUrl}/tickets/${ticketId}/assign`, {
+			agentUserId,
+		});
+	}
+
+	getTicketMessages(ticketId: string): Observable<SupportTicketDetail> {
+		return this.http.get<SupportTicketDetail>(`${this.apiUrl}/tickets/${ticketId}/messages`);
+	}
+
+	listAllTicketsAdmin(params?: {
+		status?: string;
+		category?: string;
+		search?: string;
+		page?: number;
+		limit?: number;
+	}): Observable<{ tickets: SupportTicketDetail[]; total: number }> {
+		let httpParams = new HttpParams();
+		if (params?.status) httpParams = httpParams.set('status', params.status);
+		if (params?.category) httpParams = httpParams.set('category', params.category);
+		if (params?.search) httpParams = httpParams.set('search', params.search);
+		if (params?.page) httpParams = httpParams.set('page', String(params.page));
+		if (params?.limit) httpParams = httpParams.set('limit', String(params.limit));
+
+		return this.http.get<{ tickets: SupportTicketDetail[]; total: number }>(
+			`${this.apiUrl}/admin/tickets`,
+			{ params: httpParams },
+		);
 	}
 
 	getPlatformHealth(): Observable<PlatformHealthResponse> {

@@ -17,51 +17,18 @@
 		/>
 	</div>
 	<nav class="space-y-1.5 flex-1 overflow-y-auto pr-2">
-		<a
-			id="tour-nav-home-provider"
-			(click)="setActive(0)"
-			[class.active]="activeIndex === 0"
-			class="sidebar-item cursor-pointer"
-		>
-			<span class="material-symbols-outlined">dashboard</span>
-			Dashboard
-		</a>
-		<a
-			id="tour-nav-patients-provider"
-			(click)="setActive(1)"
-			[class.active]="activeIndex === 1"
-			class="sidebar-item cursor-pointer"
-		>
-			<span class="material-symbols-outlined">patient_list</span>
-			Mis Pacientes
-		</a>
-		<a
-			id="tour-nav-clinical-record-provider"
-			(click)="setActive(2)"
-			[class.active]="activeIndex === 2"
-			class="sidebar-item cursor-pointer"
-		>
-			<span class="material-symbols-outlined">clinical_notes</span>
-			Historia Clínica
-		</a>
-		<a
-			id="tour-nav-agenda-provider"
-			(click)="setActive(3)"
-			[class.active]="activeIndex === 3"
-			class="sidebar-item cursor-pointer"
-		>
-			<span class="material-symbols-outlined">calendar_month</span>
-			Agenda Médica
-		</a>
-		<a
-			id="tour-nav-labs-provider"
-			(click)="setActive(4)"
-			[class.active]="activeIndex === 4"
-			class="sidebar-item cursor-pointer"
-		>
-			<span class="material-symbols-outlined">biotech</span>
-			Laboratorios
-		</a>
+		<ng-container *ngFor="let item of menuItems">
+			<a
+				*ngIf="item.visible"
+				[id]="item.id"
+				(click)="setActive(item.index)"
+				[class.active]="activeIndex === item.index"
+				class="sidebar-item cursor-pointer"
+			>
+				<span class="material-symbols-outlined">{{ item.icon }}</span>
+				{{ item.label }}
+			</a>
+		</ng-container>
 	</nav>
 	<div class="mt-auto pt-6 border-t border-slate-200/50">
 		<a
@@ -74,6 +41,7 @@
 			Soporte
 		</a>
 		<a
+			(click)="logout()"
 			class="sidebar-item text-secondary hover:bg-red-50 hover:text-red-700 mt-2 cursor-pointer"
 		>
 			<span class="material-symbols-outlined">logout</span>

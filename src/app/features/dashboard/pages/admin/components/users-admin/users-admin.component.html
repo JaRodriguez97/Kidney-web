@@ -540,3 +540,51 @@
 	(approve)="approveRequest($event); closeRequestDetailsModal()"
 	(reject)="rejectRequest($event); closeRequestDetailsModal()"
 ></app-request-details-modal>
+
+<!-- Modal de Edición de Usuario -->
+<div *ngIf="showEditModal && editingUser" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/10 backdrop-blur-sm overflow-auto">
+	<div class="absolute modal-glass w-full max-w-lg max-h-fit flex flex-col top-1/4">
+		<div class="px-10 pt-10 pb-6 text-center">
+			<h3 class="text-2xl font-extrabold text-primary tracking-tight">
+				Editar Usuario
+			</h3>
+		</div>
+		<div class="flex-1 overflow-y-auto px-10 py-4 space-y-4">
+			<app-input-text
+				label="Nombre"
+				[(ngModel)]="editFormData.firstName"
+			></app-input-text>
+			<app-input-text
+				label="Apellido"
+				[(ngModel)]="editFormData.lastName"
+			></app-input-text>
+			<app-input-text
+				label="Teléfono"
+				[(ngModel)]="editFormData.phone"
+			></app-input-text>
+			<div class="flex flex-col gap-2">
+				<label class="block text-primary font-bold text-sm">Estado</label>
+				<select class="glass-input cursor-pointer bg-white/40 p-2 rounded-xl border border-slate-200" [(ngModel)]="editFormData.status">
+					<option value="ACTIVE">Activo</option>
+					<option value="INACTIVE">Inactivo</option>
+				</select>
+			</div>
+		</div>
+		<div class="p-6 flex justify-end items-center gap-4 bg-white/30 border-t border-white/40">
+			<button
+				type="button"
+				(click)="closeEditModal()"
+				class="px-4 py-2 text-sm font-bold text-slate-400 hover:text-secondary transition-colors"
+			>
+				Cancelar
+			</button>
+			<button
+				(click)="saveEditUser()"
+				[disabled]="isLoading"
+				class="bg-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+			>
+				{{ isLoading ? "Guardando..." : "Guardar Cambios" }}
+			</button>
+		</div>
+	</div>
+</div>

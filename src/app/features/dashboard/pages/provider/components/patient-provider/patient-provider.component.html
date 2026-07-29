@@ -4,18 +4,28 @@
 			<div
 				class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"
 			>
-				<div class="relative w-full md:w-96">
-					<span
-						class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-						>search</span
+				<div class="flex items-center gap-3 w-full md:w-auto">
+					<div class="relative w-full md:w-96">
+						<span
+							class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+							>search</span
+						>
+						<input
+							[(ngModel)]="searchTerm"
+							(ngModelChange)="applyFilters()"
+							class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+							placeholder="Buscar por nombre o número de documento..."
+							type="text"
+						/>
+					</div>
+					<button
+						*ngIf="isReceptionist"
+						(click)="openCreateModal()"
+						class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/95 transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm whitespace-nowrap"
 					>
-					<input
-						[(ngModel)]="searchTerm"
-						(ngModelChange)="applyFilters()"
-						class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
-						placeholder="Buscar por nombre o número de documento..."
-						type="text"
-					/>
+						<span class="material-symbols-outlined text-base">add</span>
+						Registrar Paciente
+					</button>
 				</div>
 				<div class="flex gap-3 w-full md:w-auto">
 					<div class="relative">
@@ -147,30 +157,60 @@
 										<div
 											class="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity"
 										>
-											<button
-												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
-												title="Ver Historia"
-											>
-												<span class="material-symbols-outlined text-lg"
-													>description</span
+												<button
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
+													title="Ver Historia"
 												>
-											</button>
-											<button
-												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
-												title="Agendar Cita"
-											>
-												<span class="material-symbols-outlined text-lg"
-													>calendar_add_on</span
+													<span class="material-symbols-outlined text-lg"
+														>description</span
+													>
+												</button>
+												<button
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
+													title="Agendar Cita"
 												>
-											</button>
-											<button
-												class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
-												title="Solicitar Labs"
-											>
-												<span class="material-symbols-outlined text-lg"
-													>science</span
+													<span class="material-symbols-outlined text-lg"
+														>calendar_add_on</span
+													>
+												</button>
+												<button
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
+													title="Solicitar Labs"
 												>
-											</button>
+													<span class="material-symbols-outlined text-lg"
+														>science</span
+													>
+												</button>
+
+											<!-- Receptionist view -->
+											<ng-container *ngIf="isReceptionist">
+												<button
+													(click)="openDocumentsModal(patient)"
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-teal-600 transition-colors"
+													title="Ver Documentos"
+												>
+													<span class="material-symbols-outlined text-lg"
+														>folder_shared</span
+													>
+												</button>
+												<button
+													(click)="openEditModal(patient)"
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-blue-600 transition-colors"
+													title="Editar Paciente"
+												>
+													<span class="material-symbols-outlined text-lg"
+														>edit</span
+													>
+												</button>
+												<button
+													class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-primary transition-colors"
+													title="Agendar Cita"
+												>
+													<span class="material-symbols-outlined text-lg"
+														>calendar_add_on</span
+													>
+												</button>
+											</ng-container>
 										</div>
 									</td>
 								</tr>
@@ -205,6 +245,440 @@
 			</div>
 		</div>
 	</div>
+
+<!-- ==================== REGISTRAR / EDITAR PACIENTE MODAL ==================== -->
+<div
+	*ngIf="isModalOpen"
+	class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+>
+	<div
+		class="glass-panel w-full max-w-3xl max-h-[90vh] overflow-y-auto p-8 relative flex flex-col gap-6 shadow-2xl border border-white/20"
+	>
+		<!-- Header -->
+		<div class="flex justify-between items-start border-b border-slate-200/50 pb-4">
+			<div>
+				<h2 class="text-xl font-bold text-slate-800">
+					{{ isEditing ? 'Editar Perfil del Paciente' : 'Registrar Nuevo Paciente' }}
+				</h2>
+				<p class="text-xs text-slate-500 mt-1">
+					{{ isEditing ? 'Modifique la información demográfica o de contacto del paciente.' : 'Ingrese los datos básicos del paciente para crear su expediente.' }}
+				</p>
+			</div>
+			<button
+				(click)="closeModal()"
+				class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+			>
+				<span class="material-symbols-outlined">close</span>
+			</button>
+		</div>
+
+		<!-- Error Message -->
+		<div *ngIf="modalError" class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-secondary font-medium">
+			{{ modalError }}
+		</div>
+
+		<!-- Form body -->
+		<form (submit)="savePatient(); $event.preventDefault();" class="space-y-6">
+			
+			<!-- Sección: Datos de Cuenta (Solo al crear) -->
+			<div *ngIf="!isEditing" class="space-y-4">
+				<h3 class="text-xs font-bold text-primary uppercase tracking-wider">Datos de Acceso</h3>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Correo Electrónico *</label>
+						<input
+							type="email"
+							name="email"
+							[(ngModel)]="patientForm.email"
+							required
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="ejemplo@correo.com"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Contraseña *</label>
+						<input
+							type="password"
+							name="password"
+							[(ngModel)]="patientForm.password"
+							required
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Mín. 8 caracteres, 1 número, 1 mayúscula"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sección: Información Personal -->
+			<div class="space-y-4">
+				<h3 class="text-xs font-bold text-primary uppercase tracking-wider">Información Personal</h3>
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div class="md:col-span-2">
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Primer Nombre *</label>
+						<input
+							type="text"
+							name="firstName"
+							[(ngModel)]="patientForm.firstName"
+							required
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Nombres"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Segundo Nombre</label>
+						<input
+							type="text"
+							name="middleName"
+							[(ngModel)]="patientForm.middleName"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Opcional"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Género</label>
+						<select
+							name="gender"
+							[(ngModel)]="patientForm.gender"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+						>
+							<option value="MALE">Masculino</option>
+							<option value="FEMALE">Femenino</option>
+							<option value="OTHER">Otro</option>
+							<option value="PREFER_NOT_TO_SAY">Prefiero no decirlo</option>
+						</select>
+					</div>
+					<div class="md:col-span-2">
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Primer Apellido *</label>
+						<input
+							type="text"
+							name="lastName"
+							[(ngModel)]="patientForm.lastName"
+							required
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Apellidos"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Segundo Apellido</label>
+						<input
+							type="text"
+							name="secondLastName"
+							[(ngModel)]="patientForm.secondLastName"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Opcional"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Fecha Nacimiento</label>
+						<input
+							type="date"
+							name="birthDate"
+							[(ngModel)]="patientForm.birthDate"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+						/>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Tipo Documento</label>
+						<select
+							name="documentType"
+							[(ngModel)]="patientForm.documentType"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+						>
+							<option value="CC">Cédula de Ciudadanía (CC)</option>
+							<option value="CE">Cédula de Extranjería (CE)</option>
+							<option value="PA">Pasaporte (PA)</option>
+							<option value="RC">Registro Civil (RC)</option>
+							<option value="TI">Tarjeta de Identidad (TI)</option>
+						</select>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Número Documento</label>
+						<input
+							type="text"
+							name="documentNumber"
+							[(ngModel)]="patientForm.documentNumber"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Documento"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Teléfono Movil</label>
+						<input
+							type="text"
+							name="phone"
+							[(ngModel)]="patientForm.phone"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Celular"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sección: Dirección y Ubicación -->
+			<div class="space-y-4">
+				<h3 class="text-xs font-bold text-primary uppercase tracking-wider">Ubicación y Dirección</h3>
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div class="md:col-span-2">
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Dirección de Residencia</label>
+						<input
+							type="text"
+							name="address"
+							[(ngModel)]="patientForm.address"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Calle / Carrera / Avenida"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Barrio</label>
+						<input
+							type="text"
+							name="neighborhood"
+							[(ngModel)]="patientForm.neighborhood"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Nombre del barrio"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Comuna</label>
+						<input
+							type="number"
+							name="commune"
+							[(ngModel)]="patientForm.commune"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="1 a 22"
+						/>
+					</div>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Ciudad / Municipio</label>
+						<input
+							type="text"
+							name="city"
+							[(ngModel)]="patientForm.city"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Cali"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Departamento</label>
+						<input
+							type="text"
+							name="department"
+							[(ngModel)]="patientForm.department"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="Valle del Cauca"
+						/>
+					</div>
+				</div>
+			</div>
+
+			<!-- Sección: Datos Clínicos Iniciales (Solo al registrar) -->
+			<div *ngIf="!isEditing" class="space-y-4">
+				<h3 class="text-xs font-bold text-primary uppercase tracking-wider">Información Clínica Inicial</h3>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Tipo de Sangre</label>
+						<select
+							name="bloodType"
+							[(ngModel)]="patientForm.bloodType"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer"
+						>
+							<option value="O+">O Positivo (O+)</option>
+							<option value="O-">O Negativo (O-)</option>
+							<option value="A+">A Positivo (A+)</option>
+							<option value="A-">A Negativo (A-)</option>
+							<option value="B+">B Positivo (B+)</option>
+							<option value="B-">B Negativo (B-)</option>
+							<option value="AB+">AB Positivo (AB+)</option>
+							<option value="AB-">AB Negativo (AB-)</option>
+						</select>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Estatura (cm)</label>
+						<input
+							type="number"
+							name="heightCm"
+							[(ngModel)]="patientForm.heightCm"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="cm"
+						/>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Peso (kg)</label>
+						<input
+							type="number"
+							name="weightKg"
+							[(ngModel)]="patientForm.weightKg"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+							placeholder="kg"
+						/>
+					</div>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Alergias</label>
+						<textarea
+							name="allergies"
+							[(ngModel)]="patientForm.allergies"
+							rows="2"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+							placeholder="Describa alergias conocidas..."
+						></textarea>
+					</div>
+					<div>
+						<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5">Condiciones Crónicas</label>
+						<textarea
+							name="chronicConditions"
+							[(ngModel)]="patientForm.chronicConditions"
+							rows="2"
+							class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+							placeholder="Hipertensión, Diabetes, etc..."
+						></textarea>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
+					<input
+						type="checkbox"
+						id="isMinor"
+						name="isMinor"
+						[(ngModel)]="patientForm.isMinor"
+						class="w-4 h-4 text-primary rounded border-slate-200 focus:ring-primary cursor-pointer"
+					/>
+					<label for="isMinor" class="text-sm font-semibold text-slate-600 cursor-pointer">El paciente es menor de edad</label>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div class="flex justify-end gap-3 pt-6 border-t border-slate-200/50">
+				<button
+					type="button"
+					(click)="closeModal()"
+					class="px-5 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-colors active:scale-95"
+				>
+					Cancelar
+				</button>
+				<button
+					type="submit"
+					[disabled]="savingPatient"
+					class="px-6 py-3 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary/95 transition-all shadow-lg shadow-primary/10 active:scale-95 disabled:opacity-50"
+				>
+					{{ savingPatient ? 'Guardando...' : (isEditing ? 'Actualizar Paciente' : 'Registrar Paciente') }}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- ==================== DOCUMENTOS PACIENTE MODAL ==================== -->
+<div
+	*ngIf="isDocumentsModalOpen"
+	class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+>
+	<div
+		class="glass-panel w-full max-w-2xl max-h-[80vh] overflow-y-auto p-8 relative flex flex-col gap-6 shadow-2xl border border-white/20"
+	>
+		<!-- Header -->
+		<div class="flex justify-between items-start border-b border-slate-200/50 pb-4">
+			<div>
+				<h2 class="text-xl font-bold text-slate-800">
+					Expediente de Documentos
+				</h2>
+				<p class="text-xs text-slate-500 mt-1">
+					Paciente: <strong class="text-slate-700">{{ selectedPatientName }}</strong>
+				</p>
+			</div>
+			<button
+				(click)="closeDocumentsModal()"
+				class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+			>
+				<span class="material-symbols-outlined">close</span>
+			</button>
+		</div>
+
+		<!-- Warning Notification (Receptionist Limits) -->
+		<div class="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+			<span class="material-symbols-outlined text-amber-600 mt-0.5 text-base">info</span>
+			<div class="text-xs text-amber-800 leading-relaxed">
+				<strong>Nota de Seguridad:</strong> Como recepcionista, usted puede verificar la existencia de los documentos y compartirlos con el paciente, pero no tiene autorización para abrirlos, visualizarlos en pantalla ni descargarlos a su equipo local.
+			</div>
+		</div>
+
+		<!-- Loading -->
+		<div *ngIf="documentsLoading" class="py-12 text-center text-slate-400 text-sm">
+			Cargando documentos del paciente...
+		</div>
+
+		<!-- Error -->
+		<div *ngIf="documentsError" class="py-8 text-center text-secondary text-sm font-medium">
+			{{ documentsError }}
+		</div>
+
+		<!-- Documents list -->
+		<div *ngIf="!documentsLoading && !documentsError" class="flex-1">
+			@if (documents.length === 0) {
+				<div class="py-12 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-4xl text-slate-300">folder_open</span>
+					No se encontraron documentos registrados para este paciente.
+				</div>
+			} @else {
+				<div class="space-y-3">
+					@for (doc of documents; track doc.id) {
+						<div class="glass-card p-4 flex items-center justify-between border border-slate-200/50">
+							<div class="flex items-center gap-3">
+								<div class="w-10 h-10 rounded-lg bg-blue-50 text-primary flex items-center justify-center">
+									<span class="material-symbols-outlined">
+										{{ doc.type === 'LAB' ? 'science' : doc.type === 'INCAPACITY' ? 'medical_services' : 'description' }}
+									</span>
+								</div>
+								<div>
+									<h4 class="font-bold text-slate-700 text-sm">{{ doc.title }}</h4>
+									<p class="text-[11px] text-slate-400">
+										Emitido por: {{ doc.issuer }} • {{ formatDate(doc.date) }}
+									</p>
+								</div>
+							</div>
+							<div class="flex gap-2">
+								<!-- Locked buttons to satisfy restriction of not opening/downloading -->
+								<button
+									disabled
+									class="px-2.5 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-not-allowed"
+									title="No autorizado para abrir/descargar"
+								>
+									<span class="material-symbols-outlined text-sm">lock</span>
+									Ver
+								</button>
+								<button
+									(click)="shareDocument(doc)"
+									class="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 hover:bg-primary/95 transition-all shadow-sm active:scale-95"
+									title="Compartir enlace con paciente"
+								>
+									<span class="material-symbols-outlined text-sm">share</span>
+									Compartir
+								</button>
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
+
+		<!-- Footer -->
+		<div class="flex justify-end pt-4 border-t border-slate-200/50">
+			<button
+				type="button"
+				(click)="closeDocumentsModal()"
+				class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-colors active:scale-95"
+			>
+				Cerrar
+			</button>
+		</div>
+	</div>
+</div>
+
 	<div class="w-full lg:w-80 flex flex-col gap-6">
 		<div class="glass-card p-6 flex flex-col items-center text-center">
 			<div

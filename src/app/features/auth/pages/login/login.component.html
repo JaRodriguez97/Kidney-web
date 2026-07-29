@@ -51,6 +51,11 @@
               </a>
             </div>
           </div>
+          @if (errorMessage) {
+            <div class="bg-red-50 text-red-600 p-3 rounded-xl text-sm text-center border border-red-100">
+              {{ errorMessage }}
+            </div>
+          }
           <div class="pt-2">
             <button
               class="w-full bg-primaryF hover:bg-sky-600 text-white text-lg font-bold py-4 rounded-xl shadow-lg shadow-primaryF/30 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
@@ -104,11 +109,11 @@
     <div
       class="flex justify-center gap-4 mt-5 text-xs text-slate-500 dark:text-slate-400"
     >
-      <a class="hover:text-primaryF hover:underline text-white" href="#"
+      <a class="hover:text-primaryF hover:underline text-white" routerLink="/"
         >Privacidad</a
       >
       <span>•</span>
-      <a class="hover:text-primaryF hover:underline text-white" href="#"
+      <a class="hover:text-primaryF hover:underline text-white" routerLink="/"
         >Ayuda</a
       >
     </div>

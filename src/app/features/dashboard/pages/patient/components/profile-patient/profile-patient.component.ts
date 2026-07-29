@@ -2,16 +2,61 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PatientService } from '@app/core/services/patient.service';
+import { InputTextComponent } from '@app/shared/components/form/input-text/input-text.component';
+import { SelectComponent } from '@app/shared/components/form/select/select.component';
 
 @Component({
   selector: 'app-profile-patient',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InputTextComponent, SelectComponent],
   templateUrl: './profile-patient.component.html',
   styleUrl: './profile-patient.component.scss'
 })
 export class ProfilePatientComponent implements OnInit {
   private readonly patientService = inject(PatientService);
+
+  documentTypeOptions = [
+    { label: 'Cédula de Ciudadanía (CC)', value: 'CC' },
+    { label: 'Tarjeta de Identidad (TI)', value: 'TI' },
+    { label: 'Cédula de Extranjería (CE)', value: 'CE' },
+    { label: 'Pasaporte (PAS)', value: 'PAS' },
+    { label: 'Registro Civil (RC)', value: 'RC' },
+    { label: 'Número Único de Identificación Personal (NUIP)', value: 'NUIP' },
+    { label: 'Permiso por Protección Temporal (PPT)', value: 'PPT' },
+    { label: 'Permiso Especial de Permanencia (PEP)', value: 'PEP' },
+    { label: 'Adulto Sin Identificación (AS)', value: 'AS' },
+    { label: 'Menor Sin Identificación (MS)', value: 'MS' },
+    { label: 'Certificado de Nacido Vivo (CN)', value: 'CN' },
+    { label: 'Carné Diplomático de Identidad (CDI)', value: 'CDI' },
+    { label: 'Salvoconducto de Permanencia (SC)', value: 'SC' },
+    { label: 'Documento Extranjero (DE)', value: 'DE' },
+  ];
+
+  sexOptions = [
+    { label: 'Masculino', value: 'MALE' },
+    { label: 'Femenino', value: 'FEMALE' },
+  ];
+
+  territorialZoneOptions = [
+    { label: 'Urbana', value: 'URBAN' },
+    { label: 'Rural', value: 'RURAL' },
+  ];
+
+  ethnicityOptions = [
+    { label: 'Ninguna / Mestizo', value: 'NONE' },
+    { label: 'Indígena', value: 'INDIGENOUS' },
+    { label: 'Afrocolombiano', value: 'AFRO' },
+    { label: 'Gitano (Rom)', value: 'ROM' },
+    { label: 'Otro', value: 'OTHER' },
+  ];
+
+  educationLevelOptions = [
+    { label: 'Primaria', value: 'PRIMARY' },
+    { label: 'Bachillerato / Secundaria', value: 'SECONDARY' },
+    { label: 'Técnico / Tecnólogo', value: 'TECHNICAL' },
+    { label: 'Universitario', value: 'UNIVERSITY' },
+    { label: 'Postgrado', value: 'POSTGRADUATE' },
+  ];
 
   loading = true;
   profile: any = {

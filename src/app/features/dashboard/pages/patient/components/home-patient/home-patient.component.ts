@@ -18,6 +18,8 @@ export class HomePatientComponent implements OnInit, OnDestroy {
 	hasHealthEvolution = false;
 	hasDocuments = false;
 
+	selectedGraphRange: '6M' | '1Y' = '6M';
+
 	private loadingTimer?: ReturnType<typeof setTimeout>;
 
 	constructor(private readonly router: Router) {}
@@ -44,5 +46,17 @@ export class HomePatientComponent implements OnInit, OnDestroy {
 
 	goToSupport(): void {
 		this.router.navigate(['/dashboard/patient/support']);
+	}
+
+	setGraphRange(range: '6M' | '1Y'): void {
+		this.selectedGraphRange = range;
+	}
+
+	downloadResult(resultName: string): void {
+		alert(`Preparando PDF para descarga simulada de: ${resultName}`);
+	}
+
+	viewAllResults(): void {
+		this.router.navigate(['/dashboard/patient/results']);
 	}
 }

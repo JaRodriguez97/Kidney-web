@@ -23,6 +23,7 @@ import {
 	toColombiaMonthKey,
 } from '@app/shared/utils/colombia-date.utils';
 import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-appointment-admin',
@@ -33,6 +34,7 @@ import { forkJoin } from 'rxjs';
 })
 export class AppointmentAdminComponent implements OnInit {
 	private readonly appointmentService = inject(AppointmentService);
+	private readonly router = inject(Router);
 
 	loading = false;
 	errorMessage = '';
@@ -45,6 +47,9 @@ export class AppointmentAdminComponent implements OnInit {
 	visibleMonth = this.toMonthKey(new Date());
 
 	appointments: ProviderAgendaItem[] = [];
+
+	currentPage = 1;
+	pageSize = 10;
 	calendarOptions: CalendarOptions = {
 		plugins: [dayGridPlugin, interactionPlugin],
 		initialView: 'dayGridMonth',
@@ -96,6 +101,27 @@ export class AppointmentAdminComponent implements OnInit {
 		});
 	}
 
+	get paginatedAppointments(): ProviderAgendaItem[] {
+		const start = (this.currentPage - 1) * this.pageSize;
+		return this.filteredAppointments.slice(start, start + this.pageSize);
+	}
+
+	get totalPages(): number {
+		return Math.ceil(this.filteredAppointments.length / this.pageSize) || 1;
+	}
+
+	nextPage(): void {
+		if (this.currentPage < this.totalPages) {
+			this.currentPage++;
+		}
+	}
+
+	prevPage(): void {
+		if (this.currentPage > 1) {
+			this.currentPage--;
+		}
+	}
+
 	get totalToday(): number {
 		return this.filteredAppointments.length;
 	}
@@ -114,10 +140,28 @@ export class AppointmentAdminComponent implements OnInit {
 
 	onSearchChange(value: string): void {
 		this.searchTerm = value;
+		this.currentPage = 1;
 	}
 
 	onStatusChange(value: 'ALL' | ProviderAgendaItem['status']): void {
 		this.statusFilter = value;
+		this.currentPage = 1;
+	}
+
+	goToCreateAppointment(): void {
+		this.router.navigate(['/dashboard/admin/appointments/create']);
+	}
+
+	editAppointment(row: ProviderAgendaItem): void {
+		alert(`Simulando edición de cita para: ${row.patientName}`);
+	}
+
+	cancelAppointment(row: ProviderAgendaItem): void {
+		if (
+			confirm(`¿Está seguro que desea cancelar la cita de ${row.patientName}?`)
+		) {
+			alert('Cita cancelada simulada con éxito');
+		}
 	}
 
 	onDateChange(value: string): void {

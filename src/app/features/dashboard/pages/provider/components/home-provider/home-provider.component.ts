@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import {
 	AppointmentService,
 	ProviderAgendaItem,
@@ -16,10 +17,19 @@ import { AuthService } from '@app/features/auth/services/auth.service';
 export class HomeProviderComponent implements OnInit {
 	private readonly appointmentService = inject(AppointmentService);
 	private readonly authService = inject(AuthService);
+	private readonly router = inject(Router);
 
 	appointments: ProviderAgendaItem[] = [];
 	loading = false;
 	errorMessage = '';
+
+	goToPatients(): void {
+		this.router.navigate(['/dashboard/provider/patients']);
+	}
+
+	goToAppointments(): void {
+		this.router.navigate(['/dashboard/provider/appointments']);
+	}
 
 	ngOnInit(): void {
 		this.loadAgenda();
@@ -65,6 +75,22 @@ export class HomeProviderComponent implements OnInit {
 			this.authService.hasPermission('labs.order') ||
 			this.authService.hasPermission('clinical.assignLab')
 		);
+	}
+
+	get isReceptionist(): boolean {
+		return this.authService.currentUser?.providerTypeCode === 'RECEPTIONIST';
+	}
+
+	callPatient(appointment: ProviderAgendaItem): void {
+		this.appointmentService.updateProviderAppointmentStatus(appointment.id, { action: 'CALL' }).subscribe({
+			next: () => {
+				alert(`Paciente ${appointment.patientName} llamado con éxito.`);
+				this.loadAgenda();
+			},
+			error: () => {
+				alert('No fue posible realizar el llamado al paciente.');
+			}
+		});
 	}
 
 	loadAgenda(): void {

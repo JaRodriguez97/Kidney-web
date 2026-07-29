@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { PlatformService } from '@app/shared/services/platform.service';
 import { SidebarService } from '@app/shared/services/sidebar.service';
+import { AuthService } from '@app/features/auth/services/auth.service';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -17,6 +18,7 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 	private router = inject(Router);
 	private platformService = inject(PlatformService);
 	private sidebarService = inject(SidebarService);
+	private authService = inject(AuthService);
 	private readonly STORAGE_KEY = 'adminSidebarActive';
 	private destroy$ = new Subject<void>();
 	activeIndex: number = 0;
@@ -30,10 +32,10 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 		'appointments',
 		'labs',
 		'results',
-		'interoperability',
 		'billing',
 		'forms',
 		'settings',
+		'interoperability',
 		'support',
 	];
 
@@ -84,5 +86,10 @@ export class AsideAdminComponent implements OnInit, OnDestroy {
 			index.toString(),
 		);
 		this.router.navigate(['dashboard/admin/' + route]);
+	}
+
+	logout(): void {
+		this.authService.clearSession();
+		this.router.navigate(['/login/admin']);
 	}
 }

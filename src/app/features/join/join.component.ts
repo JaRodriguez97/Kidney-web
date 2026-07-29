@@ -2,17 +2,37 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { OrganizationService } from '@app/core/services/organization.service';
 import { FormsModule } from '@angular/forms';
+import { InputTextComponent } from '@app/shared/components/form/input-text/input-text.component';
+import { InputEmailComponent } from '@app/shared/components/form/input-email/input-email.component';
+import { InputPasswordComponent } from '@app/shared/components/form/input-password/input-password.component';
+import { SelectComponent } from '@app/shared/components/form/select/select.component';
+import { TextareaComponent } from '@app/shared/components/form/textarea/textarea.component';
 
 @Component({
 	selector: 'app-join',
 	standalone: true,
-	imports: [FormsModule, RouterLink],
+	imports: [
+		FormsModule,
+		RouterLink,
+		InputTextComponent,
+		InputEmailComponent,
+		InputPasswordComponent,
+		SelectComponent,
+		TextareaComponent,
+	],
 	templateUrl: './join.component.html',
 	styleUrl: './join.component.scss',
 })
 export class JoinComponent {
 	private readonly organizationService = inject(OrganizationService);
 	private readonly router = inject(Router);
+
+	entityTypeOptions = [
+		{ label: 'IPS (Clínica/Hospital)', value: 'ips' },
+		{ label: 'Laboratorio', value: 'laboratorio' },
+		{ label: 'Aseguradora', value: 'aseguradora' },
+		{ label: 'Otro Aliado', value: 'otro' },
+	];
 
 	legalName = '';
 	documentNumber = '';

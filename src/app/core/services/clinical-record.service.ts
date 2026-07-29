@@ -37,6 +37,7 @@ export interface ProviderClinicalRecordsResponse {
 
 export interface PatientRecentHistoryItem {
 	careId: string;
+	appointmentId?: string;
 	date: string;
 	serviceName: string;
 	summary: string | null;

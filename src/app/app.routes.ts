@@ -122,13 +122,6 @@ export const routes: Routes = [
 			),
 	},
 	{
-		path: 'test-telemedicina/:sessionId',
-		loadComponent: () =>
-			import('./features/telemedicine/pages/test-video-call/test-video-call.component').then(
-				(m) => m.TestVideoCallComponent,
-			),
-	},
-	{
 		path: 'telemedicina/:sessionId',
 		canActivate: [AuthGuard],
 		loadComponent: () =>

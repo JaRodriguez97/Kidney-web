@@ -48,78 +48,66 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-				<div>
-					<label class="form-label">Primer Nombre</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.personalInformation.firstName"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Segundo Nombre</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.personalInformation.middleName"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Primer Apellido</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.personalInformation.lastName"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Segundo Apellido</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.personalInformation.secondLastName"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Tipo de Documento</label>
-					<select
-						class="form-input-glass cursor-pointer"
-						[(ngModel)]="profile.personalInformation.document.type"
-						disabled
-					>
-						<option value="CC">Cédula de Ciudadanía (CC)</option>
-						<option value="TI">Tarjeta de Identidad (TI)</option>
-						<option value="CE">Cédula de Extranjería (CE)</option>
-						<option value="PAS">Pasaporte (PAS)</option>
-					</select>
-				</div>
-				<div>
-					<label class="form-label">Número de Documento</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.personalInformation.document.number"
-						disabled
-					/>
-				</div>
-				<div>
-					<label class="form-label">Fecha de Nacimiento</label>
-					<input
-						class="form-input-glass"
-						type="date"
-						[(ngModel)]="profile.personalInformation.birthDate"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Sexo Biológico</label>
-					<select
-						class="form-input-glass cursor-pointer"
-						[(ngModel)]="profile.personalInformation.sex"
-					>
-						<option value="MALE">Masculino</option>
-						<option value="FEMALE">Femenino</option>
-					</select>
-				</div>
+				<app-input-text
+					label="Primer Nombre"
+					placeholder="Ej. Juan"
+					icon="person"
+					[(ngModel)]="profile.personalInformation.firstName"
+					name="firstName"
+				></app-input-text>
+				<app-input-text
+					label="Segundo Nombre"
+					placeholder="Ej. Carlos"
+					icon="person"
+					[(ngModel)]="profile.personalInformation.middleName"
+					name="middleName"
+				></app-input-text>
+				<app-input-text
+					label="Primer Apellido"
+					placeholder="Ej. Pérez"
+					icon="person"
+					[(ngModel)]="profile.personalInformation.lastName"
+					name="lastName"
+				></app-input-text>
+				<app-input-text
+					label="Segundo Apellido"
+					placeholder="Ej. Gómez"
+					icon="person"
+					[(ngModel)]="profile.personalInformation.secondLastName"
+					name="secondLastName"
+				></app-input-text>
+				<app-select
+					label="Tipo de Documento"
+					placeholder="Seleccione..."
+					[options]="documentTypeOptions"
+					icon="badge"
+					[(ngModel)]="profile.personalInformation.document.type"
+					name="documentType"
+					[disabled]="true"
+				></app-select>
+				<app-input-text
+					label="Número de Documento"
+					placeholder="Ej. 1012345678"
+					icon="badge"
+					[(ngModel)]="profile.personalInformation.document.number"
+					name="documentNumber"
+					[disabled]="true"
+				></app-input-text>
+				<app-input-text
+					label="Fecha de Nacimiento"
+					placeholder="AAAA-MM-DD"
+					icon="calendar_today"
+					[(ngModel)]="profile.personalInformation.birthDate"
+					name="birthDate"
+				></app-input-text>
+				<app-select
+					label="Sexo Biológico"
+					placeholder="Seleccione..."
+					[options]="sexOptions"
+					icon="wc"
+					[(ngModel)]="profile.personalInformation.sex"
+					name="sex"
+				></app-select>
 			</div>
 		</section>
 
@@ -139,69 +127,51 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-				<div>
-					<label class="form-label">País Residencia (Código ISO)</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.demographicInformation.country.code"
-						placeholder="Ej. CO"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Departamento</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.demographicInformation.department.name"
-						placeholder="Ej. Valle del Cauca"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Municipio (Código DIVIPOLA)</label>
-					<input
-						class="form-input-glass"
-						type="text"
-						[(ngModel)]="profile.demographicInformation.municipality.code"
-						placeholder="Ej. 76001"
-					/>
-				</div>
-				<div>
-					<label class="form-label">Zona Territorial</label>
-					<select
-						class="form-input-glass cursor-pointer"
-						[(ngModel)]="profile.demographicInformation.territorialZone"
-					>
-						<option value="URBAN">Urbana</option>
-						<option value="RURAL">Rural</option>
-					</select>
-				</div>
-				<div>
-					<label class="form-label">Etnia (Código)</label>
-					<select
-						class="form-input-glass cursor-pointer"
-						[(ngModel)]="profile.demographicInformation.ethnicity.code"
-					>
-						<option value="NONE">Ninguna / Mestizo</option>
-						<option value="INDIGENOUS">Indígena</option>
-						<option value="AFRO">Afrocolombiano</option>
-						<option value="ROM">Gitano (Rom)</option>
-						<option value="OTHER">Otro</option>
-					</select>
-				</div>
-				<div>
-					<label class="form-label">Nivel Educativo</label>
-					<select
-						class="form-input-glass cursor-pointer"
-						[(ngModel)]="profile.demographicInformation.educationLevel.code"
-					>
-						<option value="PRIMARY">Primaria</option>
-						<option value="SECONDARY">Bachillerato / Secundaria</option>
-						<option value="TECHNICAL">Técnico / Tecnólogo</option>
-						<option value="UNIVERSITY">Universitario</option>
-						<option value="POSTGRADUATE">Postgrado</option>
-					</select>
-				</div>
+				<app-input-text
+					label="País Residencia (Código ISO)"
+					placeholder="Ej. CO"
+					icon="public"
+					[(ngModel)]="profile.demographicInformation.country.code"
+					name="countryCode"
+				></app-input-text>
+				<app-input-text
+					label="Departamento"
+					placeholder="Ej. Valle del Cauca"
+					icon="map"
+					[(ngModel)]="profile.demographicInformation.department.name"
+					name="departmentName"
+				></app-input-text>
+				<app-input-text
+					label="Municipio (Código DIVIPOLA)"
+					placeholder="Ej. 76001"
+					icon="location_city"
+					[(ngModel)]="profile.demographicInformation.municipality.code"
+					name="municipalityCode"
+				></app-input-text>
+				<app-select
+					label="Zona Territorial"
+					placeholder="Seleccione..."
+					[options]="territorialZoneOptions"
+					icon="holiday_village"
+					[(ngModel)]="profile.demographicInformation.territorialZone"
+					name="territorialZone"
+				></app-select>
+				<app-select
+					label="Etnia (Código)"
+					placeholder="Seleccione..."
+					[options]="ethnicityOptions"
+					icon="groups"
+					[(ngModel)]="profile.demographicInformation.ethnicity.code"
+					name="ethnicityCode"
+				></app-select>
+				<app-select
+					label="Nivel Educativo"
+					placeholder="Seleccione..."
+					[options]="educationLevelOptions"
+					icon="school"
+					[(ngModel)]="profile.demographicInformation.educationLevel.code"
+					name="educationLevelCode"
+				></app-select>
 			</div>
 
 			<!-- Address Details -->
@@ -213,32 +183,28 @@
 				</h4>
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 					<div class="md:col-span-2">
-						<label class="form-label">Dirección Completa</label>
-						<input
-							class="form-input-glass"
-							type="text"
-							[(ngModel)]="profile.demographicInformation.address.addressLine"
+						<app-input-text
+							label="Dirección Completa"
 							placeholder="Calle, Carrera, Apto..."
-						/>
+							icon="home"
+							[(ngModel)]="profile.demographicInformation.address.addressLine"
+							name="addressLine"
+						></app-input-text>
 					</div>
-					<div>
-						<label class="form-label">Barrio</label>
-						<input
-							class="form-input-glass"
-							type="text"
-							[(ngModel)]="profile.demographicInformation.address.neighborhood"
-							placeholder="Ej. San Fernando"
-						/>
-					</div>
-					<div>
-						<label class="form-label">Comuna</label>
-						<input
-							class="form-input-glass"
-							type="text"
-							[(ngModel)]="profile.demographicInformation.address.commune"
-							placeholder="Ej. 19"
-						/>
-					</div>
+					<app-input-text
+						label="Barrio"
+						placeholder="Ej. San Fernando"
+						icon="near_me"
+						[(ngModel)]="profile.demographicInformation.address.neighborhood"
+						name="neighborhood"
+					></app-input-text>
+					<app-input-text
+						label="Comuna"
+						placeholder="Ej. 19"
+						icon="explore"
+						[(ngModel)]="profile.demographicInformation.address.commune"
+						name="commune"
+					></app-input-text>
 				</div>
 			</div>
 		</section>
@@ -405,36 +371,21 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-				<div>
-					<label class="form-label">Correo Electrónico</label>
-					<div class="relative">
-						<span
-							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
-							>mail</span
-						>
-						<input
-							class="form-input-glass pl-10"
-							type="email"
-							[(ngModel)]="profile.contactInformation.email"
-							disabled
-						/>
-					</div>
-				</div>
-				<div>
-					<label class="form-label">Celular Móvil</label>
-					<div class="relative">
-						<span
-							class="absolute left-3 top-2.5 text-slate-400 material-symbols-outlined text-[20px]"
-							>smartphone</span
-						>
-						<input
-							class="form-input-glass pl-10"
-							type="tel"
-							[(ngModel)]="profile.contactInformation.mobile.number"
-							placeholder="Ej. 3001234567"
-						/>
-					</div>
-				</div>
+				<app-input-text
+					label="Correo Electrónico"
+					placeholder="correo@ejemplo.com"
+					icon="mail"
+					[(ngModel)]="profile.contactInformation.email"
+					name="contactEmail"
+					[disabled]="true"
+				></app-input-text>
+				<app-input-text
+					label="Celular Móvil"
+					placeholder="Ej. 3001234567"
+					icon="smartphone"
+					[(ngModel)]="profile.contactInformation.mobile.number"
+					name="mobileNumber"
+				></app-input-text>
 			</div>
 
 			<!-- Emergency Contact -->
@@ -445,35 +396,27 @@
 					Contacto de Emergencia
 				</h4>
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-					<div>
-						<label class="form-label">Nombre Completo</label>
-						<input
-							class="form-input-glass"
-							type="text"
-							[(ngModel)]="profile.contactInformation.emergencyContact.fullName"
-							placeholder="Ej. María Gómez"
-						/>
-					</div>
-					<div>
-						<label class="form-label">Parentesco</label>
-						<input
-							class="form-input-glass"
-							type="text"
-							[(ngModel)]="
-								profile.contactInformation.emergencyContact.relationship
-							"
-							placeholder="Ej. Madre, Esposo..."
-						/>
-					</div>
-					<div>
-						<label class="form-label">Teléfono de Contacto</label>
-						<input
-							class="form-input-glass"
-							type="tel"
-							[(ngModel)]="profile.contactInformation.emergencyContact.phone"
-							placeholder="Ej. 3001234567"
-						/>
-					</div>
+					<app-input-text
+						label="Nombre Completo"
+						placeholder="Ej. María Gómez"
+						icon="person"
+						[(ngModel)]="profile.contactInformation.emergencyContact.fullName"
+						name="emergencyFullName"
+					></app-input-text>
+					<app-input-text
+						label="Parentesco"
+						placeholder="Ej. Madre, Esposo..."
+						icon="family_restroom"
+						[(ngModel)]="profile.contactInformation.emergencyContact.relationship"
+						name="emergencyRelationship"
+					></app-input-text>
+					<app-input-text
+						label="Teléfono de Contacto"
+						placeholder="Ej. 3001234567"
+						icon="phone"
+						[(ngModel)]="profile.contactInformation.emergencyContact.phone"
+						name="emergencyPhone"
+					></app-input-text>
 				</div>
 			</div>
 		</section>

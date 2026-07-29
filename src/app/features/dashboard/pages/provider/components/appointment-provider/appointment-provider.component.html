@@ -1,6 +1,26 @@
 <section
 	class="relative z-10 flex-1 h-full overflow-y-auto overflow-x-hidden flex flex-col gap-6"
 >
+	<!-- Header con botón Nueva Cita -->
+	<div
+		class="flex justify-between items-center gap-4 bg-white/40 p-6 rounded-2xl border border-slate-200/50 backdrop-blur-md"
+	>
+		<div>
+			<h2 class="text-2xl font-bold text-slate-800">Agenda Médica</h2>
+			<p class="text-xs text-slate-500 mt-0.5">
+				Gestión de turnos, citas y llamados de pacientes.
+			</p>
+		</div>
+		<button
+			*ngIf="isReceptionist"
+			(click)="openCreateAppointmentModal()"
+			class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/95 transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm"
+		>
+			<span class="material-symbols-outlined text-base font-bold">add</span>
+			Nueva Cita
+		</button>
+	</div>
+
 	<div class="relative flex">
 		<div
 			class="flex w-full items-start justify-between gap-6 flex-wrap xl:flex-nowrap"
@@ -488,4 +508,215 @@
 			</div>
 		</div>
 	}
+
+	<!-- ==================== NUEVA CITA MÉDICA MODAL ==================== -->
+	<div
+		*ngIf="isBookingModalOpen"
+		class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+	>
+		<div
+			class="glass-panel w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 relative flex flex-col gap-6 shadow-2xl border border-white/20"
+		>
+			<!-- Header -->
+			<div
+				class="flex justify-between items-start border-b border-slate-200/50 pb-4"
+			>
+				<div>
+					<h2 class="text-xl font-bold text-slate-800">
+						Agendar Nueva Cita Médica
+					</h2>
+					<p class="text-xs text-slate-500 mt-1">
+						Seleccione el paciente, el servicio médico, el profesional y el
+						horario deseado.
+					</p>
+				</div>
+				<button
+					(click)="closeBookingModal()"
+					class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 transition-colors"
+				>
+					<span class="material-symbols-outlined">close</span>
+				</button>
+			</div>
+
+			<!-- Error Message -->
+			<div
+				*ngIf="bookingError"
+				class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-secondary font-medium animate-shake"
+			>
+				{{ bookingError }}
+			</div>
+
+			<!-- Loading state -->
+			<div
+				*ngIf="bookingLoading"
+				class="py-12 text-center text-slate-400 text-sm font-medium"
+			>
+				Cargando catálogos de cita médica...
+			</div>
+
+			<!-- Form body -->
+			<form
+				*ngIf="!bookingLoading"
+				(submit)="saveAppointment(); $event.preventDefault()"
+				class="space-y-5"
+			>
+				<!-- Paciente -->
+				<div>
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5"
+						>Paciente *</label
+					>
+					<select
+						name="patientId"
+						[(ngModel)]="bookingForm.patientId"
+						required
+						class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer bg-white"
+					>
+						<option value="" disabled selected>
+							Seleccione un paciente...
+						</option>
+						<option *ngFor="let p of bookingPatients" [value]="p.patientId">
+							{{ p.fullName }} ({{ p.documentType || "CC" }})
+						</option>
+					</select>
+				</div>
+
+				<!-- Servicio -->
+				<div>
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5"
+						>Servicio / Especialidad *</label
+					>
+					<select
+						name="serviceId"
+						[(ngModel)]="bookingForm.serviceId"
+						(change)="onBookingServiceChange()"
+						required
+						class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer bg-white"
+					>
+						<option value="" disabled selected>
+							Seleccione el tipo de consulta...
+						</option>
+						<option *ngFor="let s of bookingServices" [value]="s.id">
+							{{ s.name }}
+						</option>
+					</select>
+				</div>
+
+				<!-- Profesional (Provider) -->
+				<div *ngIf="bookingForm.serviceId">
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5"
+						>Profesional de Salud *</label
+					>
+					<select
+						name="providerId"
+						[(ngModel)]="bookingForm.providerId"
+						(change)="onBookingCriteriaChange()"
+						required
+						class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer bg-white"
+					>
+						<option value="" disabled selected>
+							Seleccione un profesional...
+						</option>
+						<option *ngFor="let p of bookingProviders" [value]="p.id">
+							Dr(a). {{ p.user.firstName }} {{ p.user.lastName }}
+						</option>
+					</select>
+				</div>
+
+				<!-- Fecha -->
+				<div *ngIf="bookingForm.providerId">
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5"
+						>Fecha de la Cita *</label
+					>
+					<input
+						type="date"
+						name="date"
+						[(ngModel)]="bookingForm.date"
+						(change)="onBookingCriteriaChange()"
+						required
+						class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+					/>
+				</div>
+
+				<!-- Slots Disponibles -->
+				<div *ngIf="bookingForm.date && bookingSlots.length > 0">
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-2"
+						>Horarios Disponibles *</label
+					>
+					<div
+						class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-48 overflow-y-auto p-1 bg-slate-50/50 rounded-xl border border-slate-100"
+					>
+						<button
+							*ngFor="let slot of bookingSlots"
+							type="button"
+							(click)="bookingForm.slotId = slot.id"
+							[ngClass]="
+								bookingForm.slotId === slot.id
+									? 'bg-primary text-white border-primary'
+									: 'bg-white text-slate-700 hover:bg-slate-50'
+							"
+							class="px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 text-center transition-all cursor-pointer"
+						>
+							{{ formatTime(slot.startTime) }}
+						</button>
+					</div>
+				</div>
+				<div
+					*ngIf="bookingForm.date && bookingSlots.length === 0"
+					class="p-4 bg-amber-50 rounded-xl text-center text-xs text-amber-700 border border-amber-100"
+				>
+					No hay horarios disponibles para la combinación de profesional,
+					servicio y fecha elegida.
+				</div>
+
+				<!-- Notas Adicionales -->
+				<div>
+					<label class="block text-xs font-bold text-slate-500 uppercase mb-1.5"
+						>Notas / Observaciones</label
+					>
+					<textarea
+						name="notes"
+						[(ngModel)]="bookingForm.notes"
+						rows="2"
+						class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+						placeholder="Escriba algún detalle relevante sobre la cita..."
+					></textarea>
+				</div>
+
+				<!-- Cobro Requerido -->
+				<div class="flex items-center gap-2">
+					<input
+						type="checkbox"
+						id="paymentRequired"
+						name="paymentRequired"
+						[(ngModel)]="bookingForm.paymentRequired"
+						class="w-4 h-4 text-primary rounded border-slate-200 focus:ring-primary cursor-pointer"
+					/>
+					<label
+						for="paymentRequired"
+						class="text-sm font-semibold text-slate-600 cursor-pointer"
+					>
+						Requiere pago (Genera factura pendiente)
+					</label>
+				</div>
+
+				<!-- Footer -->
+				<div class="flex justify-end gap-3 pt-6 border-t border-slate-200/50">
+					<button
+						type="button"
+						(click)="closeBookingModal()"
+						class="px-5 py-3 rounded-xl border border-slate-200 text-slate-500 font-bold text-sm hover:bg-slate-50 transition-colors active:scale-95"
+					>
+						Cancelar
+					</button>
+					<button
+						type="submit"
+						[disabled]="bookingSaving || !bookingForm.slotId"
+						class="px-6 py-3 bg-primary text-white font-bold text-sm rounded-xl hover:bg-primary/95 transition-all shadow-lg shadow-primary/10 active:scale-95 disabled:opacity-50"
+					>
+						{{ bookingSaving ? "Agendando..." : "Agendar Cita" }}
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </section>
